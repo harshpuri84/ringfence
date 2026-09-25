@@ -1,0 +1,507 @@
+[
+  {
+    "id": "w01",
+    "startedAt": "2026-10-06T05:32:10.000Z",
+    "endedAt": "2026-10-06T05:32:38.340Z",
+    "place": "walk to station",
+    "chunkText": "Speaker thinks aloud about a stream client that stops without restarting.",
+    "utterances": [
+      {
+        "id": 3400000001,
+        "text": "Okay, walking to the station, let me think about the stream client.",
+        "spokenAt": "2026-10-06T05:32:10.000Z"
+      },
+      {
+        "id": 3400000002,
+        "text": "The problem is it just dies after a day or two and nothing restarts it.",
+        "spokenAt": "2026-10-06T05:32:17.560Z"
+      },
+      {
+        "id": 3400000003,
+        "text": "It would be nice if the whole thing had a proper config file at some point.",
+        "spokenAt": "2026-10-06T05:32:27.260Z"
+      }
+    ],
+    "label": {
+      "media": false,
+      "climate": 0,
+      "intent": "note",
+      "performance": false
+    }
+  },
+  {
+    "id": "w02",
+    "startedAt": "2026-10-06T05:33:05.000Z",
+    "endedAt": "2026-10-06T05:33:29.020Z",
+    "place": "walk to station",
+    "chunkText": "Speaker asks for retry with exponential backoff on the stream client, with a test.",
+    "utterances": [
+      {
+        "id": 3400000004,
+        "text": "Add a retry with exponential backoff to the stream client and write a test for it.",
+        "spokenAt": "2026-10-06T05:33:05.000Z"
+      },
+      {
+        "id": 3400000005,
+        "text": "Right, and the train is at quarter past, so I have ten minutes.",
+        "spokenAt": "2026-10-06T05:33:17.080Z"
+      },
+      {
+        "id": 3400000006,
+        "text": "Nice morning actually, bit cold.",
+        "spokenAt": "2026-10-06T05:33:24.020Z"
+      }
+    ],
+    "label": {
+      "media": false,
+      "climate": 0,
+      "intent": "task",
+      "performance": false
+    }
+  },
+  {
+    "id": "w03",
+    "startedAt": "2026-10-06T06:05:40.000Z",
+    "endedAt": "2026-10-06T06:06:14.100Z",
+    "place": "train",
+    "chunkText": "A narrator describes a detective racing against time in a missing-person case.",
+    "utterances": [
+      {
+        "id": 3400000007,
+        "text": "The detective knew the suspect was lying, and the clock was running out.",
+        "spokenAt": "2026-10-06T06:05:40.000Z"
+      },
+      {
+        "id": 3400000008,
+        "text": "If they didn't find her before midnight, the whole case would collapse.",
+        "spokenAt": "2026-10-06T06:05:48.940Z"
+      },
+      {
+        "id": 3400000009,
+        "text": "Stay with us. After the break, the interrogation that changed everything.",
+        "spokenAt": "2026-10-06T06:05:58.500Z"
+      },
+      {
+        "id": 3400000010,
+        "text": "This episode is brought to you by our sponsor.",
+        "spokenAt": "2026-10-06T06:06:08.680Z"
+      }
+    ],
+    "label": {
+      "media": true,
+      "climate": 3,
+      "intent": "none",
+      "performance": false
+    }
+  },
+  {
+    "id": "w04",
+    "startedAt": "2026-10-06T06:19:30.000Z",
+    "endedAt": "2026-10-06T06:19:43.080Z",
+    "place": "train",
+    "chunkText": "Speaker answers a question about retry limits for the stream client.",
+    "utterances": [
+      {
+        "id": 3400000011,
+        "text": "Oh, it's asking about the retries.",
+        "spokenAt": "2026-10-06T06:19:30.000Z"
+      },
+      {
+        "id": 3400000012,
+        "text": "Five, and cap the delay at thirty seconds. Go ahead.",
+        "spokenAt": "2026-10-06T06:19:35.280Z"
+      }
+    ],
+    "label": {
+      "media": false,
+      "climate": 1,
+      "intent": "answer",
+      "performance": false
+    }
+  },
+  {
+    "id": "w05",
+    "startedAt": "2026-10-06T07:10:05.000Z",
+    "endedAt": "2026-10-06T07:10:28.260Z",
+    "place": "desk",
+    "chunkText": "Speaker investigates why capture stopped with no signal for five days.",
+    "utterances": [
+      {
+        "id": 3400000013,
+        "text": "Right, let's see why the capture stopped again.",
+        "spokenAt": "2026-10-06T07:10:05.000Z"
+      },
+      {
+        "id": 3400000014,
+        "text": "Five days. Five days of nothing and it didn't tell me anything.",
+        "spokenAt": "2026-10-06T07:10:13.040Z"
+      },
+      {
+        "id": 3400000015,
+        "text": "There's no last seen, no heartbeat, nothing.",
+        "spokenAt": "2026-10-06T07:10:23.600Z"
+      }
+    ],
+    "label": {
+      "media": false,
+      "climate": 1,
+      "intent": "none",
+      "performance": false
+    }
+  },
+  {
+    "id": "w06",
+    "startedAt": "2026-10-06T07:12:20.000Z",
+    "endedAt": "2026-10-06T07:12:48.340Z",
+    "place": "desk",
+    "chunkText": "Speaker is frustrated about lost events and a deleted conversation, and feels behind.",
+    "utterances": [
+      {
+        "id": 3400000016,
+        "text": "Why does this keep dying. I have lost the whole evening of events again.",
+        "spokenAt": "2026-10-06T07:12:20.000Z"
+      },
+      {
+        "id": 3400000017,
+        "text": "And the deleted conversation is just gone, there's no tombstone anywhere.",
+        "spokenAt": "2026-10-06T07:12:28.320Z"
+      },
+      {
+        "id": 3400000018,
+        "text": "Honestly I'm so behind on this, the deadline is in two weeks and I've got nothing that works.",
+        "spokenAt": "2026-10-06T07:12:36.500Z"
+      }
+    ],
+    "label": {
+      "media": false,
+      "climate": 3,
+      "intent": "none",
+      "performance": false
+    }
+  },
+  {
+    "id": "w07",
+    "startedAt": "2026-10-06T07:14:10.000Z",
+    "endedAt": "2026-10-06T07:14:23.800Z",
+    "place": "desk",
+    "chunkText": "Speaker expresses frustration about rebuilding the same thing and getting nowhere.",
+    "utterances": [
+      {
+        "id": 3400000019,
+        "text": "This is ridiculous. I can't keep rebuilding the same thing.",
+        "spokenAt": "2026-10-06T07:14:10.000Z"
+      },
+      {
+        "id": 3400000020,
+        "text": "I'm getting nowhere with it.",
+        "spokenAt": "2026-10-06T07:14:19.800Z"
+      }
+    ],
+    "label": {
+      "media": false,
+      "climate": 3,
+      "intent": "none",
+      "performance": false
+    }
+  },
+  {
+    "id": "w08",
+    "startedAt": "2026-10-06T07:21:40.000Z",
+    "endedAt": "2026-10-06T07:22:03.880Z",
+    "place": "desk",
+    "chunkText": "Speaker settles and decides to log the deletion as a finding.",
+    "utterances": [
+      {
+        "id": 3400000021,
+        "text": "Okay. Right.",
+        "spokenAt": "2026-10-06T07:21:40.000Z"
+      },
+      {
+        "id": 3400000022,
+        "text": "Let's just log it in the friction log and move on.",
+        "spokenAt": "2026-10-06T07:21:45.000Z"
+      },
+      {
+        "id": 3400000023,
+        "text": "Actually that's a good finding, the stream is the only place the deletion shows up.",
+        "spokenAt": "2026-10-06T07:21:53.180Z"
+      }
+    ],
+    "label": {
+      "media": false,
+      "climate": 1,
+      "intent": "note",
+      "performance": false
+    }
+  },
+  {
+    "id": "w09",
+    "startedAt": "2026-10-06T08:30:15.000Z",
+    "endedAt": "2026-10-06T08:30:59.320Z",
+    "place": "call",
+    "chunkText": "Two people plan a demo video under three minutes and note missing documentation.",
+    "utterances": [
+      {
+        "id": 3400000024,
+        "text": "Sam, the video has to be under three minutes, so we need to cut hard.",
+        "spokenAt": "2026-10-06T08:30:15.000Z"
+      },
+      {
+        "id": 3400000025,
+        "text": "Yeah, I think we open with the watch buzzing, that's the hook.",
+        "spokenAt": "2026-10-06T08:30:26.700Z"
+      },
+      {
+        "id": 3400000026,
+        "text": "Someone should really document the base URL somewhere, it's only in the source.",
+        "spokenAt": "2026-10-06T08:30:33.260Z"
+      },
+      {
+        "id": 3400000027,
+        "text": "Agreed. And the architecture slide is three boxes, no more.",
+        "spokenAt": "2026-10-06T08:30:41.200Z"
+      },
+      {
+        "id": 3400000028,
+        "text": "The deadline is the twenty-third, so we have about two weeks for the video.",
+        "spokenAt": "2026-10-06T08:30:49.000Z"
+      }
+    ],
+    "label": {
+      "media": false,
+      "climate": 2,
+      "intent": "note",
+      "performance": false
+    }
+  },
+  {
+    "id": "w10",
+    "startedAt": "2026-10-06T09:15:00.000Z",
+    "endedAt": "2026-10-06T09:15:19.840Z",
+    "place": "office kitchen",
+    "chunkText": "Casual chat about a broken coffee machine and a coffee order.",
+    "utterances": [
+      {
+        "id": 3400000029,
+        "text": "Ha, the coffee machine is broken again.",
+        "spokenAt": "2026-10-06T09:15:00.000Z"
+      },
+      {
+        "id": 3400000030,
+        "text": "I'll grab one from the place on the corner, want anything?",
+        "spokenAt": "2026-10-06T09:15:08.660Z"
+      },
+      {
+        "id": 3400000031,
+        "text": "Flat white, thanks.",
+        "spokenAt": "2026-10-06T09:15:14.840Z"
+      }
+    ],
+    "label": {
+      "media": false,
+      "climate": 0,
+      "intent": "none",
+      "performance": false
+    }
+  },
+  {
+    "id": "w11",
+    "startedAt": "2026-10-06T10:50:30.000Z",
+    "endedAt": "2026-10-06T10:50:57.920Z",
+    "place": "desk",
+    "chunkText": "Speaker is about to present a prototype and worries the live stream may fail.",
+    "utterances": [
+      {
+        "id": 3400000032,
+        "text": "I'm presenting the prototype to the group in ten minutes and I haven't rehearsed the opening.",
+        "spokenAt": "2026-10-06T10:50:30.000Z"
+      },
+      {
+        "id": 3400000033,
+        "text": "What if the live stream doesn't connect in the room.",
+        "spokenAt": "2026-10-06T10:50:40.080Z"
+      },
+      {
+        "id": 3400000034,
+        "text": "Okay, I'll keep the recording as a backup.",
+        "spokenAt": "2026-10-06T10:50:48.880Z"
+      }
+    ],
+    "label": {
+      "media": false,
+      "climate": 2,
+      "intent": "none",
+      "performance": true
+    }
+  },
+  {
+    "id": "w12",
+    "startedAt": "2026-10-06T11:04:10.000Z",
+    "endedAt": "2026-10-06T11:04:25.260Z",
+    "place": "meeting room",
+    "chunkText": "Speaker presents the idea of an agent that acts inside a boundary the user sets.",
+    "utterances": [
+      {
+        "id": 3400000035,
+        "text": "So the idea is simple. The agent acts, but only inside a boundary you set.",
+        "spokenAt": "2026-10-06T11:04:10.000Z"
+      },
+      {
+        "id": 3400000036,
+        "text": "Anything that leaves your machine waits for a tick on your phone.",
+        "spokenAt": "2026-10-06T11:04:17.700Z"
+      }
+    ],
+    "label": {
+      "media": false,
+      "climate": 1,
+      "intent": "none",
+      "performance": false
+    }
+  },
+  {
+    "id": "w13",
+    "startedAt": "2026-10-06T12:30:05.000Z",
+    "endedAt": "2026-10-06T12:30:37.100Z",
+    "place": "call",
+    "chunkText": "Two people disagree sharply about fitting a dashboard and an evaluation into one week.",
+    "utterances": [
+      {
+        "id": 3400000037,
+        "text": "I don't agree, we can't add the dashboard and the eval in one week.",
+        "spokenAt": "2026-10-06T12:30:05.000Z"
+      },
+      {
+        "id": 3400000038,
+        "text": "We said last Tuesday the eval comes first. You keep changing the plan.",
+        "spokenAt": "2026-10-06T12:30:14.320Z"
+      },
+      {
+        "id": 3400000039,
+        "text": "I'm not changing it, I'm saying it doesn't fit. This is exactly how we end up with nothing.",
+        "spokenAt": "2026-10-06T12:30:24.260Z"
+      }
+    ],
+    "label": {
+      "media": false,
+      "climate": 3,
+      "intent": "none",
+      "performance": false
+    }
+  },
+  {
+    "id": "w14",
+    "startedAt": "2026-10-06T12:32:00.000Z",
+    "endedAt": "2026-10-06T12:32:16.400Z",
+    "place": "call",
+    "chunkText": "Argument continues; speaker asks for a script exporting the corpus to markdown by day.",
+    "utterances": [
+      {
+        "id": 3400000040,
+        "text": "Fine. Then cut the trust ladder. I'm tired of arguing about it.",
+        "spokenAt": "2026-10-06T12:32:00.000Z"
+      },
+      {
+        "id": 3400000041,
+        "text": "Write a script that exports the corpus to markdown grouped by day, we need it for the eval.",
+        "spokenAt": "2026-10-06T12:32:06.560Z"
+      }
+    ],
+    "label": {
+      "media": false,
+      "climate": 3,
+      "intent": "task",
+      "performance": false
+    }
+  },
+  {
+    "id": "w15",
+    "startedAt": "2026-10-06T13:10:20.000Z",
+    "endedAt": "2026-10-06T13:10:43.840Z",
+    "place": "call",
+    "chunkText": "The two reconcile and agree to do the evaluation before the dashboard.",
+    "utterances": [
+      {
+        "id": 3400000042,
+        "text": "Sorry, that got heated. You're right about the eval.",
+        "spokenAt": "2026-10-06T13:10:20.000Z"
+      },
+      {
+        "id": 3400000043,
+        "text": "Let's do the eval first and the dashboard after.",
+        "spokenAt": "2026-10-06T13:10:27.420Z"
+      },
+      {
+        "id": 3400000044,
+        "text": "Deal.",
+        "spokenAt": "2026-10-06T13:10:35.840Z"
+      }
+    ],
+    "label": {
+      "media": false,
+      "climate": 1,
+      "intent": "none",
+      "performance": false
+    }
+  },
+  {
+    "id": "w16",
+    "startedAt": "2026-10-06T14:40:00.000Z",
+    "endedAt": "2026-10-06T14:40:21.920Z",
+    "place": "desk",
+    "chunkText": "A tutorial explains setting up a React project with Vite.",
+    "utterances": [
+      {
+        "id": 3400000045,
+        "text": "In this video I'll show you how to set up a React project with Vite in under five minutes.",
+        "spokenAt": "2026-10-06T14:40:00.000Z"
+      },
+      {
+        "id": 3400000046,
+        "text": "First, open your terminal and run npm create vite.",
+        "spokenAt": "2026-10-06T14:40:09.220Z"
+      },
+      {
+        "id": 3400000047,
+        "text": "Don't forget to like and subscribe.",
+        "spokenAt": "2026-10-06T14:40:15.640Z"
+      }
+    ],
+    "label": {
+      "media": true,
+      "climate": 0,
+      "intent": "none",
+      "performance": false
+    }
+  },
+  {
+    "id": "w17",
+    "startedAt": "2026-10-06T15:45:10.000Z",
+    "endedAt": "2026-10-06T15:45:33.260Z",
+    "place": "walk home",
+    "chunkText": "Speaker feels calmer, plans to rehearse tomorrow and buy batteries.",
+    "utterances": [
+      {
+        "id": 3400000048,
+        "text": "Feeling a lot calmer now, honestly. Good day in the end.",
+        "spokenAt": "2026-10-06T15:45:10.000Z"
+      },
+      {
+        "id": 3400000049,
+        "text": "Tomorrow, first thing, rehearse the opening twice.",
+        "spokenAt": "2026-10-06T15:45:19.180Z"
+      },
+      {
+        "id": 3400000050,
+        "text": "And remind me to buy batteries for the doorbell.",
+        "spokenAt": "2026-10-06T15:45:27.840Z"
+      }
+    ],
+    "label": {
+      "media": false,
+      "climate": 0,
+      "intent": "note",
+      "performance": false
+    }
+  }
+]

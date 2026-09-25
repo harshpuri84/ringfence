@@ -1,0 +1,30 @@
+{
+  "about": "Recorded on 2026-09-24 in a scratch git repo with Claude Code 2.1.278 headless (claude -p). Durations are wall clock. Costs are total_cost_usd from the JSON output. Task text is the scripted utterance.",
+  "runs": {
+    "w02": {
+      "taskWindowId": "w02",
+      "task": "Add a retry with exponential backoff to the stream client and write a test for it.",
+      "mode": "plan",
+      "branch": "agent/retry-backoff",
+      "durationMs": 77000,
+      "costUsd": 0.53,
+      "model": "claude-sonnet-5 (plan mode picked it; --model haiku was passed)",
+      "question": "What should the max retry count be for connect()?",
+      "resume": { "durationMs": 25000, "costUsd": 0.10, "model": "claude-haiku-4-5", "diffStat": "stream.js +25 -2, not committed" },
+      "summary": "Planned a retry loop with doubling delay inside connect(), then asked for the retry limit.",
+      "recorded": true
+    },
+    "w14": {
+      "taskWindowId": "w14",
+      "task": "Write a script that exports the corpus to markdown grouped by day, we need it for the eval.",
+      "mode": "acceptEdits",
+      "branch": "agent/export-corpus-markdown",
+      "durationMs": 18000,
+      "costUsd": 0.04,
+      "model": "claude-haiku-4-5",
+      "diffStat": "export.js, 22 new lines, not committed",
+      "summary": "Wrote export.js: reads conversations JSON, groups by day, writes conversations.md.",
+      "recorded": true
+    }
+  }
+}

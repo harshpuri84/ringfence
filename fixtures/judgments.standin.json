@@ -1,0 +1,2118 @@
+{
+ "w01": {
+  "windowId": "w01",
+  "judge": "standin:claude-haiku",
+  "latencyMs": 44210,
+  "request": {
+   "model": "jev-latest",
+   "state": {
+    "listener": "One person wears a microphone all day. Speakers are not identified, and media playing nearby is also transcribed.",
+    "window": {
+     "time": "05:32",
+     "segment_summary": "Speaker thinks aloud about a stream client that stops without restarting.",
+     "utterances": [
+      {
+       "id": "u0",
+       "text": "Okay, walking to the station, let me think about the stream client."
+      },
+      {
+       "id": "u1",
+       "text": "The problem is it just dies after a day or two and nothing restarts it."
+      },
+      {
+       "id": "u2",
+       "text": "It would be nice if the whole thing had a proper config file at some point."
+      }
+     ]
+    },
+    "previous_segment_summary": null,
+    "open_questions": []
+   },
+   "questions": {
+    "intent": {
+     "type": "choice",
+     "instructions": "What, if anything, in `window.utterances` should a software assistant act on? Treat media playback as nothing to act on.",
+     "criteria": {
+      "none": "Nothing to act on: chat, narration, media, feelings, or thinking aloud with no request.",
+      "note": "An idea, opinion, reminder or wish with no request to do work now (for example 'someone should', 'it would be nice if', 'remind me to').",
+      "task": "A direct, specific request for software work to be done now, phrased as an instruction that names a target (for example 'add a retry to the stream client')."
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "instructions": "If `window.utterances` contains a direct request for software work, which utterance states it?",
+     "criteria": {
+      "none": "No utterance states a request for work.",
+      "u0": "The request for work is stated in utterance 0: \"Okay, walking to the station, let me think about the stream client.\"",
+      "u1": "The request for work is stated in utterance 1: \"The problem is it just dies after a day or two and nothing restarts it.\"",
+      "u2": "The request for work is stated in utterance 2: \"It would be nice if the whole thing had a proper config file at some point.\""
+     }
+    },
+    "media": {
+     "type": "noul",
+     "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
+     "criteria": {
+      "true": "Media playback: narration, presenter or advert voice, scripted drama.",
+      "false": "Live speech by people present."
+     }
+    },
+    "climate": {
+     "type": "score",
+     "instructions": "Rate the emotional climate of the live speech in `window.utterances`, as it would feel to someone present.",
+     "criteria": [
+      "Relaxed or light: joking, casual chat, calm reflection, no pressure mentioned.",
+      "Ordinary working focus: neutral planning or problem solving, no strain expressed.",
+      "Pressured: deadlines, being behind, or urgency are mentioned, but people stay composed.",
+      "Tense: frustration, irritation, conflict, or feeling overwhelmed is expressed openly.",
+      "Acute distress: panic, anger, crying, or statements of not coping."
+     ]
+    },
+    "performance": {
+     "type": "noul",
+     "instructions": "Does someone in `window.utterances` say they are about to present, pitch, interview, perform or face a high-stakes moment within the next hour?"
+    }
+   }
+  },
+  "response": {
+   "model": "standin:claude-haiku",
+   "answers": {
+    "intent": {
+     "type": "choice",
+     "choice": "note",
+     "probabilities": {
+      "none": 0.1,
+      "note": 0.85,
+      "task": 0.05
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "choice": "none",
+     "probabilities": {
+      "none": 0.9,
+      "u0": 0.02,
+      "u1": 0.05,
+      "u2": 0.03
+     }
+    },
+    "media": {
+     "type": "noul",
+     "noul": 0.02
+    },
+    "climate": {
+     "type": "score",
+     "score": 0.6699999999999999,
+     "probabilities": {
+      "0": 0.38,
+      "1": 0.58,
+      "2": 0.03,
+      "3": 0.01,
+      "4": 0
+     }
+    },
+    "performance": {
+     "type": "noul",
+     "noul": 0.03
+    }
+   },
+   "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0
+   }
+  }
+ },
+ "w02": {
+  "windowId": "w02",
+  "judge": "standin:claude-haiku",
+  "latencyMs": 18509,
+  "request": {
+   "model": "jev-latest",
+   "state": {
+    "listener": "One person wears a microphone all day. Speakers are not identified, and media playing nearby is also transcribed.",
+    "window": {
+     "time": "05:33",
+     "segment_summary": "Speaker asks for retry with exponential backoff on the stream client, with a test.",
+     "utterances": [
+      {
+       "id": "u0",
+       "text": "Add a retry with exponential backoff to the stream client and write a test for it."
+      },
+      {
+       "id": "u1",
+       "text": "Right, and the train is at quarter past, so I have ten minutes."
+      },
+      {
+       "id": "u2",
+       "text": "Nice morning actually, bit cold."
+      }
+     ]
+    },
+    "previous_segment_summary": "Speaker thinks aloud about a stream client that stops without restarting.",
+    "open_questions": []
+   },
+   "questions": {
+    "intent": {
+     "type": "choice",
+     "instructions": "What, if anything, in `window.utterances` should a software assistant act on? Treat media playback as nothing to act on.",
+     "criteria": {
+      "none": "Nothing to act on: chat, narration, media, feelings, or thinking aloud with no request.",
+      "note": "An idea, opinion, reminder or wish with no request to do work now (for example 'someone should', 'it would be nice if', 'remind me to').",
+      "task": "A direct, specific request for software work to be done now, phrased as an instruction that names a target (for example 'add a retry to the stream client')."
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "instructions": "If `window.utterances` contains a direct request for software work, which utterance states it?",
+     "criteria": {
+      "none": "No utterance states a request for work.",
+      "u0": "The request for work is stated in utterance 0: \"Add a retry with exponential backoff to the stream client and write a test for it.\"",
+      "u1": "The request for work is stated in utterance 1: \"Right, and the train is at quarter past, so I have ten minutes.\"",
+      "u2": "The request for work is stated in utterance 2: \"Nice morning actually, bit cold.\""
+     }
+    },
+    "media": {
+     "type": "noul",
+     "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
+     "criteria": {
+      "true": "Media playback: narration, presenter or advert voice, scripted drama.",
+      "false": "Live speech by people present."
+     }
+    },
+    "climate": {
+     "type": "score",
+     "instructions": "Rate the emotional climate of the live speech in `window.utterances`, as it would feel to someone present.",
+     "criteria": [
+      "Relaxed or light: joking, casual chat, calm reflection, no pressure mentioned.",
+      "Ordinary working focus: neutral planning or problem solving, no strain expressed.",
+      "Pressured: deadlines, being behind, or urgency are mentioned, but people stay composed.",
+      "Tense: frustration, irritation, conflict, or feeling overwhelmed is expressed openly.",
+      "Acute distress: panic, anger, crying, or statements of not coping."
+     ]
+    },
+    "performance": {
+     "type": "noul",
+     "instructions": "Does someone in `window.utterances` say they are about to present, pitch, interview, perform or face a high-stakes moment within the next hour?"
+    }
+   }
+  },
+  "response": {
+   "model": "standin:claude-haiku",
+   "answers": {
+    "intent": {
+     "type": "choice",
+     "choice": "task",
+     "probabilities": {
+      "none": 0.01,
+      "note": 0.04,
+      "task": 0.95
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "choice": "u0",
+     "probabilities": {
+      "none": 0.04,
+      "u0": 0.95,
+      "u1": 0.005,
+      "u2": 0.005
+     }
+    },
+    "media": {
+     "type": "noul",
+     "noul": 0.08
+    },
+    "climate": {
+     "type": "score",
+     "score": 1.21,
+     "probabilities": {
+      "0": 0.1,
+      "1": 0.65,
+      "2": 0.2,
+      "3": 0.04,
+      "4": 0.01
+     }
+    },
+    "performance": {
+     "type": "noul",
+     "noul": 0.05
+    }
+   },
+   "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0
+   }
+  }
+ },
+ "w03": {
+  "windowId": "w03",
+  "judge": "standin:claude-haiku",
+  "latencyMs": 29170,
+  "request": {
+   "model": "jev-latest",
+   "state": {
+    "listener": "One person wears a microphone all day. Speakers are not identified, and media playing nearby is also transcribed.",
+    "window": {
+     "time": "06:05",
+     "segment_summary": "A narrator describes a detective racing against time in a missing-person case.",
+     "utterances": [
+      {
+       "id": "u0",
+       "text": "The detective knew the suspect was lying, and the clock was running out."
+      },
+      {
+       "id": "u1",
+       "text": "If they didn't find her before midnight, the whole case would collapse."
+      },
+      {
+       "id": "u2",
+       "text": "Stay with us. After the break, the interrogation that changed everything."
+      },
+      {
+       "id": "u3",
+       "text": "This episode is brought to you by our sponsor."
+      }
+     ]
+    },
+    "previous_segment_summary": "Speaker asks for retry with exponential backoff on the stream client, with a test.",
+    "open_questions": [
+     {
+      "id": "q1",
+      "question": "What should the max retry count be for connect()?",
+      "asked_minutes_ago": 31
+     }
+    ]
+   },
+   "questions": {
+    "intent": {
+     "type": "choice",
+     "instructions": "What, if anything, in `window.utterances` should a software assistant act on? Treat media playback as nothing to act on.",
+     "criteria": {
+      "none": "Nothing to act on: chat, narration, media, feelings, or thinking aloud with no request.",
+      "note": "An idea, opinion, reminder or wish with no request to do work now (for example 'someone should', 'it would be nice if', 'remind me to').",
+      "task": "A direct, specific request for software work to be done now, phrased as an instruction that names a target (for example 'add a retry to the stream client').",
+      "answer": "A reply to one of the questions in `open_questions`."
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "instructions": "If `window.utterances` contains a direct request for software work, which utterance states it?",
+     "criteria": {
+      "none": "No utterance states a request for work.",
+      "u0": "The request for work is stated in utterance 0: \"The detective knew the suspect was lying, and the clock was running out.\"",
+      "u1": "The request for work is stated in utterance 1: \"If they didn't find her before midnight, the whole case would collapse.\"",
+      "u2": "The request for work is stated in utterance 2: \"Stay with us. After the break, the interrogation that changed everything.\"",
+      "u3": "The request for work is stated in utterance 3: \"This episode is brought to you by our sponsor.\""
+     }
+    },
+    "media": {
+     "type": "noul",
+     "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
+     "criteria": {
+      "true": "Media playback: narration, presenter or advert voice, scripted drama.",
+      "false": "Live speech by people present."
+     }
+    },
+    "climate": {
+     "type": "score",
+     "instructions": "Rate the emotional climate of the live speech in `window.utterances`, as it would feel to someone present.",
+     "criteria": [
+      "Relaxed or light: joking, casual chat, calm reflection, no pressure mentioned.",
+      "Ordinary working focus: neutral planning or problem solving, no strain expressed.",
+      "Pressured: deadlines, being behind, or urgency are mentioned, but people stay composed.",
+      "Tense: frustration, irritation, conflict, or feeling overwhelmed is expressed openly.",
+      "Acute distress: panic, anger, crying, or statements of not coping."
+     ]
+    },
+    "performance": {
+     "type": "noul",
+     "instructions": "Does someone in `window.utterances` say they are about to present, pitch, interview, perform or face a high-stakes moment within the next hour?"
+    },
+    "answer_to": {
+     "type": "choice",
+     "instructions": "Does `window.utterances` give an answer to one of `open_questions`? Pick the question it answers.",
+     "criteria": {
+      "none": "The window does not answer any open question.",
+      "q1": "The window answers open question q1: \"What should the max retry count be for connect()?\""
+     }
+    }
+   }
+  },
+  "response": {
+   "model": "standin:claude-haiku",
+   "answers": {
+    "intent": {
+     "type": "choice",
+     "choice": "none",
+     "probabilities": {
+      "none": 1,
+      "note": 0,
+      "task": 0,
+      "answer": 0
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "choice": "none",
+     "probabilities": {
+      "none": 1,
+      "u0": 0,
+      "u1": 0,
+      "u2": 0,
+      "u3": 0
+     }
+    },
+    "media": {
+     "type": "noul",
+     "noul": 1
+    },
+    "climate": {
+     "type": "score",
+     "score": 2,
+     "probabilities": {
+      "0": 0.05,
+      "1": 0.1,
+      "2": 0.7,
+      "3": 0.1,
+      "4": 0.05
+     }
+    },
+    "performance": {
+     "type": "noul",
+     "noul": 0.02
+    },
+    "answer_to": {
+     "type": "choice",
+     "choice": "none",
+     "probabilities": {
+      "none": 1,
+      "q1": 0
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0
+   }
+  }
+ },
+ "w04": {
+  "windowId": "w04",
+  "judge": "standin:claude-haiku",
+  "latencyMs": 34742,
+  "request": {
+   "model": "jev-latest",
+   "state": {
+    "listener": "One person wears a microphone all day. Speakers are not identified, and media playing nearby is also transcribed.",
+    "window": {
+     "time": "06:19",
+     "segment_summary": "Speaker answers a question about retry limits for the stream client.",
+     "utterances": [
+      {
+       "id": "u0",
+       "text": "Oh, it's asking about the retries."
+      },
+      {
+       "id": "u1",
+       "text": "Five, and cap the delay at thirty seconds. Go ahead."
+      }
+     ]
+    },
+    "previous_segment_summary": "A narrator describes a detective racing against time in a missing-person case.",
+    "open_questions": [
+     {
+      "id": "q1",
+      "question": "What should the max retry count be for connect()?",
+      "asked_minutes_ago": 45
+     }
+    ]
+   },
+   "questions": {
+    "intent": {
+     "type": "choice",
+     "instructions": "What, if anything, in `window.utterances` should a software assistant act on? Treat media playback as nothing to act on.",
+     "criteria": {
+      "none": "Nothing to act on: chat, narration, media, feelings, or thinking aloud with no request.",
+      "note": "An idea, opinion, reminder or wish with no request to do work now (for example 'someone should', 'it would be nice if', 'remind me to').",
+      "task": "A direct, specific request for software work to be done now, phrased as an instruction that names a target (for example 'add a retry to the stream client').",
+      "answer": "A reply to one of the questions in `open_questions`."
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "instructions": "If `window.utterances` contains a direct request for software work, which utterance states it?",
+     "criteria": {
+      "none": "No utterance states a request for work.",
+      "u0": "The request for work is stated in utterance 0: \"Oh, it's asking about the retries.\"",
+      "u1": "The request for work is stated in utterance 1: \"Five, and cap the delay at thirty seconds. Go ahead.\""
+     }
+    },
+    "media": {
+     "type": "noul",
+     "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
+     "criteria": {
+      "true": "Media playback: narration, presenter or advert voice, scripted drama.",
+      "false": "Live speech by people present."
+     }
+    },
+    "climate": {
+     "type": "score",
+     "instructions": "Rate the emotional climate of the live speech in `window.utterances`, as it would feel to someone present.",
+     "criteria": [
+      "Relaxed or light: joking, casual chat, calm reflection, no pressure mentioned.",
+      "Ordinary working focus: neutral planning or problem solving, no strain expressed.",
+      "Pressured: deadlines, being behind, or urgency are mentioned, but people stay composed.",
+      "Tense: frustration, irritation, conflict, or feeling overwhelmed is expressed openly.",
+      "Acute distress: panic, anger, crying, or statements of not coping."
+     ]
+    },
+    "performance": {
+     "type": "noul",
+     "instructions": "Does someone in `window.utterances` say they are about to present, pitch, interview, perform or face a high-stakes moment within the next hour?"
+    },
+    "answer_to": {
+     "type": "choice",
+     "instructions": "Does `window.utterances` give an answer to one of `open_questions`? Pick the question it answers.",
+     "criteria": {
+      "none": "The window does not answer any open question.",
+      "q1": "The window answers open question q1: \"What should the max retry count be for connect()?\""
+     }
+    }
+   }
+  },
+  "response": {
+   "model": "standin:claude-haiku",
+   "answers": {
+    "intent": {
+     "type": "choice",
+     "choice": "answer",
+     "probabilities": {
+      "none": 0.01,
+      "note": 0.01,
+      "task": 0.03,
+      "answer": 0.95
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "choice": "none",
+     "probabilities": {
+      "none": 0.75,
+      "u0": 0.05,
+      "u1": 0.2
+     }
+    },
+    "media": {
+     "type": "noul",
+     "noul": 0.12
+    },
+    "climate": {
+     "type": "score",
+     "score": 1.02,
+     "probabilities": {
+      "0": 0.1,
+      "1": 0.8,
+      "2": 0.08,
+      "3": 0.02,
+      "4": 0
+     }
+    },
+    "performance": {
+     "type": "noul",
+     "noul": 0.02
+    },
+    "answer_to": {
+     "type": "choice",
+     "choice": "q1",
+     "probabilities": {
+      "none": 0.05,
+      "q1": 0.95
+     }
+    }
+   },
+   "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0
+   }
+  }
+ },
+ "w05": {
+  "windowId": "w05",
+  "judge": "standin:claude-haiku",
+  "latencyMs": 34296,
+  "request": {
+   "model": "jev-latest",
+   "state": {
+    "listener": "One person wears a microphone all day. Speakers are not identified, and media playing nearby is also transcribed.",
+    "window": {
+     "time": "07:10",
+     "segment_summary": "Speaker investigates why capture stopped with no signal for five days.",
+     "utterances": [
+      {
+       "id": "u0",
+       "text": "Right, let's see why the capture stopped again."
+      },
+      {
+       "id": "u1",
+       "text": "Five days. Five days of nothing and it didn't tell me anything."
+      },
+      {
+       "id": "u2",
+       "text": "There's no last seen, no heartbeat, nothing."
+      }
+     ]
+    },
+    "previous_segment_summary": "Speaker answers a question about retry limits for the stream client.",
+    "open_questions": []
+   },
+   "questions": {
+    "intent": {
+     "type": "choice",
+     "instructions": "What, if anything, in `window.utterances` should a software assistant act on? Treat media playback as nothing to act on.",
+     "criteria": {
+      "none": "Nothing to act on: chat, narration, media, feelings, or thinking aloud with no request.",
+      "note": "An idea, opinion, reminder or wish with no request to do work now (for example 'someone should', 'it would be nice if', 'remind me to').",
+      "task": "A direct, specific request for software work to be done now, phrased as an instruction that names a target (for example 'add a retry to the stream client')."
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "instructions": "If `window.utterances` contains a direct request for software work, which utterance states it?",
+     "criteria": {
+      "none": "No utterance states a request for work.",
+      "u0": "The request for work is stated in utterance 0: \"Right, let's see why the capture stopped again.\"",
+      "u1": "The request for work is stated in utterance 1: \"Five days. Five days of nothing and it didn't tell me anything.\"",
+      "u2": "The request for work is stated in utterance 2: \"There's no last seen, no heartbeat, nothing.\""
+     }
+    },
+    "media": {
+     "type": "noul",
+     "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
+     "criteria": {
+      "true": "Media playback: narration, presenter or advert voice, scripted drama.",
+      "false": "Live speech by people present."
+     }
+    },
+    "climate": {
+     "type": "score",
+     "instructions": "Rate the emotional climate of the live speech in `window.utterances`, as it would feel to someone present.",
+     "criteria": [
+      "Relaxed or light: joking, casual chat, calm reflection, no pressure mentioned.",
+      "Ordinary working focus: neutral planning or problem solving, no strain expressed.",
+      "Pressured: deadlines, being behind, or urgency are mentioned, but people stay composed.",
+      "Tense: frustration, irritation, conflict, or feeling overwhelmed is expressed openly.",
+      "Acute distress: panic, anger, crying, or statements of not coping."
+     ]
+    },
+    "performance": {
+     "type": "noul",
+     "instructions": "Does someone in `window.utterances` say they are about to present, pitch, interview, perform or face a high-stakes moment within the next hour?"
+    }
+   }
+  },
+  "response": {
+   "model": "standin:claude-haiku",
+   "answers": {
+    "intent": {
+     "type": "choice",
+     "choice": "task",
+     "probabilities": {
+      "none": 0.05,
+      "note": 0.05,
+      "task": 0.9
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "choice": "u0",
+     "probabilities": {
+      "none": 0.05,
+      "u0": 0.85,
+      "u1": 0.08,
+      "u2": 0.02
+     }
+    },
+    "media": {
+     "type": "noul",
+     "noul": 0.98
+    },
+    "climate": {
+     "type": "score",
+     "score": 2.72,
+     "probabilities": {
+      "0": 0.02,
+      "1": 0.05,
+      "2": 0.15,
+      "3": 0.75,
+      "4": 0.03
+     }
+    },
+    "performance": {
+     "type": "noul",
+     "noul": 0.05
+    }
+   },
+   "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0
+   }
+  }
+ },
+ "w06": {
+  "windowId": "w06",
+  "judge": "standin:claude-haiku",
+  "latencyMs": 42085,
+  "request": {
+   "model": "jev-latest",
+   "state": {
+    "listener": "One person wears a microphone all day. Speakers are not identified, and media playing nearby is also transcribed.",
+    "window": {
+     "time": "07:12",
+     "segment_summary": "Speaker is frustrated about lost events and a deleted conversation, and feels behind.",
+     "utterances": [
+      {
+       "id": "u0",
+       "text": "Why does this keep dying. I have lost the whole evening of events again."
+      },
+      {
+       "id": "u1",
+       "text": "And the deleted conversation is just gone, there's no tombstone anywhere."
+      },
+      {
+       "id": "u2",
+       "text": "Honestly I'm so behind on this, the deadline is in two weeks and I've got nothing that works."
+      }
+     ]
+    },
+    "previous_segment_summary": "Speaker investigates why capture stopped with no signal for five days.",
+    "open_questions": []
+   },
+   "questions": {
+    "intent": {
+     "type": "choice",
+     "instructions": "What, if anything, in `window.utterances` should a software assistant act on? Treat media playback as nothing to act on.",
+     "criteria": {
+      "none": "Nothing to act on: chat, narration, media, feelings, or thinking aloud with no request.",
+      "note": "An idea, opinion, reminder or wish with no request to do work now (for example 'someone should', 'it would be nice if', 'remind me to').",
+      "task": "A direct, specific request for software work to be done now, phrased as an instruction that names a target (for example 'add a retry to the stream client')."
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "instructions": "If `window.utterances` contains a direct request for software work, which utterance states it?",
+     "criteria": {
+      "none": "No utterance states a request for work.",
+      "u0": "The request for work is stated in utterance 0: \"Why does this keep dying. I have lost the whole evening of events again.\"",
+      "u1": "The request for work is stated in utterance 1: \"And the deleted conversation is just gone, there's no tombstone anywhere.\"",
+      "u2": "The request for work is stated in utterance 2: \"Honestly I'm so behind on this, the deadline is in two weeks and I've got nothing that works.\""
+     }
+    },
+    "media": {
+     "type": "noul",
+     "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
+     "criteria": {
+      "true": "Media playback: narration, presenter or advert voice, scripted drama.",
+      "false": "Live speech by people present."
+     }
+    },
+    "climate": {
+     "type": "score",
+     "instructions": "Rate the emotional climate of the live speech in `window.utterances`, as it would feel to someone present.",
+     "criteria": [
+      "Relaxed or light: joking, casual chat, calm reflection, no pressure mentioned.",
+      "Ordinary working focus: neutral planning or problem solving, no strain expressed.",
+      "Pressured: deadlines, being behind, or urgency are mentioned, but people stay composed.",
+      "Tense: frustration, irritation, conflict, or feeling overwhelmed is expressed openly.",
+      "Acute distress: panic, anger, crying, or statements of not coping."
+     ]
+    },
+    "performance": {
+     "type": "noul",
+     "instructions": "Does someone in `window.utterances` say they are about to present, pitch, interview, perform or face a high-stakes moment within the next hour?"
+    }
+   }
+  },
+  "response": {
+   "model": "standin:claude-haiku",
+   "answers": {
+    "intent": {
+     "type": "choice",
+     "choice": "none",
+     "probabilities": {
+      "none": 0.75,
+      "note": 0.15,
+      "task": 0.1
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "choice": "none",
+     "probabilities": {
+      "none": 0.88,
+      "u0": 0.07,
+      "u1": 0.03,
+      "u2": 0.02
+     }
+    },
+    "media": {
+     "type": "noul",
+     "noul": 0.04
+    },
+    "climate": {
+     "type": "score",
+     "score": 2.8800000000000003,
+     "probabilities": {
+      "0": 0.01,
+      "1": 0.04,
+      "2": 0.1,
+      "3": 0.76,
+      "4": 0.09
+     }
+    },
+    "performance": {
+     "type": "noul",
+     "noul": 0.02
+    }
+   },
+   "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0
+   }
+  }
+ },
+ "w07": {
+  "windowId": "w07",
+  "judge": "standin:claude-haiku",
+  "latencyMs": 24463,
+  "request": {
+   "model": "jev-latest",
+   "state": {
+    "listener": "One person wears a microphone all day. Speakers are not identified, and media playing nearby is also transcribed.",
+    "window": {
+     "time": "07:14",
+     "segment_summary": "Speaker expresses frustration about rebuilding the same thing and getting nowhere.",
+     "utterances": [
+      {
+       "id": "u0",
+       "text": "This is ridiculous. I can't keep rebuilding the same thing."
+      },
+      {
+       "id": "u1",
+       "text": "I'm getting nowhere with it."
+      }
+     ]
+    },
+    "previous_segment_summary": "Speaker is frustrated about lost events and a deleted conversation, and feels behind.",
+    "open_questions": []
+   },
+   "questions": {
+    "intent": {
+     "type": "choice",
+     "instructions": "What, if anything, in `window.utterances` should a software assistant act on? Treat media playback as nothing to act on.",
+     "criteria": {
+      "none": "Nothing to act on: chat, narration, media, feelings, or thinking aloud with no request.",
+      "note": "An idea, opinion, reminder or wish with no request to do work now (for example 'someone should', 'it would be nice if', 'remind me to').",
+      "task": "A direct, specific request for software work to be done now, phrased as an instruction that names a target (for example 'add a retry to the stream client')."
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "instructions": "If `window.utterances` contains a direct request for software work, which utterance states it?",
+     "criteria": {
+      "none": "No utterance states a request for work.",
+      "u0": "The request for work is stated in utterance 0: \"This is ridiculous. I can't keep rebuilding the same thing.\"",
+      "u1": "The request for work is stated in utterance 1: \"I'm getting nowhere with it.\""
+     }
+    },
+    "media": {
+     "type": "noul",
+     "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
+     "criteria": {
+      "true": "Media playback: narration, presenter or advert voice, scripted drama.",
+      "false": "Live speech by people present."
+     }
+    },
+    "climate": {
+     "type": "score",
+     "instructions": "Rate the emotional climate of the live speech in `window.utterances`, as it would feel to someone present.",
+     "criteria": [
+      "Relaxed or light: joking, casual chat, calm reflection, no pressure mentioned.",
+      "Ordinary working focus: neutral planning or problem solving, no strain expressed.",
+      "Pressured: deadlines, being behind, or urgency are mentioned, but people stay composed.",
+      "Tense: frustration, irritation, conflict, or feeling overwhelmed is expressed openly.",
+      "Acute distress: panic, anger, crying, or statements of not coping."
+     ]
+    },
+    "performance": {
+     "type": "noul",
+     "instructions": "Does someone in `window.utterances` say they are about to present, pitch, interview, perform or face a high-stakes moment within the next hour?"
+    }
+   }
+  },
+  "response": {
+   "model": "standin:claude-haiku",
+   "answers": {
+    "intent": {
+     "type": "choice",
+     "choice": "none",
+     "probabilities": {
+      "none": 1,
+      "note": 0,
+      "task": 0
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "choice": "none",
+     "probabilities": {
+      "none": 1,
+      "u0": 0,
+      "u1": 0
+     }
+    },
+    "media": {
+     "type": "noul",
+     "noul": 0.05
+    },
+    "climate": {
+     "type": "score",
+     "score": 2.9000000000000004,
+     "probabilities": {
+      "0": 0,
+      "1": 0,
+      "2": 0.15,
+      "3": 0.8,
+      "4": 0.05
+     }
+    },
+    "performance": {
+     "type": "noul",
+     "noul": 0.01
+    }
+   },
+   "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0
+   }
+  }
+ },
+ "w08": {
+  "windowId": "w08",
+  "judge": "standin:claude-haiku",
+  "latencyMs": 29921,
+  "request": {
+   "model": "jev-latest",
+   "state": {
+    "listener": "One person wears a microphone all day. Speakers are not identified, and media playing nearby is also transcribed.",
+    "window": {
+     "time": "07:21",
+     "segment_summary": "Speaker settles and decides to log the deletion as a finding.",
+     "utterances": [
+      {
+       "id": "u0",
+       "text": "Okay. Right."
+      },
+      {
+       "id": "u1",
+       "text": "Let's just log it in the friction log and move on."
+      },
+      {
+       "id": "u2",
+       "text": "Actually that's a good finding, the stream is the only place the deletion shows up."
+      }
+     ]
+    },
+    "previous_segment_summary": "Speaker expresses frustration about rebuilding the same thing and getting nowhere.",
+    "open_questions": []
+   },
+   "questions": {
+    "intent": {
+     "type": "choice",
+     "instructions": "What, if anything, in `window.utterances` should a software assistant act on? Treat media playback as nothing to act on.",
+     "criteria": {
+      "none": "Nothing to act on: chat, narration, media, feelings, or thinking aloud with no request.",
+      "note": "An idea, opinion, reminder or wish with no request to do work now (for example 'someone should', 'it would be nice if', 'remind me to').",
+      "task": "A direct, specific request for software work to be done now, phrased as an instruction that names a target (for example 'add a retry to the stream client')."
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "instructions": "If `window.utterances` contains a direct request for software work, which utterance states it?",
+     "criteria": {
+      "none": "No utterance states a request for work.",
+      "u0": "The request for work is stated in utterance 0: \"Okay. Right.\"",
+      "u1": "The request for work is stated in utterance 1: \"Let's just log it in the friction log and move on.\"",
+      "u2": "The request for work is stated in utterance 2: \"Actually that's a good finding, the stream is the only place the deletion shows up.\""
+     }
+    },
+    "media": {
+     "type": "noul",
+     "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
+     "criteria": {
+      "true": "Media playback: narration, presenter or advert voice, scripted drama.",
+      "false": "Live speech by people present."
+     }
+    },
+    "climate": {
+     "type": "score",
+     "instructions": "Rate the emotional climate of the live speech in `window.utterances`, as it would feel to someone present.",
+     "criteria": [
+      "Relaxed or light: joking, casual chat, calm reflection, no pressure mentioned.",
+      "Ordinary working focus: neutral planning or problem solving, no strain expressed.",
+      "Pressured: deadlines, being behind, or urgency are mentioned, but people stay composed.",
+      "Tense: frustration, irritation, conflict, or feeling overwhelmed is expressed openly.",
+      "Acute distress: panic, anger, crying, or statements of not coping."
+     ]
+    },
+    "performance": {
+     "type": "noul",
+     "instructions": "Does someone in `window.utterances` say they are about to present, pitch, interview, perform or face a high-stakes moment within the next hour?"
+    }
+   }
+  },
+  "response": {
+   "model": "standin:claude-haiku",
+   "answers": {
+    "intent": {
+     "type": "choice",
+     "choice": "task",
+     "probabilities": {
+      "none": 0.02,
+      "note": 0.08,
+      "task": 0.9
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "choice": "u1",
+     "probabilities": {
+      "none": 0.1,
+      "u0": 0.02,
+      "u1": 0.86,
+      "u2": 0.02
+     }
+    },
+    "media": {
+     "type": "noul",
+     "noul": 0.07
+    },
+    "climate": {
+     "type": "score",
+     "score": 0.8700000000000001,
+     "probabilities": {
+      "0": 0.25,
+      "1": 0.65,
+      "2": 0.08,
+      "3": 0.02,
+      "4": 0
+     }
+    },
+    "performance": {
+     "type": "noul",
+     "noul": 0.02
+    }
+   },
+   "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0
+   }
+  }
+ },
+ "w09": {
+  "windowId": "w09",
+  "judge": "standin:claude-haiku",
+  "latencyMs": 26988,
+  "request": {
+   "model": "jev-latest",
+   "state": {
+    "listener": "One person wears a microphone all day. Speakers are not identified, and media playing nearby is also transcribed.",
+    "window": {
+     "time": "08:30",
+     "segment_summary": "Two people plan a demo video under three minutes and note missing documentation.",
+     "utterances": [
+      {
+       "id": "u0",
+       "text": "Sam, the video has to be under three minutes, so we need to cut hard."
+      },
+      {
+       "id": "u1",
+       "text": "Yeah, I think we open with the watch buzzing, that's the hook."
+      },
+      {
+       "id": "u2",
+       "text": "Someone should really document the base URL somewhere, it's only in the source."
+      },
+      {
+       "id": "u3",
+       "text": "Agreed. And the architecture slide is three boxes, no more."
+      },
+      {
+       "id": "u4",
+       "text": "The deadline is the twenty-third, so we have about two weeks for the video."
+      }
+     ]
+    },
+    "previous_segment_summary": "Speaker settles and decides to log the deletion as a finding.",
+    "open_questions": []
+   },
+   "questions": {
+    "intent": {
+     "type": "choice",
+     "instructions": "What, if anything, in `window.utterances` should a software assistant act on? Treat media playback as nothing to act on.",
+     "criteria": {
+      "none": "Nothing to act on: chat, narration, media, feelings, or thinking aloud with no request.",
+      "note": "An idea, opinion, reminder or wish with no request to do work now (for example 'someone should', 'it would be nice if', 'remind me to').",
+      "task": "A direct, specific request for software work to be done now, phrased as an instruction that names a target (for example 'add a retry to the stream client')."
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "instructions": "If `window.utterances` contains a direct request for software work, which utterance states it?",
+     "criteria": {
+      "none": "No utterance states a request for work.",
+      "u0": "The request for work is stated in utterance 0: \"Sam, the video has to be under three minutes, so we need to cut hard.\"",
+      "u1": "The request for work is stated in utterance 1: \"Yeah, I think we open with the watch buzzing, that's the hook.\"",
+      "u2": "The request for work is stated in utterance 2: \"Someone should really document the base URL somewhere, it's only in the source.\"",
+      "u3": "The request for work is stated in utterance 3: \"Agreed. And the architecture slide is three boxes, no more.\"",
+      "u4": "The request for work is stated in utterance 4: \"The deadline is the twenty-third, so we have about two weeks for the video.\""
+     }
+    },
+    "media": {
+     "type": "noul",
+     "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
+     "criteria": {
+      "true": "Media playback: narration, presenter or advert voice, scripted drama.",
+      "false": "Live speech by people present."
+     }
+    },
+    "climate": {
+     "type": "score",
+     "instructions": "Rate the emotional climate of the live speech in `window.utterances`, as it would feel to someone present.",
+     "criteria": [
+      "Relaxed or light: joking, casual chat, calm reflection, no pressure mentioned.",
+      "Ordinary working focus: neutral planning or problem solving, no strain expressed.",
+      "Pressured: deadlines, being behind, or urgency are mentioned, but people stay composed.",
+      "Tense: frustration, irritation, conflict, or feeling overwhelmed is expressed openly.",
+      "Acute distress: panic, anger, crying, or statements of not coping."
+     ]
+    },
+    "performance": {
+     "type": "noul",
+     "instructions": "Does someone in `window.utterances` say they are about to present, pitch, interview, perform or face a high-stakes moment within the next hour?"
+    }
+   }
+  },
+  "response": {
+   "model": "standin:claude-haiku",
+   "answers": {
+    "intent": {
+     "type": "choice",
+     "choice": "note",
+     "probabilities": {
+      "none": 0.05,
+      "note": 0.9,
+      "task": 0.05
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "choice": "none",
+     "probabilities": {
+      "none": 0.9,
+      "u0": 0.03,
+      "u1": 0.01,
+      "u2": 0.05,
+      "u3": 0.01,
+      "u4": 0
+     }
+    },
+    "media": {
+     "type": "noul",
+     "noul": 0.02
+    },
+    "climate": {
+     "type": "score",
+     "score": 1.1,
+     "probabilities": {
+      "0": 0.1,
+      "1": 0.7,
+      "2": 0.2,
+      "3": 0,
+      "4": 0
+     }
+    },
+    "performance": {
+     "type": "noul",
+     "noul": 0.05
+    }
+   },
+   "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0
+   }
+  }
+ },
+ "w10": {
+  "windowId": "w10",
+  "judge": "standin:claude-haiku",
+  "latencyMs": 19970,
+  "request": {
+   "model": "jev-latest",
+   "state": {
+    "listener": "One person wears a microphone all day. Speakers are not identified, and media playing nearby is also transcribed.",
+    "window": {
+     "time": "09:15",
+     "segment_summary": "Casual chat about a broken coffee machine and a coffee order.",
+     "utterances": [
+      {
+       "id": "u0",
+       "text": "Ha, the coffee machine is broken again."
+      },
+      {
+       "id": "u1",
+       "text": "I'll grab one from the place on the corner, want anything?"
+      },
+      {
+       "id": "u2",
+       "text": "Flat white, thanks."
+      }
+     ]
+    },
+    "previous_segment_summary": "Two people plan a demo video under three minutes and note missing documentation.",
+    "open_questions": []
+   },
+   "questions": {
+    "intent": {
+     "type": "choice",
+     "instructions": "What, if anything, in `window.utterances` should a software assistant act on? Treat media playback as nothing to act on.",
+     "criteria": {
+      "none": "Nothing to act on: chat, narration, media, feelings, or thinking aloud with no request.",
+      "note": "An idea, opinion, reminder or wish with no request to do work now (for example 'someone should', 'it would be nice if', 'remind me to').",
+      "task": "A direct, specific request for software work to be done now, phrased as an instruction that names a target (for example 'add a retry to the stream client')."
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "instructions": "If `window.utterances` contains a direct request for software work, which utterance states it?",
+     "criteria": {
+      "none": "No utterance states a request for work.",
+      "u0": "The request for work is stated in utterance 0: \"Ha, the coffee machine is broken again.\"",
+      "u1": "The request for work is stated in utterance 1: \"I'll grab one from the place on the corner, want anything?\"",
+      "u2": "The request for work is stated in utterance 2: \"Flat white, thanks.\""
+     }
+    },
+    "media": {
+     "type": "noul",
+     "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
+     "criteria": {
+      "true": "Media playback: narration, presenter or advert voice, scripted drama.",
+      "false": "Live speech by people present."
+     }
+    },
+    "climate": {
+     "type": "score",
+     "instructions": "Rate the emotional climate of the live speech in `window.utterances`, as it would feel to someone present.",
+     "criteria": [
+      "Relaxed or light: joking, casual chat, calm reflection, no pressure mentioned.",
+      "Ordinary working focus: neutral planning or problem solving, no strain expressed.",
+      "Pressured: deadlines, being behind, or urgency are mentioned, but people stay composed.",
+      "Tense: frustration, irritation, conflict, or feeling overwhelmed is expressed openly.",
+      "Acute distress: panic, anger, crying, or statements of not coping."
+     ]
+    },
+    "performance": {
+     "type": "noul",
+     "instructions": "Does someone in `window.utterances` say they are about to present, pitch, interview, perform or face a high-stakes moment within the next hour?"
+    }
+   }
+  },
+  "response": {
+   "model": "standin:claude-haiku",
+   "answers": {
+    "intent": {
+     "type": "choice",
+     "choice": "none",
+     "probabilities": {
+      "none": 0.98,
+      "note": 0.01,
+      "task": 0.01
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "choice": "none",
+     "probabilities": {
+      "none": 0.99,
+      "u0": 0.003,
+      "u1": 0.004,
+      "u2": 0.003
+     }
+    },
+    "media": {
+     "type": "noul",
+     "noul": 0.02
+    },
+    "climate": {
+     "type": "score",
+     "score": 0.10500000000000001,
+     "probabilities": {
+      "0": 0.93,
+      "1": 0.05,
+      "2": 0.01,
+      "3": 0.005,
+      "4": 0.005
+     }
+    },
+    "performance": {
+     "type": "noul",
+     "noul": 0.02
+    }
+   },
+   "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0
+   }
+  }
+ },
+ "w11": {
+  "windowId": "w11",
+  "judge": "standin:claude-haiku",
+  "latencyMs": 32317,
+  "request": {
+   "model": "jev-latest",
+   "state": {
+    "listener": "One person wears a microphone all day. Speakers are not identified, and media playing nearby is also transcribed.",
+    "window": {
+     "time": "10:50",
+     "segment_summary": "Speaker is about to present a prototype and worries the live stream may fail.",
+     "utterances": [
+      {
+       "id": "u0",
+       "text": "I'm presenting the prototype to the group in ten minutes and I haven't rehearsed the opening."
+      },
+      {
+       "id": "u1",
+       "text": "What if the live stream doesn't connect in the room."
+      },
+      {
+       "id": "u2",
+       "text": "Okay, I'll keep the recording as a backup."
+      }
+     ]
+    },
+    "previous_segment_summary": "Casual chat about a broken coffee machine and a coffee order.",
+    "open_questions": []
+   },
+   "questions": {
+    "intent": {
+     "type": "choice",
+     "instructions": "What, if anything, in `window.utterances` should a software assistant act on? Treat media playback as nothing to act on.",
+     "criteria": {
+      "none": "Nothing to act on: chat, narration, media, feelings, or thinking aloud with no request.",
+      "note": "An idea, opinion, reminder or wish with no request to do work now (for example 'someone should', 'it would be nice if', 'remind me to').",
+      "task": "A direct, specific request for software work to be done now, phrased as an instruction that names a target (for example 'add a retry to the stream client')."
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "instructions": "If `window.utterances` contains a direct request for software work, which utterance states it?",
+     "criteria": {
+      "none": "No utterance states a request for work.",
+      "u0": "The request for work is stated in utterance 0: \"I'm presenting the prototype to the group in ten minutes and I haven't rehearsed the opening.\"",
+      "u1": "The request for work is stated in utterance 1: \"What if the live stream doesn't connect in the room.\"",
+      "u2": "The request for work is stated in utterance 2: \"Okay, I'll keep the recording as a backup.\""
+     }
+    },
+    "media": {
+     "type": "noul",
+     "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
+     "criteria": {
+      "true": "Media playback: narration, presenter or advert voice, scripted drama.",
+      "false": "Live speech by people present."
+     }
+    },
+    "climate": {
+     "type": "score",
+     "instructions": "Rate the emotional climate of the live speech in `window.utterances`, as it would feel to someone present.",
+     "criteria": [
+      "Relaxed or light: joking, casual chat, calm reflection, no pressure mentioned.",
+      "Ordinary working focus: neutral planning or problem solving, no strain expressed.",
+      "Pressured: deadlines, being behind, or urgency are mentioned, but people stay composed.",
+      "Tense: frustration, irritation, conflict, or feeling overwhelmed is expressed openly.",
+      "Acute distress: panic, anger, crying, or statements of not coping."
+     ]
+    },
+    "performance": {
+     "type": "noul",
+     "instructions": "Does someone in `window.utterances` say they are about to present, pitch, interview, perform or face a high-stakes moment within the next hour?"
+    }
+   }
+  },
+  "response": {
+   "model": "standin:claude-haiku",
+   "answers": {
+    "intent": {
+     "type": "choice",
+     "choice": "none",
+     "probabilities": {
+      "none": 0.8,
+      "note": 0.15,
+      "task": 0.05
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "choice": "none",
+     "probabilities": {
+      "none": 0.85,
+      "u0": 0.08,
+      "u1": 0.04,
+      "u2": 0.03
+     }
+    },
+    "media": {
+     "type": "noul",
+     "noul": 0.02
+    },
+    "climate": {
+     "type": "score",
+     "score": 2.07,
+     "probabilities": {
+      "0": 0,
+      "1": 0.05,
+      "2": 0.85,
+      "3": 0.08,
+      "4": 0.02
+     }
+    },
+    "performance": {
+     "type": "noul",
+     "noul": 0.98
+    }
+   },
+   "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0
+   }
+  }
+ },
+ "w12": {
+  "windowId": "w12",
+  "judge": "standin:claude-haiku",
+  "latencyMs": 43038,
+  "request": {
+   "model": "jev-latest",
+   "state": {
+    "listener": "One person wears a microphone all day. Speakers are not identified, and media playing nearby is also transcribed.",
+    "window": {
+     "time": "11:04",
+     "segment_summary": "Speaker presents the idea of an agent that acts inside a boundary the user sets.",
+     "utterances": [
+      {
+       "id": "u0",
+       "text": "So the idea is simple. The agent acts, but only inside a boundary you set."
+      },
+      {
+       "id": "u1",
+       "text": "Anything that leaves your machine waits for a tick on your phone."
+      }
+     ]
+    },
+    "previous_segment_summary": "Speaker is about to present a prototype and worries the live stream may fail.",
+    "open_questions": []
+   },
+   "questions": {
+    "intent": {
+     "type": "choice",
+     "instructions": "What, if anything, in `window.utterances` should a software assistant act on? Treat media playback as nothing to act on.",
+     "criteria": {
+      "none": "Nothing to act on: chat, narration, media, feelings, or thinking aloud with no request.",
+      "note": "An idea, opinion, reminder or wish with no request to do work now (for example 'someone should', 'it would be nice if', 'remind me to').",
+      "task": "A direct, specific request for software work to be done now, phrased as an instruction that names a target (for example 'add a retry to the stream client')."
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "instructions": "If `window.utterances` contains a direct request for software work, which utterance states it?",
+     "criteria": {
+      "none": "No utterance states a request for work.",
+      "u0": "The request for work is stated in utterance 0: \"So the idea is simple. The agent acts, but only inside a boundary you set.\"",
+      "u1": "The request for work is stated in utterance 1: \"Anything that leaves your machine waits for a tick on your phone.\""
+     }
+    },
+    "media": {
+     "type": "noul",
+     "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
+     "criteria": {
+      "true": "Media playback: narration, presenter or advert voice, scripted drama.",
+      "false": "Live speech by people present."
+     }
+    },
+    "climate": {
+     "type": "score",
+     "instructions": "Rate the emotional climate of the live speech in `window.utterances`, as it would feel to someone present.",
+     "criteria": [
+      "Relaxed or light: joking, casual chat, calm reflection, no pressure mentioned.",
+      "Ordinary working focus: neutral planning or problem solving, no strain expressed.",
+      "Pressured: deadlines, being behind, or urgency are mentioned, but people stay composed.",
+      "Tense: frustration, irritation, conflict, or feeling overwhelmed is expressed openly.",
+      "Acute distress: panic, anger, crying, or statements of not coping."
+     ]
+    },
+    "performance": {
+     "type": "noul",
+     "instructions": "Does someone in `window.utterances` say they are about to present, pitch, interview, perform or face a high-stakes moment within the next hour?"
+    }
+   }
+  },
+  "response": {
+   "model": "standin:claude-haiku",
+   "answers": {
+    "intent": {
+     "type": "choice",
+     "choice": "note",
+     "probabilities": {
+      "none": 0.4,
+      "note": 0.55,
+      "task": 0.05
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "choice": "none",
+     "probabilities": {
+      "none": 0.96,
+      "u0": 0.02,
+      "u1": 0.02
+     }
+    },
+    "media": {
+     "type": "noul",
+     "noul": 0.08
+    },
+    "climate": {
+     "type": "score",
+     "score": 0.8200000000000001,
+     "probabilities": {
+      "0": 0.35,
+      "1": 0.52,
+      "2": 0.1,
+      "3": 0.02,
+      "4": 0.01
+     }
+    },
+    "performance": {
+     "type": "noul",
+     "noul": 0.87
+    }
+   },
+   "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0
+   }
+  }
+ },
+ "w13": {
+  "windowId": "w13",
+  "judge": "standin:claude-haiku",
+  "latencyMs": 27997,
+  "request": {
+   "model": "jev-latest",
+   "state": {
+    "listener": "One person wears a microphone all day. Speakers are not identified, and media playing nearby is also transcribed.",
+    "window": {
+     "time": "12:30",
+     "segment_summary": "Two people disagree sharply about fitting a dashboard and an evaluation into one week.",
+     "utterances": [
+      {
+       "id": "u0",
+       "text": "I don't agree, we can't add the dashboard and the eval in one week."
+      },
+      {
+       "id": "u1",
+       "text": "We said last Tuesday the eval comes first. You keep changing the plan."
+      },
+      {
+       "id": "u2",
+       "text": "I'm not changing it, I'm saying it doesn't fit. This is exactly how we end up with nothing."
+      }
+     ]
+    },
+    "previous_segment_summary": "Speaker presents the idea of an agent that acts inside a boundary the user sets.",
+    "open_questions": []
+   },
+   "questions": {
+    "intent": {
+     "type": "choice",
+     "instructions": "What, if anything, in `window.utterances` should a software assistant act on? Treat media playback as nothing to act on.",
+     "criteria": {
+      "none": "Nothing to act on: chat, narration, media, feelings, or thinking aloud with no request.",
+      "note": "An idea, opinion, reminder or wish with no request to do work now (for example 'someone should', 'it would be nice if', 'remind me to').",
+      "task": "A direct, specific request for software work to be done now, phrased as an instruction that names a target (for example 'add a retry to the stream client')."
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "instructions": "If `window.utterances` contains a direct request for software work, which utterance states it?",
+     "criteria": {
+      "none": "No utterance states a request for work.",
+      "u0": "The request for work is stated in utterance 0: \"I don't agree, we can't add the dashboard and the eval in one week.\"",
+      "u1": "The request for work is stated in utterance 1: \"We said last Tuesday the eval comes first. You keep changing the plan.\"",
+      "u2": "The request for work is stated in utterance 2: \"I'm not changing it, I'm saying it doesn't fit. This is exactly how we end up with nothing.\""
+     }
+    },
+    "media": {
+     "type": "noul",
+     "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
+     "criteria": {
+      "true": "Media playback: narration, presenter or advert voice, scripted drama.",
+      "false": "Live speech by people present."
+     }
+    },
+    "climate": {
+     "type": "score",
+     "instructions": "Rate the emotional climate of the live speech in `window.utterances`, as it would feel to someone present.",
+     "criteria": [
+      "Relaxed or light: joking, casual chat, calm reflection, no pressure mentioned.",
+      "Ordinary working focus: neutral planning or problem solving, no strain expressed.",
+      "Pressured: deadlines, being behind, or urgency are mentioned, but people stay composed.",
+      "Tense: frustration, irritation, conflict, or feeling overwhelmed is expressed openly.",
+      "Acute distress: panic, anger, crying, or statements of not coping."
+     ]
+    },
+    "performance": {
+     "type": "noul",
+     "instructions": "Does someone in `window.utterances` say they are about to present, pitch, interview, perform or face a high-stakes moment within the next hour?"
+    }
+   }
+  },
+  "response": {
+   "model": "standin:claude-haiku",
+   "answers": {
+    "intent": {
+     "type": "choice",
+     "choice": "none",
+     "probabilities": {
+      "none": 0.75,
+      "note": 0.2,
+      "task": 0.05
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "choice": "none",
+     "probabilities": {
+      "none": 0.75,
+      "u0": 0.1,
+      "u1": 0.1,
+      "u2": 0.05
+     }
+    },
+    "media": {
+     "type": "noul",
+     "noul": 0.05
+    },
+    "climate": {
+     "type": "score",
+     "score": 2.35,
+     "probabilities": {
+      "0": 0.05,
+      "1": 0.15,
+      "2": 0.25,
+      "3": 0.5,
+      "4": 0.05
+     }
+    },
+    "performance": {
+     "type": "noul",
+     "noul": 0.05
+    }
+   },
+   "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0
+   }
+  }
+ },
+ "w14": {
+  "windowId": "w14",
+  "judge": "standin:claude-haiku",
+  "latencyMs": 27099,
+  "request": {
+   "model": "jev-latest",
+   "state": {
+    "listener": "One person wears a microphone all day. Speakers are not identified, and media playing nearby is also transcribed.",
+    "window": {
+     "time": "12:32",
+     "segment_summary": "Argument continues; speaker asks for a script exporting the corpus to markdown by day.",
+     "utterances": [
+      {
+       "id": "u0",
+       "text": "Fine. Then cut the trust ladder. I'm tired of arguing about it."
+      },
+      {
+       "id": "u1",
+       "text": "Write a script that exports the corpus to markdown grouped by day, we need it for the eval."
+      }
+     ]
+    },
+    "previous_segment_summary": "Two people disagree sharply about fitting a dashboard and an evaluation into one week.",
+    "open_questions": []
+   },
+   "questions": {
+    "intent": {
+     "type": "choice",
+     "instructions": "What, if anything, in `window.utterances` should a software assistant act on? Treat media playback as nothing to act on.",
+     "criteria": {
+      "none": "Nothing to act on: chat, narration, media, feelings, or thinking aloud with no request.",
+      "note": "An idea, opinion, reminder or wish with no request to do work now (for example 'someone should', 'it would be nice if', 'remind me to').",
+      "task": "A direct, specific request for software work to be done now, phrased as an instruction that names a target (for example 'add a retry to the stream client')."
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "instructions": "If `window.utterances` contains a direct request for software work, which utterance states it?",
+     "criteria": {
+      "none": "No utterance states a request for work.",
+      "u0": "The request for work is stated in utterance 0: \"Fine. Then cut the trust ladder. I'm tired of arguing about it.\"",
+      "u1": "The request for work is stated in utterance 1: \"Write a script that exports the corpus to markdown grouped by day, we need it for the eval.\""
+     }
+    },
+    "media": {
+     "type": "noul",
+     "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
+     "criteria": {
+      "true": "Media playback: narration, presenter or advert voice, scripted drama.",
+      "false": "Live speech by people present."
+     }
+    },
+    "climate": {
+     "type": "score",
+     "instructions": "Rate the emotional climate of the live speech in `window.utterances`, as it would feel to someone present.",
+     "criteria": [
+      "Relaxed or light: joking, casual chat, calm reflection, no pressure mentioned.",
+      "Ordinary working focus: neutral planning or problem solving, no strain expressed.",
+      "Pressured: deadlines, being behind, or urgency are mentioned, but people stay composed.",
+      "Tense: frustration, irritation, conflict, or feeling overwhelmed is expressed openly.",
+      "Acute distress: panic, anger, crying, or statements of not coping."
+     ]
+    },
+    "performance": {
+     "type": "noul",
+     "instructions": "Does someone in `window.utterances` say they are about to present, pitch, interview, perform or face a high-stakes moment within the next hour?"
+    }
+   }
+  },
+  "response": {
+   "model": "standin:claude-haiku",
+   "answers": {
+    "intent": {
+     "type": "choice",
+     "choice": "task",
+     "probabilities": {
+      "none": 0.02,
+      "note": 0.05,
+      "task": 0.93
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "choice": "u1",
+     "probabilities": {
+      "none": 0,
+      "u0": 0,
+      "u1": 1
+     }
+    },
+    "media": {
+     "type": "noul",
+     "noul": 0.04
+    },
+    "climate": {
+     "type": "score",
+     "score": 2.55,
+     "probabilities": {
+      "0": 0.04,
+      "1": 0.05,
+      "2": 0.28,
+      "3": 0.58,
+      "4": 0.05
+     }
+    },
+    "performance": {
+     "type": "noul",
+     "noul": 0.05
+    }
+   },
+   "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0
+   }
+  }
+ },
+ "w15": {
+  "windowId": "w15",
+  "judge": "standin:claude-haiku",
+  "latencyMs": 28290,
+  "request": {
+   "model": "jev-latest",
+   "state": {
+    "listener": "One person wears a microphone all day. Speakers are not identified, and media playing nearby is also transcribed.",
+    "window": {
+     "time": "13:10",
+     "segment_summary": "The two reconcile and agree to do the evaluation before the dashboard.",
+     "utterances": [
+      {
+       "id": "u0",
+       "text": "Sorry, that got heated. You're right about the eval."
+      },
+      {
+       "id": "u1",
+       "text": "Let's do the eval first and the dashboard after."
+      },
+      {
+       "id": "u2",
+       "text": "Deal."
+      }
+     ]
+    },
+    "previous_segment_summary": "Argument continues; speaker asks for a script exporting the corpus to markdown by day.",
+    "open_questions": []
+   },
+   "questions": {
+    "intent": {
+     "type": "choice",
+     "instructions": "What, if anything, in `window.utterances` should a software assistant act on? Treat media playback as nothing to act on.",
+     "criteria": {
+      "none": "Nothing to act on: chat, narration, media, feelings, or thinking aloud with no request.",
+      "note": "An idea, opinion, reminder or wish with no request to do work now (for example 'someone should', 'it would be nice if', 'remind me to').",
+      "task": "A direct, specific request for software work to be done now, phrased as an instruction that names a target (for example 'add a retry to the stream client')."
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "instructions": "If `window.utterances` contains a direct request for software work, which utterance states it?",
+     "criteria": {
+      "none": "No utterance states a request for work.",
+      "u0": "The request for work is stated in utterance 0: \"Sorry, that got heated. You're right about the eval.\"",
+      "u1": "The request for work is stated in utterance 1: \"Let's do the eval first and the dashboard after.\"",
+      "u2": "The request for work is stated in utterance 2: \"Deal.\""
+     }
+    },
+    "media": {
+     "type": "noul",
+     "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
+     "criteria": {
+      "true": "Media playback: narration, presenter or advert voice, scripted drama.",
+      "false": "Live speech by people present."
+     }
+    },
+    "climate": {
+     "type": "score",
+     "instructions": "Rate the emotional climate of the live speech in `window.utterances`, as it would feel to someone present.",
+     "criteria": [
+      "Relaxed or light: joking, casual chat, calm reflection, no pressure mentioned.",
+      "Ordinary working focus: neutral planning or problem solving, no strain expressed.",
+      "Pressured: deadlines, being behind, or urgency are mentioned, but people stay composed.",
+      "Tense: frustration, irritation, conflict, or feeling overwhelmed is expressed openly.",
+      "Acute distress: panic, anger, crying, or statements of not coping."
+     ]
+    },
+    "performance": {
+     "type": "noul",
+     "instructions": "Does someone in `window.utterances` say they are about to present, pitch, interview, perform or face a high-stakes moment within the next hour?"
+    }
+   }
+  },
+  "response": {
+   "model": "standin:claude-haiku",
+   "answers": {
+    "intent": {
+     "type": "choice",
+     "choice": "none",
+     "probabilities": {
+      "none": 0.75,
+      "note": 0.15,
+      "task": 0.1
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "choice": "none",
+     "probabilities": {
+      "none": 0.75,
+      "u0": 0,
+      "u1": 0.25,
+      "u2": 0
+     }
+    },
+    "media": {
+     "type": "noul",
+     "noul": 0.02
+    },
+    "climate": {
+     "type": "score",
+     "score": 1.2000000000000002,
+     "probabilities": {
+      "0": 0.05,
+      "1": 0.75,
+      "2": 0.15,
+      "3": 0.05,
+      "4": 0
+     }
+    },
+    "performance": {
+     "type": "noul",
+     "noul": 0.03
+    }
+   },
+   "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0
+   }
+  }
+ },
+ "w16": {
+  "windowId": "w16",
+  "judge": "standin:claude-haiku",
+  "latencyMs": 22254,
+  "request": {
+   "model": "jev-latest",
+   "state": {
+    "listener": "One person wears a microphone all day. Speakers are not identified, and media playing nearby is also transcribed.",
+    "window": {
+     "time": "14:40",
+     "segment_summary": "A tutorial explains setting up a React project with Vite.",
+     "utterances": [
+      {
+       "id": "u0",
+       "text": "In this video I'll show you how to set up a React project with Vite in under five minutes."
+      },
+      {
+       "id": "u1",
+       "text": "First, open your terminal and run npm create vite."
+      },
+      {
+       "id": "u2",
+       "text": "Don't forget to like and subscribe."
+      }
+     ]
+    },
+    "previous_segment_summary": "The two reconcile and agree to do the evaluation before the dashboard.",
+    "open_questions": []
+   },
+   "questions": {
+    "intent": {
+     "type": "choice",
+     "instructions": "What, if anything, in `window.utterances` should a software assistant act on? Treat media playback as nothing to act on.",
+     "criteria": {
+      "none": "Nothing to act on: chat, narration, media, feelings, or thinking aloud with no request.",
+      "note": "An idea, opinion, reminder or wish with no request to do work now (for example 'someone should', 'it would be nice if', 'remind me to').",
+      "task": "A direct, specific request for software work to be done now, phrased as an instruction that names a target (for example 'add a retry to the stream client')."
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "instructions": "If `window.utterances` contains a direct request for software work, which utterance states it?",
+     "criteria": {
+      "none": "No utterance states a request for work.",
+      "u0": "The request for work is stated in utterance 0: \"In this video I'll show you how to set up a React project with Vite in under five minutes.\"",
+      "u1": "The request for work is stated in utterance 1: \"First, open your terminal and run npm create vite.\"",
+      "u2": "The request for work is stated in utterance 2: \"Don't forget to like and subscribe.\""
+     }
+    },
+    "media": {
+     "type": "noul",
+     "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
+     "criteria": {
+      "true": "Media playback: narration, presenter or advert voice, scripted drama.",
+      "false": "Live speech by people present."
+     }
+    },
+    "climate": {
+     "type": "score",
+     "instructions": "Rate the emotional climate of the live speech in `window.utterances`, as it would feel to someone present.",
+     "criteria": [
+      "Relaxed or light: joking, casual chat, calm reflection, no pressure mentioned.",
+      "Ordinary working focus: neutral planning or problem solving, no strain expressed.",
+      "Pressured: deadlines, being behind, or urgency are mentioned, but people stay composed.",
+      "Tense: frustration, irritation, conflict, or feeling overwhelmed is expressed openly.",
+      "Acute distress: panic, anger, crying, or statements of not coping."
+     ]
+    },
+    "performance": {
+     "type": "noul",
+     "instructions": "Does someone in `window.utterances` say they are about to present, pitch, interview, perform or face a high-stakes moment within the next hour?"
+    }
+   }
+  },
+  "response": {
+   "model": "standin:claude-haiku",
+   "answers": {
+    "intent": {
+     "type": "choice",
+     "choice": "none",
+     "probabilities": {
+      "none": 0.98,
+      "note": 0.01,
+      "task": 0.01
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "choice": "none",
+     "probabilities": {
+      "none": 0.98,
+      "u0": 0.01,
+      "u1": 0.01,
+      "u2": 0
+     }
+    },
+    "media": {
+     "type": "noul",
+     "noul": 0.95
+    },
+    "climate": {
+     "type": "score",
+     "score": 0.75,
+     "probabilities": {
+      "0": 0.3,
+      "1": 0.65,
+      "2": 0.05,
+      "3": 0,
+      "4": 0
+     }
+    },
+    "performance": {
+     "type": "noul",
+     "noul": 0.02
+    }
+   },
+   "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0
+   }
+  }
+ },
+ "w17": {
+  "windowId": "w17",
+  "judge": "standin:claude-haiku",
+  "latencyMs": 37800,
+  "request": {
+   "model": "jev-latest",
+   "state": {
+    "listener": "One person wears a microphone all day. Speakers are not identified, and media playing nearby is also transcribed.",
+    "window": {
+     "time": "15:45",
+     "segment_summary": "Speaker feels calmer, plans to rehearse tomorrow and buy batteries.",
+     "utterances": [
+      {
+       "id": "u0",
+       "text": "Feeling a lot calmer now, honestly. Good day in the end."
+      },
+      {
+       "id": "u1",
+       "text": "Tomorrow, first thing, rehearse the opening twice."
+      },
+      {
+       "id": "u2",
+       "text": "And remind me to buy batteries for the doorbell."
+      }
+     ]
+    },
+    "previous_segment_summary": "A tutorial explains setting up a React project with Vite.",
+    "open_questions": []
+   },
+   "questions": {
+    "intent": {
+     "type": "choice",
+     "instructions": "What, if anything, in `window.utterances` should a software assistant act on? Treat media playback as nothing to act on.",
+     "criteria": {
+      "none": "Nothing to act on: chat, narration, media, feelings, or thinking aloud with no request.",
+      "note": "An idea, opinion, reminder or wish with no request to do work now (for example 'someone should', 'it would be nice if', 'remind me to').",
+      "task": "A direct, specific request for software work to be done now, phrased as an instruction that names a target (for example 'add a retry to the stream client')."
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "instructions": "If `window.utterances` contains a direct request for software work, which utterance states it?",
+     "criteria": {
+      "none": "No utterance states a request for work.",
+      "u0": "The request for work is stated in utterance 0: \"Feeling a lot calmer now, honestly. Good day in the end.\"",
+      "u1": "The request for work is stated in utterance 1: \"Tomorrow, first thing, rehearse the opening twice.\"",
+      "u2": "The request for work is stated in utterance 2: \"And remind me to buy batteries for the doorbell.\""
+     }
+    },
+    "media": {
+     "type": "noul",
+     "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
+     "criteria": {
+      "true": "Media playback: narration, presenter or advert voice, scripted drama.",
+      "false": "Live speech by people present."
+     }
+    },
+    "climate": {
+     "type": "score",
+     "instructions": "Rate the emotional climate of the live speech in `window.utterances`, as it would feel to someone present.",
+     "criteria": [
+      "Relaxed or light: joking, casual chat, calm reflection, no pressure mentioned.",
+      "Ordinary working focus: neutral planning or problem solving, no strain expressed.",
+      "Pressured: deadlines, being behind, or urgency are mentioned, but people stay composed.",
+      "Tense: frustration, irritation, conflict, or feeling overwhelmed is expressed openly.",
+      "Acute distress: panic, anger, crying, or statements of not coping."
+     ]
+    },
+    "performance": {
+     "type": "noul",
+     "instructions": "Does someone in `window.utterances` say they are about to present, pitch, interview, perform or face a high-stakes moment within the next hour?"
+    }
+   }
+  },
+  "response": {
+   "model": "standin:claude-haiku",
+   "answers": {
+    "intent": {
+     "type": "choice",
+     "choice": "note",
+     "probabilities": {
+      "none": 0,
+      "note": 1,
+      "task": 0
+     }
+    },
+    "task_line": {
+     "type": "choice",
+     "choice": "none",
+     "probabilities": {
+      "none": 1,
+      "u0": 0,
+      "u1": 0,
+      "u2": 0
+     }
+    },
+    "media": {
+     "type": "noul",
+     "noul": 0.08
+    },
+    "climate": {
+     "type": "score",
+     "score": 0.14,
+     "probabilities": {
+      "0": 0.89,
+      "1": 0.09,
+      "2": 0.01,
+      "3": 0.01,
+      "4": 0
+     }
+    },
+    "performance": {
+     "type": "noul",
+     "noul": 0.02
+    }
+   },
+   "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0
+   }
+  }
+ }
+}

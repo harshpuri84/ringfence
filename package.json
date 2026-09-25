@@ -1,0 +1,31 @@
+{
+  "name": "ringfence",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "description": "Prototype: an agent that acts on what Bee hears, inside rings you draw.",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "fixture": "node scripts/build-fixture.ts",
+    "judge": "node --env-file-if-exists=.env scripts/judge-fixture.ts",
+    "judge:standin": "node scripts/judge-fixture.ts --standin",
+    "live": "node --env-file-if-exists=.env scripts/live.ts",
+    "check": "node scripts/check.ts"
+  },
+  "dependencies": {
+    "@beeai/cli": "^0.7.3",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "typescript": "^5.9.0",
+    "vite": "^7.1.0"
+  }
+}

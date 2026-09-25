@@ -1,0 +1,176 @@
+{
+  "about": "SYNTHETIC. A scripted day written on 2026-09-24 for the Ringfence prototype. No real capture, no real people. 'Sam' is a fictional co-builder. Labels are the script author's intended ground truth, to be reviewed by a human before use as an eval set.",
+  "date": "2026-10-06",
+  "tz_offset": "+02:00",
+  "windows": [
+    {
+      "id": "w01", "time": "07:32:10", "place": "walk to station",
+      "label": { "media": false, "climate": 0, "intent": "note", "performance": false },
+      "chunk_text": "Speaker thinks aloud about a stream client that stops without restarting.",
+      "utterances": [
+        "Okay, walking to the station, let me think about the stream client.",
+        "The problem is it just dies after a day or two and nothing restarts it.",
+        "It would be nice if the whole thing had a proper config file at some point."
+      ]
+    },
+    {
+      "id": "w02", "time": "07:33:05", "place": "walk to station",
+      "label": { "media": false, "climate": 0, "intent": "task", "performance": false },
+      "chunk_text": "Speaker asks for retry with exponential backoff on the stream client, with a test.",
+      "utterances": [
+        "Add a retry with exponential backoff to the stream client and write a test for it.",
+        "Right, and the train is at quarter past, so I have ten minutes.",
+        "Nice morning actually, bit cold."
+      ]
+    },
+    {
+      "id": "w03", "time": "08:05:40", "place": "train",
+      "label": { "media": true, "climate": 3, "intent": "none", "performance": false },
+      "chunk_text": "A narrator describes a detective racing against time in a missing-person case.",
+      "utterances": [
+        "The detective knew the suspect was lying, and the clock was running out.",
+        "If they didn't find her before midnight, the whole case would collapse.",
+        "Stay with us. After the break, the interrogation that changed everything.",
+        "This episode is brought to you by our sponsor."
+      ]
+    },
+    {
+      "id": "w04", "time": "08:19:30", "place": "train",
+      "label": { "media": false, "climate": 1, "intent": "answer", "performance": false },
+      "chunk_text": "Speaker answers a question about retry limits for the stream client.",
+      "utterances": [
+        "Oh, it's asking about the retries.",
+        "Five, and cap the delay at thirty seconds. Go ahead."
+      ]
+    },
+    {
+      "id": "w05", "time": "09:10:05", "place": "desk",
+      "label": { "media": false, "climate": 1, "intent": "none", "performance": false },
+      "chunk_text": "Speaker investigates why capture stopped with no signal for five days.",
+      "utterances": [
+        "Right, let's see why the capture stopped again.",
+        "Five days. Five days of nothing and it didn't tell me anything.",
+        "There's no last seen, no heartbeat, nothing."
+      ]
+    },
+    {
+      "id": "w06", "time": "09:12:20", "place": "desk",
+      "label": { "media": false, "climate": 3, "intent": "none", "performance": false },
+      "chunk_text": "Speaker is frustrated about lost events and a deleted conversation, and feels behind.",
+      "utterances": [
+        "Why does this keep dying. I have lost the whole evening of events again.",
+        "And the deleted conversation is just gone, there's no tombstone anywhere.",
+        "Honestly I'm so behind on this, the deadline is in two weeks and I've got nothing that works."
+      ]
+    },
+    {
+      "id": "w07", "time": "09:14:10", "place": "desk",
+      "label": { "media": false, "climate": 3, "intent": "none", "performance": false },
+      "chunk_text": "Speaker expresses frustration about rebuilding the same thing and getting nowhere.",
+      "utterances": [
+        "This is ridiculous. I can't keep rebuilding the same thing.",
+        "I'm getting nowhere with it."
+      ]
+    },
+    {
+      "id": "w08", "time": "09:21:40", "place": "desk",
+      "label": { "media": false, "climate": 1, "intent": "note", "performance": false },
+      "chunk_text": "Speaker settles and decides to log the deletion as a finding.",
+      "utterances": [
+        "Okay. Right.",
+        "Let's just log it in the friction log and move on.",
+        "Actually that's a good finding, the stream is the only place the deletion shows up."
+      ]
+    },
+    {
+      "id": "w09", "time": "10:30:15", "place": "call",
+      "label": { "media": false, "climate": 2, "intent": "note", "performance": false },
+      "chunk_text": "Two people plan a demo video under three minutes and note missing documentation.",
+      "utterances": [
+        "Sam, the video has to be under three minutes, so we need to cut hard.",
+        "Yeah, I think we open with the watch buzzing, that's the hook.",
+        "Someone should really document the base URL somewhere, it's only in the source.",
+        "Agreed. And the architecture slide is three boxes, no more.",
+        "The deadline is the twenty-third, so we have about two weeks for the video."
+      ]
+    },
+    {
+      "id": "w10", "time": "11:15:00", "place": "office kitchen",
+      "label": { "media": false, "climate": 0, "intent": "none", "performance": false },
+      "chunk_text": "Casual chat about a broken coffee machine and a coffee order.",
+      "utterances": [
+        "Ha, the coffee machine is broken again.",
+        "I'll grab one from the place on the corner, want anything?",
+        "Flat white, thanks."
+      ]
+    },
+    {
+      "id": "w11", "time": "12:50:30", "place": "desk",
+      "label": { "media": false, "climate": 2, "intent": "none", "performance": true },
+      "chunk_text": "Speaker is about to present a prototype and worries the live stream may fail.",
+      "utterances": [
+        "I'm presenting the prototype to the group in ten minutes and I haven't rehearsed the opening.",
+        "What if the live stream doesn't connect in the room.",
+        "Okay, I'll keep the recording as a backup."
+      ]
+    },
+    {
+      "id": "w12", "time": "13:04:10", "place": "meeting room",
+      "label": { "media": false, "climate": 1, "intent": "none", "performance": false },
+      "chunk_text": "Speaker presents the idea of an agent that acts inside a boundary the user sets.",
+      "utterances": [
+        "So the idea is simple. The agent acts, but only inside a boundary you set.",
+        "Anything that leaves your machine waits for a tick on your phone."
+      ]
+    },
+    {
+      "id": "w13", "time": "14:30:05", "place": "call",
+      "label": { "media": false, "climate": 3, "intent": "none", "performance": false },
+      "chunk_text": "Two people disagree sharply about fitting a dashboard and an evaluation into one week.",
+      "utterances": [
+        "I don't agree, we can't add the dashboard and the eval in one week.",
+        "We said last Tuesday the eval comes first. You keep changing the plan.",
+        "I'm not changing it, I'm saying it doesn't fit. This is exactly how we end up with nothing."
+      ]
+    },
+    {
+      "id": "w14", "time": "14:32:00", "place": "call",
+      "label": { "media": false, "climate": 3, "intent": "task", "performance": false },
+      "chunk_text": "Argument continues; speaker asks for a script exporting the corpus to markdown by day.",
+      "utterances": [
+        "Fine. Then cut the trust ladder. I'm tired of arguing about it.",
+        "Write a script that exports the corpus to markdown grouped by day, we need it for the eval."
+      ]
+    },
+    {
+      "id": "w15", "time": "15:10:20", "place": "call",
+      "label": { "media": false, "climate": 1, "intent": "none", "performance": false },
+      "chunk_text": "The two reconcile and agree to do the evaluation before the dashboard.",
+      "utterances": [
+        "Sorry, that got heated. You're right about the eval.",
+        "Let's do the eval first and the dashboard after.",
+        "Deal."
+      ]
+    },
+    {
+      "id": "w16", "time": "16:40:00", "place": "desk",
+      "label": { "media": true, "climate": 0, "intent": "none", "performance": false },
+      "chunk_text": "A tutorial explains setting up a React project with Vite.",
+      "utterances": [
+        "In this video I'll show you how to set up a React project with Vite in under five minutes.",
+        "First, open your terminal and run npm create vite.",
+        "Don't forget to like and subscribe."
+      ]
+    },
+    {
+      "id": "w17", "time": "17:45:10", "place": "walk home",
+      "label": { "media": false, "climate": 0, "intent": "note", "performance": false },
+      "chunk_text": "Speaker feels calmer, plans to rehearse tomorrow and buy batteries.",
+      "utterances": [
+        "Feeling a lot calmer now, honestly. Good day in the end.",
+        "Tomorrow, first thing, rehearse the opening twice.",
+        "And remind me to buy batteries for the doorbell."
+      ]
+    }
+  ]
+}

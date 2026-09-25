@@ -1,0 +1,19 @@
+{
+  "about": "What you say on camera for the live beat. Public content only. Each segment becomes one Bee segment (one window). Rehearse with: node scripts/build-rehearsal.ts, then live mode --from demo/rehearsal.jsonl --stay.",
+  "segments": [
+    {
+      "summary": "Speaker reflects that Bee segments the day but the CLI hides the segments.",
+      "lines": [
+        "Bee already splits my day into segments, with a one-line summary for each.",
+        "And the command line just drops them. Nobody can see the best thing it does."
+      ]
+    },
+    {
+      "summary": "Speaker asks for bee stream to show new-utterance-chunks events with their summaries.",
+      "lines": [
+        "Make bee stream show new-utterance-chunks events as readable lines with each chunk's summary, and list it as a supported event type."
+      ]
+    }
+  ],
+  "rehearsal_answer": "Each event has a chunks array. Every chunk has chunk_text, a tags array and a list of utterance ids. Show the chunk text and tags on one line per chunk. Go ahead."
+}
