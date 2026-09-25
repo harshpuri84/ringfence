@@ -25,17 +25,17 @@ export const GAPS: Gap[] = [
   {
     id: 'watch-alerts', short: 'alerts on the watch',
     request: 'Deliver todo alerts to the watch',
-    today: 'An alarm todo buzzed the phone, not the watch, about 30 s after its set time.',
-    unlocks: 'Questions, results and nudges arrive on the wrist, which is the point of a wearable agent.',
-    evidence: 'Tested 25 Sep 2026. Retest with the phone locked is pending, since iOS mirrors to the watch only then.',
-    status: 'retest pending',
+    today: 'An alarm todo buzzed the phone and never the watch: about 30 s late with the phone in use, on time with it locked.',
+    unlocks: 'Questions and results arrive on the wrist, and so can a box-breathing nudge just before you present. Until then the demo uses phone alerts.',
+    evidence: "Tested 25 Sep 2026, twice. Pending one check: the Watch app's mirror setting for Bee.",
+    status: 'measured',
   },
   {
     id: 'media-tags', short: 'media tags',
     request: 'Tag chunks that come from media',
-    today: 'Every chunk seen so far is tagged CONVERSATION. A podcast is transcribed as if you said it.',
+    today: 'Every chunk is tagged CONVERSATION, including 15 live chunks captured with music playing. A podcast is transcribed as if you said it.',
     unlocks: 'The agent never acts on the TV. Today Ringfence guesses from the words, and the stand-in judge got one of 17 wrong.',
-    evidence: 'F17, F35',
+    evidence: 'F17, F35; live raw-stream watch on 25 Sep 2026 (event names and tags only recorded).',
     status: 'measured',
   },
   {
