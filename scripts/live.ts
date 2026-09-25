@@ -144,8 +144,10 @@ function act(e: EngineEvent) {
       .filter((x) => x.id !== taskWindow && Date.parse(x.endedAt) <= Date.parse(w.endedAt) && Date.parse(w.endedAt) - Date.parse(x.endedAt) <= 10 * 60_000)
       .map((x) => x.chunkText).filter((t): t is string => !!t)
     console.log(`    agent: planning "${e.task}" (read-only tools)`)
+    // Speech recognition writes "new-utterance-chunks" as "new utterance chunks": compare letters and digits only.
+    const squash = (x: string) => x.toLowerCase().replace(/[^a-z0-9]/g, '')
     const facts = Object.entries(shapes)
-      .filter(([type]) => e.task!.includes(type))
+      .filter(([type]) => squash(e.task!).includes(squash(type)))
       .map(([type, shape]) => `Bee stream event "${type}" has this payload shape: ${JSON.stringify(shape)}`)
     if (facts.length) console.log(`    agent: grounded with ${facts.length} observed event shape(s)`)
     runner.start(taskWindow, e.task, context, facts)

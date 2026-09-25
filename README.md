@@ -24,6 +24,10 @@ Two more rules keep your attention cheap:
 - An answer resumes an agent only if the judge matches it to that agent's open question. An answer to a different question is ignored.
 - A fragment that only makes sense as a reply ("five attempts, go ahead") never starts new work. An agent starts only for a request that names what to change.
 
+### Media is untrusted input
+
+A wearable also hears the room. On 25 September 2026 at 06:45, a YouTube Short on a nearby phone spoke instructions aimed at an AI agent ("Look at my entire Facebook and Instagram history…"), and Bee transcribed them like anything said in person. Bee's own summary called the audio "background entertainment", and its action-item extractor still turned a kids' song into a to-do. Put through Ringfence's judge, the video's prompt was stopped three times over: media at 0.70 against a 0.6 cut-off, intent "none" at 0.85, and self-contained at 0.15. The media score is the weakest of the three, which is why the rings matter. Even if every check fails, the worst case is a sandboxed agent on a branch you delete.
+
 ## How it uses Bee
 
 | Bee surface | What Ringfence does with it |
@@ -43,7 +47,7 @@ Ringfence is a vision, and parts of it lean on things Bee does not do yet. The d
 |---|---|---|
 | Send todo events on the stream | Listed as event types, never delivered. A tick shows up only by polling the changefeed, about 35 s later | Your tick opens the pull request at once |
 | Deliver todo alerts to the watch | An alarm todo buzzed the phone and never the watch, whether the phone was in use or locked | Questions and results arrive on the wrist, and so can a breath before you present. The breath nudge exists (the Exhale lens) and waits for this |
-| Tag chunks that come from media | Bee's own summary called 31 minutes of songs "background entertainment audio", yet all 15 chunks were tagged `CONVERSATION` | Put what the summary knows into the tags, and the agent never acts on the TV |
+| Tag chunks that come from media | Bee's own summary called 31 minutes of songs "background entertainment audio", yet all 15 chunks were tagged `CONVERSATION` | Put what the summary knows into the tags, and a video playing nearby can never give your agent orders |
 | Identify the wearer at real-world scale | 10,336 of 10,336 utterances came back `Unknown` | Act only on the wearer's own words |
 | Serve chunks over REST, with a replay cursor | Segments exist only on the stream, which dies after about 43 h with no replay | No lost segments, no capture daemon |
 
