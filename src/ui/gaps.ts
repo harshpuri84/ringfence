@@ -33,9 +33,9 @@ export const GAPS: Gap[] = [
   {
     id: 'media-tags', short: 'media tags',
     request: 'Tag chunks that come from media',
-    today: 'Every chunk is tagged CONVERSATION, including 15 live chunks captured with music playing. A podcast is transcribed as if you said it.',
-    unlocks: 'The agent never acts on the TV. Today Ringfence guesses from the words, and the stand-in judge got one of 17 wrong.',
-    evidence: 'F17, F35; live raw-stream watch on 25 Sep 2026 (event names and tags only recorded).',
+    today: "Bee's summary knows: 31 minutes of songs came back as 'background entertainment audio… no clear personal conversation'. Its 15 chunks were still tagged CONVERSATION.",
+    unlocks: 'Put what the summary already knows into the tags, and the agent never acts on the TV. Today Ringfence guesses from the words, and the stand-in judge got one of 17 wrong.',
+    evidence: 'F17, F35; Bee app summary and a live raw-stream watch, 25 Sep 2026 (event names and tags only recorded).',
     status: 'measured',
   },
   {

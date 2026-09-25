@@ -43,7 +43,7 @@ Ringfence is a vision, and parts of it lean on things Bee does not do yet. The d
 |---|---|---|
 | Send todo events on the stream | Listed as event types, never delivered. A tick shows up only by polling the changefeed, about 35 s later | Your tick opens the pull request at once |
 | Deliver todo alerts to the watch | An alarm todo buzzed the phone and never the watch, whether the phone was in use or locked | Questions and results arrive on the wrist, and so can a breath before you present. The breath nudge exists (the Exhale lens) and waits for this |
-| Tag chunks that come from media | Every chunk is tagged `CONVERSATION`, including 15 live chunks with music playing; a podcast is transcribed as if you said it | The agent never acts on the TV |
+| Tag chunks that come from media | Bee's own summary called 31 minutes of songs "background entertainment audio", yet all 15 chunks were tagged `CONVERSATION` | Put what the summary knows into the tags, and the agent never acts on the TV |
 | Identify the wearer at real-world scale | 10,336 of 10,336 utterances came back `Unknown` | Act only on the wearer's own words |
 | Serve chunks over REST, with a replay cursor | Segments exist only on the stream, which dies after about 43 h with no replay | No lost segments, no capture daemon |
 
