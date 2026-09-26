@@ -45,6 +45,7 @@ export interface JudgeResponse {
   model: string
   answers: Record<string, Answer>
   usage?: { input_tokens: number; output_tokens: number }
+  costUsd?: number // stand-in only: what the `claude -p` call cost
 }
 
 export interface Judgment {

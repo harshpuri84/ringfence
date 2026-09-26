@@ -13,7 +13,8 @@
     "judge": "node --env-file-if-exists=.env scripts/judge-fixture.ts",
     "judge:standin": "node scripts/judge-fixture.ts --standin",
     "live": "node --env-file-if-exists=.env scripts/live.ts",
-    "check": "node scripts/check.ts"
+    "check": "node scripts/check.ts",
+    "test": "node --test test/*.test.ts"
   },
   "dependencies": {
     "@beeai/cli": "^0.7.3",

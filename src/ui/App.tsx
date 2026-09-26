@@ -47,6 +47,7 @@ function Dashboard({ data }: { data: DayData }) {
   const [taskT, setTaskT] = useState(DEFAULT_POLICY.thresholds.task)
   const [approvals, setApprovals] = useState<Record<string, string>>({})
   const [focusGap, setFocusGap] = useState<string | null>(null)
+  const [opened, setOpened] = useState<string | null>(null)
   const showGap = (id: string) => { setFocusGap(id); document.getElementById(`gap-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }) }
   // Deep link to one request, e.g. /?end#gap-todo-events
   useEffect(() => { const m = /^#gap-(.+)$/.exec(location.hash); if (m && GAP[m[1]]) { setFocusGap(m[1]); document.getElementById(`gap-${m[1]}`)?.scrollIntoView({ block: 'center' }) } }, [])
@@ -145,9 +146,13 @@ function Dashboard({ data }: { data: DayData }) {
       <div className="grid">
         <section className="col-day card">
           <div className="head"><h2>What Bee heard</h2><Needs ids={['chunks-rest']} onPick={showGap} /></div>
-          <p className="sub">One window per Bee segment (the undocumented <span className="mono">new-utterance-chunks</span> event). Chips show the judge's answer; red means it disagrees with the script's label.</p>
+          <p className="sub">One window per Bee segment (the undocumented <span className="mono">new-utterance-chunks</span> event). Chips show the judge's answer; red means it disagrees with the script's label. Tap a window to see what Jev was asked.</p>
           <div className="day">
-            {visible.slice().reverse().map((w) => <WindowCard key={w.id} w={w} j={judgments[w.id]} now={w === current} onPick={showGap} />)}
+            {visible.slice().reverse().map((w) => (
+              <WindowCard key={w.id} w={w} j={judgments[w.id]} now={w === current} onPick={showGap}
+                open={opened === w.id} onToggle={() => setOpened((o) => (o === w.id ? null : w.id))}
+                policy={policy} events={r.events.filter((e) => e.windowId === w.id)} isStandin={isStandin} />
+            ))}
             {!visible.length && <p className="empty">{live ? 'Waiting for Bee. Speak near the watch.' : `Press Play day. The first window is at ${hhmm(windows[0].startedAt)}.`}</p>}
           </div>
         </section>
@@ -240,7 +245,8 @@ function Dashboard({ data }: { data: DayData }) {
   )
 }
 
-function WindowCard({ w, j, now, onPick }: { w: Window; j?: Judgment; now: boolean; onPick: (id: string) => void }) {
+interface CardProps { w: Window; j?: Judgment; now: boolean; onPick: (id: string) => void; open: boolean; onToggle: () => void; policy: Policy; events: EngineEvent[]; isStandin: boolean }
+function WindowCard({ w, j, now, onPick, open, onToggle, policy, events, isStandin }: CardProps) {
   const a = j?.response.answers
   const [intent, p] = a ? top(a.intent as ChoiceA) : ['?', 0]
   const media = a ? (a.media as NoulA).noul : 0
@@ -248,7 +254,8 @@ function WindowCard({ w, j, now, onPick }: { w: Window; j?: Judgment; now: boole
   const perf = a ? (a.performance as NoulA).noul : 0
   const l = w.label
   return (
-    <div className={`win ${now ? 'now' : ''} ${media >= 0.6 ? 'media' : ''}`}>
+    <div className={`win ${now ? 'now' : ''} ${media >= 0.6 ? 'media' : ''} ${open ? 'open' : ''}`}>
+      <button className="win-hit" onClick={onToggle} aria-expanded={open} aria-label={`What Jev was asked about ${w.id}`} disabled={!a} />
       <div className="meta"><span>{hhmm(w.startedAt)} · {w.place}</span><span className="mono">{w.id}</span></div>
       {w.utterances.map((u) => <p key={u.id} className="utt">{u.text}</p>)}
       {a && (
@@ -261,6 +268,44 @@ function WindowCard({ w, j, now, onPick }: { w: Window; j?: Judgment; now: boole
         </div>
       )}
       {media >= 0.6 && <Needs ids={['media-tags']} onPick={onPick} />}
+      {open && j && <JevView w={w} j={j} policy={policy} events={events} isStandin={isStandin} />}
+    </div>
+  )
+}
+
+// What Ringfence asked Jev about one window: each typed answer against the threshold the engine reads it with.
+function JevView({ w, j, policy, events, isStandin }: { w: Window; j: Judgment; policy: Policy; events: EngineEvent[]; isStandin: boolean }) {
+  const a = j.response.answers
+  const t = policy.thresholds
+  const q = j.request.questions
+  const noul = (id: string) => (a[id] as NoulA | undefined)?.noul
+  const choice = (id: string) => (a[id] ? top(a[id] as ChoiceA) : undefined)
+  const [intent, pIntent] = choice('intent')!
+  const line = choice('task_line')
+  const lineIdx = line && line[0] !== 'none' ? Number(line[0].slice(1)) : -1
+  const answer = choice('answer_to')
+  const rows: { id: string; value?: number; shown: string; at?: number; rule: string }[] = [
+    { id: 'intent', value: pIntent, shown: `${intent} ${pIntent.toFixed(2)}`, at: intent === 'note' ? t.note : intent === 'task' ? t.task : undefined,
+      rule: intent === 'task' ? `task at ${t.task} or more starts ring 1` : intent === 'note' ? `note at ${t.note} or more writes ring 0` : intent === 'answer' ? 'a reply: answer_to decides which agent it resumes' : 'nothing to act on' },
+    { id: 'task_line', value: line?.[1], shown: line ? `${line[0]} ${line[1].toFixed(2)}` : 'n/a', rule: lineIdx >= 0 ? `the task: "${w.utterances[lineIdx]?.text ?? ''}"` : 'no line states a task' },
+    { id: 'task_self_contained', value: noul('task_self_contained'), shown: noul('task_self_contained')?.toFixed(2) ?? 'not asked', at: t.selfContained,
+      rule: noul('task_self_contained') === undefined ? 'judged before this question existed; the engine treats the task as self-contained' : `under ${t.selfContained} is a fragment and never starts work` },
+    { id: 'media', value: noul('media'), shown: noul('media')!.toFixed(2), at: t.media, rule: `${t.media} or more is skipped as media` },
+    { id: 'climate', value: (a.climate as ScoreA).score / 4, shown: `${(a.climate as ScoreA).score.toFixed(1)} of 4`, at: policy.manners.holdAt / 4, rule: `smoothed; results wait at ${policy.manners.holdAt}` },
+    { id: 'performance', value: noul('performance'), shown: noul('performance')!.toFixed(2), at: t.performance, rule: `${t.performance} or more sends a breath nudge (off)` },
+  ]
+  if (answer) rows.push({ id: 'answer_to', value: answer[1], shown: `${answer[0]} ${answer[1].toFixed(2)}`, at: t.answer, rule: `${t.answer} or more within ${policy.answerWindowMin} min resumes that agent` })
+  return (
+    <div className="jev">
+      <div className="jev-head"><b>Asked Jev</b><span className="mono">{Object.keys(q).length} typed questions · {isStandin ? 'answered by the stand-in' : j.judge}</span></div>
+      {rows.map((r) => (
+        <div key={r.id} className="jq">
+          <div className="jq-top"><span className="mono">{r.id}</span><span className="jq-type">{q[r.id]?.type ?? 'not asked'}</span><span className="mono jq-val">{r.shown}</span></div>
+          <div className="jq-bar">{r.value !== undefined && <div className="jq-fill" style={{ width: `${Math.round(r.value * 100)}%` }} />}{r.at !== undefined && <div className="jq-at" style={{ left: `${r.at * 100}%` }} />}</div>
+          <span className="jq-rule">{r.rule}</span>
+        </div>
+      ))}
+      <div className="jev-out"><b>Engine</b> {events.length ? events.map((e) => e.kind).join(', ') : 'no event'}</div>
     </div>
   )
 }

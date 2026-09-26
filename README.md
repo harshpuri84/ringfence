@@ -39,6 +39,24 @@ A wearable also hears the room. On 25 September 2026 at 06:45, a YouTube Short o
 
 Each window is judged with typed questions in the [Jev](https://docs.typesafe.ai) request format: is it a task, which utterance states it, is it media playing nearby, how tense is the talk, does it answer an open question. Policy lives in code, not in the model: `src/engine/policy.ts`.
 
+### Architecture
+
+```mermaid
+%%{init: {'theme': 'neutral'}}%%
+flowchart TD
+  A[Bee wearable] -->|bee stream --types all --json| B[Capture: one JSON line per event, on your machine]
+  B -->|new-utterance, new-utterance-chunks| C[Window: one Bee segment]
+  C -->|seven typed questions| J{{Jev classifier: POST /v1/systemone}}
+  J -->|a probability per answer| E[Engine: thresholds, rings, trust, manners]
+  E -->|note| R0[Ring 0: a line in intent.md]
+  E -->|task| R1[Ring 1: agent on its own worktree branch, checks run by Ringfence]
+  R1 -->|question or result| T[Bee todos on your phone]
+  T -->|your spoken answer| A
+  T -->|your tick, read from bee changed| R2[Ring 2: pull request on your fork]
+```
+
+Jev is the only model in the decision path. It gets seven questions per window: `intent` (choice), `task_line` (choice), `task_self_contained` (noul), `media` (noul), `climate` (score, 5 levels), `performance` (noul), and `answer_to` (choice, only while an agent waits for an answer). Each answer is a probability, and each rule in `policy.ts` is a threshold on one of them. Until a Jev key works, a labelled Claude Haiku stand-in answers the same request. `scripts/judge-bench.ts` runs both judges on the same 17 requests and compares accuracy, stability across repeats, latency and cost.
+
 ## What Amazon could ship
 
 Ringfence is a vision, and parts of it lean on things Bee does not do yet. The dashboard marks each one with a "needs Bee" tag and lists them in a panel, with how many moments in the day depend on each.
@@ -63,7 +81,11 @@ node scripts/live.ts --standin   # live, dry run: reads the capture daemon's fil
 node scripts/live.ts --standin --execute --repo ~/code/your-repo   # agents really run
 # then open http://localhost:5188/?live to watch the day unfold on the dashboard
 node scripts/probe-todo.ts       # does an alarm todo buzz, and how fast a tick reaches the changefeed
+npm test                         # 29 tests: engine rules, and the agent runner with a fake claude
+scripts/up.sh --standin          # capture, dashboard and live mode in one command; Ctrl+C stops all three
 ```
+
+[TESTING.md](TESTING.md) has a 20-minute live test that walks every path, and the shadow-day replay: a real day through the engine with every action off.
 
 While live mode runs, the dashboard at `/?live` follows it: windows as Bee segments them, agent questions and results, pull request requests waiting for your tick in the Bee app. Live mode serves its state on `127.0.0.1:5189`, and only to the dashboard's own origin, because the state holds real speech. To rehearse without the watch, replay a file and keep serving: `node scripts/live.ts --standin --execute --repo <path> --from <events.jsonl> --stay`.
 
@@ -111,7 +133,8 @@ Tested on 25 September 2026. On a scratch repo: a plan asked "How many retry att
 - `src/bee.ts`: every Bee call, through `@beeai/cli/lib`.
 - `src/runner.ts`: ring 1 and ring 2.
 - `src/ui/`: the dashboard.
-- `scripts/`: fixture builder, judge runner, check, live mode, probe.
+- `scripts/`: fixture builder, judge runner, check, live mode, probe, shadow day, todo list, and `up.sh` / `down.sh` / `capture.sh`.
+- `test/`: engine rules and the agent runner, with a fake `claude`.
 
 ## Licence
 

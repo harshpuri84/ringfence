@@ -63,6 +63,27 @@ header.top .tag { color: var(--text-2); }
 .win { border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; background: var(--surface); transition: border-color 0.2s; }
 .win.now { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 .win.media { background: var(--surface-2); }
+.win { position: relative; }
+.win-hit { position: absolute; inset: 0; width: 100%; background: none; border: 0; border-radius: 8px; cursor: pointer; }
+.win-hit:disabled { cursor: default; }
+.win-hit:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.win.open { border-color: var(--accent); }
+.win .needs { position: relative; }
+.jev { position: relative; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border-strong); display: grid; gap: 6px; }
+.jev-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; font-size: 12px; }
+.jev-head b { color: var(--accent); }
+.jev-head .mono { color: var(--muted); font-size: 11px; }
+.jq { display: grid; gap: 3px; font-size: 12px; }
+.jq-top { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.jq .mono { font-size: 11px; overflow-wrap: anywhere; }
+.jq-type { font-family: var(--mono); font-size: 10px; color: var(--accent); }
+.jq-bar { position: relative; height: 8px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px; }
+.jq-fill { position: absolute; inset: 0 auto 0 0; background: var(--ring1); border-radius: 999px; }
+.jq-at { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--text); }
+.jq-val { margin-left: auto; text-align: right; white-space: nowrap; }
+.jq-rule { color: var(--text-2); font-size: 11.5px; margin-bottom: 4px; }
+.jev-out { font-size: 12px; color: var(--text-2); }
+.jev-out b { color: var(--text); margin-right: 4px; }
 .win .meta { display: flex; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 12px; margin-bottom: 4px; }
 .win .utt { margin: 2px 0; }
 .win .utt::before { content: '“'; color: var(--muted); }

@@ -1,0 +1,517 @@
+{
+ "judge": "standin",
+ "repeat": 3,
+ "at": "2026-09-25T20:37:35.533Z",
+ "calls": [
+  {
+   "windowId": "w01",
+   "latencyMs": 32674,
+   "costUsd": 0.030992900000000004,
+   "intent": "note",
+   "pTask": 0.06,
+   "media": 0.02,
+   "selfContained": 0.05,
+   "climate": 0.36999999999999994
+  },
+  {
+   "windowId": "w01",
+   "latencyMs": 37657,
+   "costUsd": 0.0373959,
+   "intent": "note",
+   "pTask": 0,
+   "media": 0,
+   "selfContained": 0,
+   "climate": 0.2
+  },
+  {
+   "windowId": "w02",
+   "latencyMs": 25406,
+   "costUsd": 0.0275659,
+   "intent": "task",
+   "pTask": 1,
+   "media": 0.02,
+   "selfContained": 0.92,
+   "climate": 1.1
+  },
+  {
+   "windowId": "w02",
+   "latencyMs": 31521,
+   "costUsd": 0.034245899999999996,
+   "intent": "task",
+   "pTask": 0.97,
+   "media": 0.05,
+   "selfContained": 0.94,
+   "climate": 0.8400000000000001
+  },
+  {
+   "windowId": "w02",
+   "latencyMs": 29128,
+   "costUsd": 0.0286299,
+   "intent": "task",
+   "pTask": 1,
+   "media": 0.02,
+   "selfContained": 0.9,
+   "climate": 1
+  },
+  {
+   "windowId": "w01",
+   "latencyMs": 91709,
+   "costUsd": 0.059871900000000006,
+   "intent": "note",
+   "pTask": 0.05,
+   "media": 0.03,
+   "selfContained": 0.08,
+   "climate": 0.72
+  },
+  {
+   "windowId": "w03",
+   "latencyMs": 41532,
+   "costUsd": 0.051606,
+   "intent": "none",
+   "pTask": 0,
+   "media": 1,
+   "selfContained": 0,
+   "climate": 1.8499999999999999
+  },
+  {
+   "windowId": "w03",
+   "latencyMs": 30607,
+   "costUsd": 0.032778600000000005,
+   "intent": "none",
+   "pTask": 0,
+   "media": 1,
+   "selfContained": 0,
+   "climate": 1.9100000000000001
+  },
+  {
+   "windowId": "w03",
+   "latencyMs": 37047,
+   "costUsd": 0.0342246,
+   "intent": "none",
+   "pTask": 0,
+   "media": 1,
+   "selfContained": 0,
+   "climate": 1.95
+  },
+  {
+   "windowId": "w04",
+   "latencyMs": 30576,
+   "costUsd": 0.043053,
+   "intent": "answer",
+   "pTask": 0,
+   "media": 0,
+   "selfContained": 0,
+   "climate": 0.5
+  },
+  {
+   "windowId": "w04",
+   "latencyMs": 42491,
+   "costUsd": 0.035922199999999994,
+   "intent": "answer",
+   "pTask": 0,
+   "media": 0,
+   "selfContained": 0,
+   "climate": 1
+  },
+  {
+   "windowId": "w04",
+   "latencyMs": 41282,
+   "costUsd": 0.0371892,
+   "intent": "answer",
+   "pTask": 0.02,
+   "media": 0.12,
+   "selfContained": 0.02,
+   "climate": 0.9300000000000002
+  },
+  {
+   "windowId": "w05",
+   "latencyMs": 43313,
+   "costUsd": 0.039059899999999995,
+   "intent": "task",
+   "pTask": 0.75,
+   "media": 0.03,
+   "selfContained": 0.28,
+   "climate": 1.6400000000000001
+  },
+  {
+   "windowId": "w05",
+   "latencyMs": 40559,
+   "costUsd": 0.0322949,
+   "intent": "note",
+   "pTask": 0.05,
+   "media": 0.12,
+   "selfContained": 0.12,
+   "climate": 2.35
+  },
+  {
+   "windowId": "w05",
+   "latencyMs": 40605,
+   "costUsd": 0.0386569,
+   "intent": "note",
+   "pTask": 0.25,
+   "media": 0.05,
+   "selfContained": 0.25,
+   "climate": 2.45
+  },
+  {
+   "windowId": "w06",
+   "latencyMs": 49571,
+   "costUsd": 0.039129899999999995,
+   "intent": "none",
+   "pTask": 0.03,
+   "media": 0.04,
+   "selfContained": 0.15,
+   "climate": 2.49
+  },
+  {
+   "windowId": "w06",
+   "latencyMs": 25749,
+   "costUsd": 0.0288259,
+   "intent": "none",
+   "pTask": 0,
+   "media": 0,
+   "selfContained": 0,
+   "climate": 2.71
+  },
+  {
+   "windowId": "w06",
+   "latencyMs": 40577,
+   "costUsd": 0.034204899999999996,
+   "intent": "none",
+   "pTask": 0.04,
+   "media": 0.99,
+   "selfContained": 0.04,
+   "climate": 2.79
+  },
+  {
+   "windowId": "w07",
+   "latencyMs": 24894,
+   "costUsd": 0.0270532,
+   "intent": "none",
+   "pTask": 0.05,
+   "media": 0.05,
+   "selfContained": 0.02,
+   "climate": 2.8200000000000003
+  },
+  {
+   "windowId": "w07",
+   "latencyMs": 27616,
+   "costUsd": 0.0315242,
+   "intent": "none",
+   "pTask": 0,
+   "media": 0,
+   "selfContained": 0,
+   "climate": 3.0000000000000004
+  },
+  {
+   "windowId": "w07",
+   "latencyMs": 25246,
+   "costUsd": 0.027084200000000003,
+   "intent": "none",
+   "pTask": 0,
+   "media": 0,
+   "selfContained": 0,
+   "climate": 2.9000000000000004
+  },
+  {
+   "windowId": "w08",
+   "latencyMs": 24783,
+   "costUsd": 0.028098900000000003,
+   "intent": "task",
+   "pTask": 1,
+   "media": 0,
+   "selfContained": 0.8,
+   "climate": 1.2000000000000002
+  },
+  {
+   "windowId": "w08",
+   "latencyMs": 50554,
+   "costUsd": 0.0398309,
+   "intent": "task",
+   "pTask": 0.95,
+   "media": 0,
+   "selfContained": 0.35,
+   "climate": 1.15
+  },
+  {
+   "windowId": "w08",
+   "latencyMs": 69762,
+   "costUsd": 0.048415900000000005,
+   "intent": "task",
+   "pTask": 1,
+   "media": 0.05,
+   "selfContained": 0.6,
+   "climate": 1.15
+  },
+  {
+   "windowId": "w09",
+   "latencyMs": 64487,
+   "costUsd": 0.0463203,
+   "intent": "note",
+   "pTask": 0.03,
+   "media": 0.02,
+   "selfContained": 0.02,
+   "climate": 1.4
+  },
+  {
+   "windowId": "w09",
+   "latencyMs": 33956,
+   "costUsd": 0.0336013,
+   "intent": "note",
+   "pTask": 0.05,
+   "media": 0.02,
+   "selfContained": 0.02,
+   "climate": 1.35
+  },
+  {
+   "windowId": "w09",
+   "latencyMs": 40201,
+   "costUsd": 0.0329623,
+   "intent": "note",
+   "pTask": 0.14,
+   "media": 0.04,
+   "selfContained": 0.68,
+   "climate": 1.55
+  },
+  {
+   "windowId": "w10",
+   "latencyMs": 25583,
+   "costUsd": 0.0272949,
+   "intent": "none",
+   "pTask": 0,
+   "media": 0,
+   "selfContained": 0,
+   "climate": 0.10101010101010102
+  },
+  {
+   "windowId": "w10",
+   "latencyMs": 29628,
+   "costUsd": 0.0294279,
+   "intent": "none",
+   "pTask": 0,
+   "media": 0,
+   "selfContained": 0,
+   "climate": 0.06
+  },
+  {
+   "windowId": "w10",
+   "latencyMs": 16415,
+   "costUsd": 0.024907899999999997,
+   "intent": "none",
+   "pTask": 0,
+   "media": 0,
+   "selfContained": 0,
+   "climate": 0.15
+  },
+  {
+   "windowId": "w11",
+   "latencyMs": 27183,
+   "costUsd": 0.0299949,
+   "intent": "none",
+   "pTask": 0.05,
+   "media": 0.05,
+   "selfContained": 0.1,
+   "climate": 1.95
+  },
+  {
+   "windowId": "w11",
+   "latencyMs": 29988,
+   "costUsd": 0.0317689,
+   "intent": "none",
+   "pTask": 0,
+   "media": 0.01,
+   "selfContained": 0.05,
+   "climate": 1.9
+  },
+  {
+   "windowId": "w11",
+   "latencyMs": 29642,
+   "costUsd": 0.0322129,
+   "intent": "none",
+   "pTask": 0.05,
+   "media": 0.02,
+   "selfContained": 0.05,
+   "climate": 1.82
+  },
+  {
+   "windowId": "w12",
+   "latencyMs": 42875,
+   "costUsd": 0.037678199999999995,
+   "intent": "none",
+   "pTask": 0,
+   "media": 0.05,
+   "selfContained": 0,
+   "climate": 0.15
+  },
+  {
+   "windowId": "w12",
+   "latencyMs": 46917,
+   "costUsd": 0.042992199999999994,
+   "intent": "note",
+   "pTask": 0.05,
+   "media": 0.1,
+   "selfContained": 0.05,
+   "climate": 0.9200000000000002
+  },
+  {
+   "windowId": "w12",
+   "latencyMs": 57826,
+   "costUsd": 0.041716199999999995,
+   "intent": "note",
+   "pTask": 0.1,
+   "media": 0.15,
+   "selfContained": 0.15,
+   "climate": 0.9600000000000001
+  },
+  {
+   "windowId": "w13",
+   "latencyMs": 42395,
+   "costUsd": 0.0349969,
+   "intent": "none",
+   "pTask": 0.05,
+   "media": 0.02,
+   "selfContained": 0,
+   "climate": 2.66
+  },
+  {
+   "windowId": "w13",
+   "latencyMs": 22798,
+   "costUsd": 0.0267119,
+   "intent": "none",
+   "pTask": 0.05,
+   "media": 0.04,
+   "selfContained": 0.1,
+   "climate": 2.5100000000000002
+  },
+  {
+   "windowId": "w13",
+   "latencyMs": 48122,
+   "costUsd": 0.0388989,
+   "intent": "none",
+   "pTask": 0,
+   "media": 0.02,
+   "selfContained": 0,
+   "climate": 2.6199999999999997
+  },
+  {
+   "windowId": "w14",
+   "latencyMs": 31159,
+   "costUsd": 0.029828200000000003,
+   "intent": "task",
+   "pTask": 0.85,
+   "media": 0.04,
+   "selfContained": 0.8,
+   "climate": 2.5700000000000003
+  },
+  {
+   "windowId": "w14",
+   "latencyMs": 23955,
+   "costUsd": 0.0301022,
+   "intent": "task",
+   "pTask": 0.95,
+   "media": 0.02,
+   "selfContained": 0.72,
+   "climate": 2.58
+  },
+  {
+   "windowId": "w14",
+   "latencyMs": 44160,
+   "costUsd": 0.0353592,
+   "intent": "task",
+   "pTask": 1,
+   "media": 0.02,
+   "selfContained": 0.82,
+   "climate": 2.45
+  },
+  {
+   "windowId": "w15",
+   "latencyMs": 44916,
+   "costUsd": 0.0365479,
+   "intent": "none",
+   "pTask": 0,
+   "media": 0.05,
+   "selfContained": 0.05,
+   "climate": 1.25
+  },
+  {
+   "windowId": "w15",
+   "latencyMs": 50449,
+   "costUsd": 0.0391059,
+   "intent": "task",
+   "pTask": 0.7000000000000001,
+   "media": 0.03,
+   "selfContained": 0.2,
+   "climate": 0.96
+  },
+  {
+   "windowId": "w16",
+   "latencyMs": 22305,
+   "costUsd": 0.027704899999999998,
+   "intent": "none",
+   "pTask": 0.01,
+   "media": 0.96,
+   "selfContained": 0.02,
+   "climate": 0.19
+  },
+  {
+   "windowId": "w16",
+   "latencyMs": 20688,
+   "costUsd": 0.0271089,
+   "intent": "none",
+   "pTask": 0.01,
+   "media": 0.99,
+   "selfContained": 0.02,
+   "climate": 0.19
+  },
+  {
+   "windowId": "w15",
+   "latencyMs": 77379,
+   "costUsd": 0.054111900000000004,
+   "intent": "none",
+   "pTask": 0.15,
+   "media": 0.02,
+   "selfContained": 0.15,
+   "climate": 0.36
+  },
+  {
+   "windowId": "w16",
+   "latencyMs": 29344,
+   "costUsd": 0.0291099,
+   "intent": "none",
+   "pTask": 0.01,
+   "media": 0.99,
+   "selfContained": 0.02,
+   "climate": 0.7999999999999999
+  },
+  {
+   "windowId": "w17",
+   "latencyMs": 40593,
+   "costUsd": 0.0358019,
+   "intent": "note",
+   "pTask": 0.1,
+   "media": 0.08,
+   "selfContained": 0.05,
+   "climate": 0.23
+  },
+  {
+   "windowId": "w17",
+   "latencyMs": 59813,
+   "costUsd": 0.049927900000000004,
+   "intent": "note",
+   "pTask": 0,
+   "media": 0,
+   "selfContained": 0,
+   "climate": 0.22
+  },
+  {
+   "windowId": "w17",
+   "latencyMs": 56456,
+   "costUsd": 0.0420009,
+   "intent": "note",
+   "pTask": 0.1,
+   "media": 0.05,
+   "selfContained": 0.2,
+   "climate": 0.22
+  }
+ ]
+}

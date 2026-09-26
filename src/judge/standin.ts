@@ -52,7 +52,7 @@ export async function standin(req: JudgeRequest): Promise<JudgeResponse> {
         : { type: 'score', score: Object.entries(probs).reduce((s, [k, p]) => s + Number(k) * p, 0), probabilities: probs }
     }
   }
-  return { model: 'standin:claude-haiku', answers, usage: { input_tokens: 0, output_tokens: 0 } }
+  return { model: 'standin:claude-haiku', answers, usage: { input_tokens: 0, output_tokens: 0 }, costUsd: j.total_cost_usd }
 }
 
 function normalise(p: Record<string, number>) {
