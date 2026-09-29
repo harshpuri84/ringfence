@@ -29,6 +29,11 @@ export function top(a: ChoiceA): [string, number] {
 const slug = (s: string) =>
   s.toLowerCase().replace(/[^a-z0-9 ]/g, '').split(' ').filter((x) => x.length > 2).slice(0, 3).join('-') || 'task'
 
+// One key per event: live mode shows each key once, so a replay that inserts events never repeats or drops one.
+export function eventKey(e: EngineEvent): string {
+  return [e.kind, e.windowId ?? '', e.runId ?? '', e.todoId ?? '', e.held ? 'held' : '', e.text.startsWith('Delivered after hold') ? 'delivered' : ''].join('|')
+}
+
 export function replay(
   windows: Window[],
   judgments: Record<string, Judgment>,
@@ -54,8 +59,6 @@ export function replay(
   let lastNudge: string | null = null
   const ring1Starts: string[] = []
   let cost = 0
-  let todoSeq = 0
-  let qSeq = 0
 
   const trust = (c: ActionClass) => clampTrust(c, policy.trust[c])
 
@@ -71,7 +74,8 @@ export function replay(
     if (e.todoId && e.kind === 'pr.proposed') pending[e.todoId] = e
   }
 
-  const newTodo = () => `t${++todoSeq}`
+  // Ids belong to the run or window they describe, so replaying with a late result never renumbers them.
+  const later = (a: string, b: string) => (Date.parse(b) > Date.parse(a) ? b : a)
 
   const flushApprovals = (upTo: string) => {
     for (const [todoId, p] of Object.entries(pending)) {
@@ -98,14 +102,14 @@ export function replay(
       return
     }
     emit({
-      at, ring: 1, kind: 'agent.result', runId: rs.id, todoId: newTodo(),
+      at, ring: 1, kind: 'agent.result', runId: rs.id, todoId: `res-${rs.id}`,
       text: `Branch ready: ${rs.branch}. ${diffStat}.${simulated ? ' (simulated: no recorded run)' : ''}`,
       bee: `bee todos create --text "Branch ready: ${rs.branch}. ${diffStat}"`,
     })
     // A branch whose checks fail reaches the wrist as a result, never as a request to open a PR.
     if (trust('open_pr') !== 'shadow' && !/CHECKS FAIL/.test(diffStat)) {
       emit({
-        at, ring: 2, kind: 'pr.proposed', runId: rs.id, todoId: newTodo(),
+        at, ring: 2, kind: 'pr.proposed', runId: rs.id, todoId: `pr-${rs.id}`,
         text: `Open a pull request for ${rs.branch}? Waits for your tick.`,
         bee: `bee todos create --text "Open PR for ${rs.branch}? Tick to approve."`,
       })
@@ -122,10 +126,10 @@ export function replay(
         cost += rs.run.costUsd
         if (rs.run.question) {
           rs.status = 'asked'
-          const q: OpenQuestion = { id: `q${++qSeq}`, runId: rs.id, text: rs.run.question, askedAt: s.at }
+          const q: OpenQuestion = { id: `q${rs.id.slice(1)}`, runId: rs.id, text: rs.run.question, askedAt: s.at }
           open.push(q)
           emit({
-            at: s.at, ring: 1, kind: 'agent.question', runId: rs.id, todoId: newTodo(),
+            at: s.at, ring: 1, kind: 'agent.question', runId: rs.id, todoId: `ask-${rs.id}`,
             text: `Agent asks (${rs.branch}): ${rs.run.question}`,
             bee: `bee todos create --text "Agent asks: ${rs.run.question}"`,
           })
@@ -133,7 +137,7 @@ export function replay(
           finishRun(rs, s.at, rs.run.diffStat ?? 'plan only, no edits', !rs.run.recorded)
         }
       } else {
-        cost += rs.run.resume?.costUsd ?? 0.1
+        cost += rs.run.resume?.costUsd ?? 0
         finishRun(rs, s.at, rs.run.resume?.diffStat ?? 'edits made', !rs.run.resume)
       }
     }
@@ -179,7 +183,7 @@ export function replay(
         const text = perf
           ? 'Box breathing: in 4, hold 4, out 4, hold 4. Four rounds before you start.'
           : 'Physiological sigh, twice: two inhales through the nose, one long exhale through the mouth.'
-        emit({ at, windowId: w.id, ring: 0, kind: 'exhale.nudge', text, todoId: newTodo(), bee: `bee todos create --text "${text}" --alarm-at ${at}` })
+        emit({ at, windowId: w.id, ring: 0, kind: 'exhale.nudge', text, todoId: `nudge-${w.id}`, bee: `bee todos create --text "${text}" --alarm-at ${at}` })
       } else if ((perf || entering) && !cooled) {
         events.push({ at, windowId: w.id, ring: 0, kind: 'exhale.skip', text: `Would nudge, but the last nudge was under ${policy.exhale.cooldownMin} min ago.` })
       }
@@ -202,7 +206,7 @@ export function replay(
           text: `Heard an answer to "${q.text}" (p ${qp.toFixed(2)}). Resuming the agent with what you said.`,
           bee: `claude -p --resume <session> --permission-mode acceptEdits "${text.replace(/"/g, "'")}"`,
         })
-        if (executeRuns !== 'live' || rs.run.resume) queue.push({ at: addMs(at, rs.run.resume?.durationMs ?? 30000), kind: 'resume.done', runId: rs.id })
+        if (executeRuns !== 'live' || rs.run.resume) queue.push({ at: later(at, rs.run.resume?.finishedAt ?? addMs(at, rs.run.resume?.durationMs ?? 30000)), kind: 'resume.done', runId: rs.id })
         continue
       }
     }
@@ -227,14 +231,14 @@ export function replay(
           events.push({
             at, windowId: w.id, ring: 1, kind: 'agent.started', task,
             text: `Task heard (p ${p.toFixed(2)}): "${task}". Not executed: run live mode with --execute to start it.`,
-            bee: `git worktree add ../wt-rf-<repo>-${slug(task)}-<id> -b agent/${slug(task)}-<id> && claude -p --tools Read,Grep,Glob --output-format json "<plan prompt: ${task.replace(/"/g, "'")}>"`,
+            bee: `git worktree add ~/.ringfence/worktrees/<repo>-${slug(task)}-<id> -b agent/${slug(task)}-<id> && claude -p --restricted --tools Read,Grep,Glob --output-format json "<plan prompt: ${task.replace(/"/g, "'")}>"`,
           })
           continue
         }
         const recorded = runs[w.id]
         const live = executeRuns === 'live'
         const run: AgentRun = recorded ?? {
-          taskWindowId: w.id, task, mode: 'plan', branch: `agent/${slug(task)}`, durationMs: live ? 0 : 80000, costUsd: live ? 0 : 0.5,
+          taskWindowId: w.id, task, mode: 'plan', branch: `agent/${slug(task)}`, durationMs: live ? 0 : 80000, costUsd: 0, // a simulated run costs nothing: only recorded runs count
           model: live ? 'running' : 'simulated', summary: live ? 'Running.' : 'No recorded run for this task.', recorded: live,
         }
         const id = `r${Object.keys(runStates).length + 1}`
@@ -243,9 +247,9 @@ export function replay(
         events.push({
           at, windowId: w.id, ring: 1, kind: 'agent.started', task, runId: id,
           text: `Task heard (p ${p.toFixed(2)}): "${task}". Agent started in ${live && !recorded ? 'its own worktree' : `a worktree on ${run.branch}`}.`,
-          bee: `git worktree add ../wt-${slug(task)} -b ${run.branch} && claude -p --permission-mode plan --output-format json "${task.replace(/"/g, "'")}"`,
+          bee: `git worktree add ~/.ringfence/worktrees/<repo>-${slug(task)}-<id> -b ${run.branch} && claude -p --restricted --tools Read,Grep,Glob --output-format json "<plan prompt: ${task.replace(/"/g, "'")}>"`,
         })
-        if (!live || recorded) queue.push({ at: addMs(at, run.durationMs), kind: 'run.done', runId: id })
+        if (!live || recorded) queue.push({ at: later(at, run.finishedAt ?? addMs(at, run.durationMs)), kind: 'run.done', runId: id })
       }
     } else if (intent === 'note' && p >= policy.thresholds.note) {
       const line = w.chunkText ?? text

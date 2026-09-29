@@ -1,7 +1,7 @@
 import type { JudgeRequest, OpenQuestion, Question, Window } from './types.ts'
 
 // One Jev request per window. All questions run in parallel over the same state.
-// Speculative questions (task_line, answer_to) are asked every time; code only reads them when they apply.
+// task_line is asked every time and read only when intent is task. answer_to is asked only while an agent waits for an answer.
 
 export const CLIMATE_LEVELS = [
   'Relaxed or light: joking, casual chat, calm reflection, no pressure mentioned.',

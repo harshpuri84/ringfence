@@ -1,29 +1,34 @@
 {
-  "about": "Recorded on 2026-09-24 in a scratch git repo with Claude Code 2.1.278 headless (claude -p). Durations are wall clock. Costs are total_cost_usd from the JSON output. Task text is the scripted utterance.",
+  "about": "Recorded on 2026-09-26 with the current runner (src/runner.ts: read-only planning pass, file-tools build, checks run by Ringfence) in a synthetic scratch git repo with a stream client and a small corpus, model claude-haiku-4-5. Durations are wall clock. Costs are total_cost_usd from claude -p. Task text is the scripted utterance; the w02 answer is the scripted w04 utterance.",
   "runs": {
     "w02": {
       "taskWindowId": "w02",
       "task": "Add a retry with exponential backoff to the stream client and write a test for it.",
       "mode": "plan",
-      "branch": "agent/retry-backoff",
-      "durationMs": 77000,
-      "costUsd": 0.53,
-      "model": "claude-sonnet-5 (plan mode picked it; --model haiku was passed)",
-      "question": "What should the max retry count be for connect()?",
-      "resume": { "durationMs": 25000, "costUsd": 0.10, "model": "claude-haiku-4-5", "diffStat": "stream.js +25 -2, not committed" },
-      "summary": "Planned a retry loop with doubling delay inside connect(), then asked for the retry limit.",
+      "branch": "agent/add-retry-with-muiv7716",
+      "durationMs": 16345,
+      "costUsd": 0.0252,
+      "model": "claude-haiku-4-5-20251001",
+      "question": "What should be the retry policy\u2014specifically: (1) maximum number of retry attempts, (2) initial delay before first retry and maximum delay between retries, and (3) which error types should trigger retries (network errors only, or also specific HTTP status codes like 5xx)?",
+      "resume": {
+        "durationMs": 41792,
+        "costUsd": 0.0838,
+        "model": "claude-haiku-4-5-20251001",
+        "diffStat": "checks pass, 2 files changed, 166 insertions(+), 3 deletions(-), not committed"
+      },
+      "summary": "I've found the stream client implementation in `stream.js`. Here's what I understand:\n\n**Current state:**\n- `connect()` function fetches from a URL and streams events\n- No retry logic currently exists\u2014if the fetch fails, it throws immediately\n- Uses Node.js's built-in test runner\n\n**Plan for the cha",
       "recorded": true
     },
     "w14": {
       "taskWindowId": "w14",
       "task": "Write a script that exports the corpus to markdown grouped by day, we need it for the eval.",
-      "mode": "acceptEdits",
-      "branch": "agent/export-corpus-markdown",
-      "durationMs": 18000,
-      "costUsd": 0.04,
-      "model": "claude-haiku-4-5",
-      "diffStat": "export.js, 22 new lines, not committed",
-      "summary": "Wrote export.js: reads conversations JSON, groups by day, writes conversations.md.",
+      "mode": "plan",
+      "branch": "agent/write-script-that-muival93",
+      "durationMs": 46018,
+      "costUsd": 0.0706,
+      "model": "claude-haiku-4-5-20251001",
+      "diffStat": "checks pass, 1 file changed, 55 insertions(+), not committed",
+      "summary": "## Plan\n\n**Task:** Create a script to export the corpus to Markdown, grouped by day.\n\n**Input:** JSONL files in `corpus/` directory with format `{\"text\": \"...\", \"spoken_at\": \"ISO8601 timestamp\"}`\n\n**Output:** `exports/corpus.md` with:\n- One `## YYYY-MM-DD` heading per day\n- Bullets per utterance: `-",
       "recorded": true
     }
   }

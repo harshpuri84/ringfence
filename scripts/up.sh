@@ -9,7 +9,8 @@ cd "$(dirname "$0")/.."
 set -m # each background job gets its own process group, so one kill stops the whole pipeline
 started=()
 stop() {
-  for pid in "${started[@]}"; do kill -- "-$pid" 2>/dev/null; done
+  # ${started[@]+...} keeps macOS bash 3.2 from failing on an empty array under set -u
+  for pid in ${started[@]+"${started[@]}"}; do kill -- "-$pid" 2>/dev/null; done
   # The npm `bee` wrapper does not pass signals on; stop a stream it left behind.
   [ -n "${capture:-}" ] && pkill -f "bee stream --types all --json" 2>/dev/null
   echo "stopped: ${#started[@]} background job(s)"

@@ -31,7 +31,8 @@ export const DEFAULT_POLICY: Policy = {
   ring1MaxPerHour: 3,
   requireAddress: false,
   addressWord: 'ringfence',
-  // Set by hand on one scripted day. They mean nothing until tuned on labelled real speech.
+  // Set by hand on one scripted day, then replayed over one real day (25 Sep 2026, scripts/shadow-day.ts).
+  // Not yet tuned on labelled real speech.
   manners: { alpha: 0.6, holdAt: 2.2, releaseBelow: 1.8 },
   exhale: { enabled: false, cooldownMin: 30 },
   // Demo setting: agent pre-promoted to auto (say so on camera). Day one for a real user: 'shadow'.

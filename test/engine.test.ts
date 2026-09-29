@@ -2,7 +2,8 @@
 //   npm test
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { replay } from '../src/engine/engine.ts'
+import { replay, eventKey } from '../src/engine/engine.ts'
+import { readFileSync } from 'node:fs'
 import { DEFAULT_POLICY, clampTrust, type Policy } from '../src/engine/policy.ts'
 import type { AgentRun, Judgment, Window } from '../src/engine/types.ts'
 
@@ -177,4 +178,39 @@ test('judgments stored before the self-contained question existed still work', (
   delete (j.response.answers as Record<string, unknown>).task_self_contained
   const r = replay([w], { w1: j }, {}, policy(), {}, undefined, { executeRuns: false })
   assert.deepEqual(kinds(r.events), ['agent.started'])
+})
+
+// Live mode shows each event once, by key. A run that reports late must add events, never reorder or renumber them.
+test('a run that reports late adds events after what was shown, with ids tied to its run', () => {
+  const task = win('w1', 0, 'Add a retry with backoff to the stream client.')
+  const note = win('w2', 60, 'It would be nice to have a config file.')
+  const js = { w1: judge('w1', { intent: { task: 1 } }), w2: judge('w2', { intent: { note: 0.9, none: 0.1 } }) }
+  const before = replay([task, note], js, {}, policy(), {}, iso(80), { executeRuns: 'live' })
+  // The run took 20 s but reported at 90 s, after the note: it waited its turn and ran the checks.
+  const after = replay([task, note], js, { w1: run('w1', { durationMs: 20_000, finishedAt: iso(90) }) }, policy(), {}, iso(100), { executeRuns: 'live' })
+  const shown = before.events.map(eventKey)
+  assert.deepEqual(after.events.slice(0, shown.length).map(eventKey), shown, 'what was shown stays in place')
+  assert.deepEqual(kinds(after.events).slice(shown.length), ['agent.result', 'pr.proposed'])
+  const pr = after.events.find((e) => e.kind === 'pr.proposed')!
+  assert.equal(pr.todoId, `pr-${pr.runId}`)
+})
+
+test('a question is numbered by its run, so an answer cannot go to another agent', () => {
+  const a = win('w1', 0, 'Add a retry with backoff to the stream client.')
+  const b = win('w2', 60, 'Write a script that exports the corpus to markdown.')
+  const js = { w1: judge('w1', { intent: { task: 1 } }), w2: judge('w2', { intent: { task: 1 } }) }
+  const runs = { w1: run('w1', { question: 'How many retries?', finishedAt: iso(200) }), w2: run('w2', { question: 'Which folder?', finishedAt: iso(100) }) }
+  const r = replay([a, b], js, runs, policy(), {}, iso(300), { executeRuns: 'live' })
+  const byRun = Object.fromEntries(r.openQuestions.map((q) => [q.runId, q.id]))
+  assert.deepEqual(byRun, { r1: 'q1', r2: 'q2' })
+})
+
+test('every event of the scripted day has its own key', () => {
+  const dir = new URL('../fixtures/', import.meta.url)
+  const windows = JSON.parse(readFileSync(new URL('day.windows.json', dir), 'utf8'))
+  const judgments = JSON.parse(readFileSync(new URL('judgments.standin.json', dir), 'utf8'))
+  const runs = JSON.parse(readFileSync(new URL('agent-runs.json', dir), 'utf8')).runs
+  const r = replay(windows, judgments, runs, policy({ exhale: { ...DEFAULT_POLICY.exhale, enabled: true } }))
+  const keys = r.events.map(eventKey)
+  assert.equal(new Set(keys).size, keys.length)
 })

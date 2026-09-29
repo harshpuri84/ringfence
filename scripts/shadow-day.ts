@@ -14,12 +14,12 @@ import type { EngineEvent, Judgment, Window } from '../src/engine/types.ts'
 import { buildRequest } from '../src/engine/questions.ts'
 import { replay } from '../src/engine/engine.ts'
 import { DEFAULT_POLICY, type Policy } from '../src/engine/policy.ts'
-import { jev } from '../src/judge/jev.ts'
+import { jev, jevRoute } from '../src/judge/jev.ts'
 import { standin } from '../src/judge/standin.ts'
 
 const arg = (name: string) => (process.argv.includes(name) ? process.argv[process.argv.indexOf(name) + 1] : null)
 const CACHED = process.argv.includes('--cached')
-const STANDIN = process.argv.includes('--standin') || !process.env.TYPESAFE_API_KEY
+const STANDIN = process.argv.includes('--standin') || !jevRoute()
 const CONCURRENCY = Number(arg('--concurrency') ?? 4)
 const MAX_WINDOWS = Number(arg('--max-windows') ?? 300)
 const GAP_S = 30 // a pause this long starts a new window
@@ -109,6 +109,7 @@ async function worker() {
     } catch (e) {
       failed++
       console.error(`${w.id} not judged: ${(e as Error).message.slice(0, 120)}`)
+      if (/ 401| 403/.test((e as Error).message)) process.exit(1)
     }
     if (++done % 10 === 0) console.log(`judged ${done} windows, ${Math.round((Date.now() - t0) / 1000)} s`)
   }

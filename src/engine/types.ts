@@ -73,10 +73,11 @@ export interface AgentRun {
   costUsd: number
   model: string
   question?: string
-  resume?: { durationMs: number; costUsd: number; model: string; diffStat: string }
+  resume?: { durationMs: number; costUsd: number; model: string; diffStat: string; finishedAt?: string }
   diffStat?: string
   summary: string
   recorded: boolean
+  finishedAt?: string // live mode: when the runner reported, so its events land after what was already shown
 }
 
 export type Ring = 0 | 1 | 2

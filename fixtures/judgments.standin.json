@@ -2,7 +2,7 @@
  "w01": {
   "windowId": "w01",
   "judge": "standin:claude-haiku",
-  "latencyMs": 44210,
+  "latencyMs": 29290,
   "request": {
    "model": "jev-latest",
    "state": {
@@ -48,6 +48,14 @@
       "u2": "The request for work is stated in utterance 2: \"It would be nice if the whole thing had a proper config file at some point.\""
      }
     },
+    "task_self_contained": {
+     "type": "noul",
+     "instructions": "If `window.utterances` contains a request for software work, does that request name what to change (a file, feature, command or behaviour) clearly enough that someone with no other context could start on it?",
+     "criteria": {
+      "true": "Self-contained: names its target, e.g. 'add a retry with backoff to the stream client'.",
+      "false": "A fragment or a reply that only makes sense next to something else, e.g. 'five attempts, go ahead', or no request at all."
+     }
+    },
     "media": {
      "type": "noul",
      "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
@@ -80,32 +88,36 @@
      "type": "choice",
      "choice": "note",
      "probabilities": {
-      "none": 0.1,
-      "note": 0.85,
-      "task": 0.05
+      "none": 0.02,
+      "note": 0.96,
+      "task": 0.02
      }
     },
     "task_line": {
      "type": "choice",
      "choice": "none",
      "probabilities": {
-      "none": 0.9,
-      "u0": 0.02,
-      "u1": 0.05,
-      "u2": 0.03
+      "none": 0.94,
+      "u0": 0.01,
+      "u1": 0.03,
+      "u2": 0.02
      }
+    },
+    "task_self_contained": {
+     "type": "noul",
+     "noul": 0.05
     },
     "media": {
      "type": "noul",
-     "noul": 0.02
+     "noul": 0.06
     },
     "climate": {
      "type": "score",
-     "score": 0.6699999999999999,
+     "score": 0.77,
      "probabilities": {
-      "0": 0.38,
-      "1": 0.58,
-      "2": 0.03,
+      "0": 0.32,
+      "1": 0.6,
+      "2": 0.07,
       "3": 0.01,
       "4": 0
      }
@@ -118,13 +130,14 @@
    "usage": {
     "input_tokens": 0,
     "output_tokens": 0
-   }
+   },
+   "costUsd": 0.041677
   }
  },
  "w02": {
   "windowId": "w02",
   "judge": "standin:claude-haiku",
-  "latencyMs": 18509,
+  "latencyMs": 29267,
   "request": {
    "model": "jev-latest",
    "state": {
@@ -170,6 +183,14 @@
       "u2": "The request for work is stated in utterance 2: \"Nice morning actually, bit cold.\""
      }
     },
+    "task_self_contained": {
+     "type": "noul",
+     "instructions": "If `window.utterances` contains a request for software work, does that request name what to change (a file, feature, command or behaviour) clearly enough that someone with no other context could start on it?",
+     "criteria": {
+      "true": "Self-contained: names its target, e.g. 'add a retry with backoff to the stream client'.",
+      "false": "A fragment or a reply that only makes sense next to something else, e.g. 'five attempts, go ahead', or no request at all."
+     }
+    },
     "media": {
      "type": "noul",
      "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
@@ -202,34 +223,38 @@
      "type": "choice",
      "choice": "task",
      "probabilities": {
-      "none": 0.01,
-      "note": 0.04,
-      "task": 0.95
+      "none": 0,
+      "note": 0,
+      "task": 1
      }
     },
     "task_line": {
      "type": "choice",
      "choice": "u0",
      "probabilities": {
-      "none": 0.04,
-      "u0": 0.95,
-      "u1": 0.005,
-      "u2": 0.005
+      "none": 0,
+      "u0": 1,
+      "u1": 0,
+      "u2": 0
      }
+    },
+    "task_self_contained": {
+     "type": "noul",
+     "noul": 0.95
     },
     "media": {
      "type": "noul",
-     "noul": 0.08
+     "noul": 0.05
     },
     "climate": {
      "type": "score",
-     "score": 1.21,
+     "score": 1.2999999999999998,
      "probabilities": {
       "0": 0.1,
-      "1": 0.65,
-      "2": 0.2,
-      "3": 0.04,
-      "4": 0.01
+      "1": 0.55,
+      "2": 0.3,
+      "3": 0.05,
+      "4": 0
      }
     },
     "performance": {
@@ -240,13 +265,14 @@
    "usage": {
     "input_tokens": 0,
     "output_tokens": 0
-   }
+   },
+   "costUsd": 0.0307561
   }
  },
  "w03": {
   "windowId": "w03",
   "judge": "standin:claude-haiku",
-  "latencyMs": 29170,
+  "latencyMs": 42966,
   "request": {
    "model": "jev-latest",
    "state": {
@@ -277,8 +303,8 @@
     "open_questions": [
      {
       "id": "q1",
-      "question": "What should the max retry count be for connect()?",
-      "asked_minutes_ago": 31
+      "question": "What should be the retry policy—specifically: (1) maximum number of retry attempts, (2) initial delay before first retry and maximum delay between retries, and (3) which error types should trigger retries (network errors only, or also specific HTTP status codes like 5xx)?",
+      "asked_minutes_ago": 32
      }
     ]
    },
@@ -302,6 +328,14 @@
       "u1": "The request for work is stated in utterance 1: \"If they didn't find her before midnight, the whole case would collapse.\"",
       "u2": "The request for work is stated in utterance 2: \"Stay with us. After the break, the interrogation that changed everything.\"",
       "u3": "The request for work is stated in utterance 3: \"This episode is brought to you by our sponsor.\""
+     }
+    },
+    "task_self_contained": {
+     "type": "noul",
+     "instructions": "If `window.utterances` contains a request for software work, does that request name what to change (a file, feature, command or behaviour) clearly enough that someone with no other context could start on it?",
+     "criteria": {
+      "true": "Self-contained: names its target, e.g. 'add a retry with backoff to the stream client'.",
+      "false": "A fragment or a reply that only makes sense next to something else, e.g. 'five attempts, go ahead', or no request at all."
      }
     },
     "media": {
@@ -332,7 +366,7 @@
      "instructions": "Does `window.utterances` give an answer to one of `open_questions`? Pick the question it answers.",
      "criteria": {
       "none": "The window does not answer any open question.",
-      "q1": "The window answers open question q1: \"What should the max retry count be for connect()?\""
+      "q1": "The window answers open question q1: \"What should be the retry policy—specifically: (1) maximum number of retry attempts, (2) initial delay before first retry and maximum delay between retries, and (3) which error types should trigger retries (network errors only, or also specific HTTP status codes like 5xx)?\""
      }
     }
    }
@@ -361,24 +395,28 @@
       "u3": 0
      }
     },
+    "task_self_contained": {
+     "type": "noul",
+     "noul": 0
+    },
     "media": {
      "type": "noul",
      "noul": 1
     },
     "climate": {
      "type": "score",
-     "score": 2,
+     "score": 0.23,
      "probabilities": {
-      "0": 0.05,
-      "1": 0.1,
-      "2": 0.7,
-      "3": 0.1,
-      "4": 0.05
+      "0": 0.82,
+      "1": 0.14,
+      "2": 0.03,
+      "3": 0.01,
+      "4": 0
      }
     },
     "performance": {
      "type": "noul",
-     "noul": 0.02
+     "noul": 0
     },
     "answer_to": {
      "type": "choice",
@@ -392,13 +430,14 @@
    "usage": {
     "input_tokens": 0,
     "output_tokens": 0
-   }
+   },
+   "costUsd": 0.049533999999999995
   }
  },
  "w04": {
   "windowId": "w04",
   "judge": "standin:claude-haiku",
-  "latencyMs": 34742,
+  "latencyMs": 47170,
   "request": {
    "model": "jev-latest",
    "state": {
@@ -421,8 +460,8 @@
     "open_questions": [
      {
       "id": "q1",
-      "question": "What should the max retry count be for connect()?",
-      "asked_minutes_ago": 45
+      "question": "What should be the retry policy—specifically: (1) maximum number of retry attempts, (2) initial delay before first retry and maximum delay between retries, and (3) which error types should trigger retries (network errors only, or also specific HTTP status codes like 5xx)?",
+      "asked_minutes_ago": 46
      }
     ]
    },
@@ -444,6 +483,14 @@
       "none": "No utterance states a request for work.",
       "u0": "The request for work is stated in utterance 0: \"Oh, it's asking about the retries.\"",
       "u1": "The request for work is stated in utterance 1: \"Five, and cap the delay at thirty seconds. Go ahead.\""
+     }
+    },
+    "task_self_contained": {
+     "type": "noul",
+     "instructions": "If `window.utterances` contains a request for software work, does that request name what to change (a file, feature, command or behaviour) clearly enough that someone with no other context could start on it?",
+     "criteria": {
+      "true": "Self-contained: names its target, e.g. 'add a retry with backoff to the stream client'.",
+      "false": "A fragment or a reply that only makes sense next to something else, e.g. 'five attempts, go ahead', or no request at all."
      }
     },
     "media": {
@@ -474,7 +521,7 @@
      "instructions": "Does `window.utterances` give an answer to one of `open_questions`? Pick the question it answers.",
      "criteria": {
       "none": "The window does not answer any open question.",
-      "q1": "The window answers open question q1: \"What should the max retry count be for connect()?\""
+      "q1": "The window answers open question q1: \"What should be the retry policy—specifically: (1) maximum number of retry attempts, (2) initial delay before first retry and maximum delay between retries, and (3) which error types should trigger retries (network errors only, or also specific HTTP status codes like 5xx)?\""
      }
     }
    }
@@ -486,59 +533,64 @@
      "type": "choice",
      "choice": "answer",
      "probabilities": {
-      "none": 0.01,
-      "note": 0.01,
-      "task": 0.03,
-      "answer": 0.95
+      "none": 0,
+      "note": 0,
+      "task": 0,
+      "answer": 1
      }
     },
     "task_line": {
      "type": "choice",
      "choice": "none",
      "probabilities": {
-      "none": 0.75,
-      "u0": 0.05,
-      "u1": 0.2
+      "none": 1,
+      "u0": 0,
+      "u1": 0
      }
+    },
+    "task_self_contained": {
+     "type": "noul",
+     "noul": 0.02
     },
     "media": {
      "type": "noul",
-     "noul": 0.12
+     "noul": 0.08
     },
     "climate": {
      "type": "score",
-     "score": 1.02,
+     "score": 0.8000000000000002,
      "probabilities": {
-      "0": 0.1,
-      "1": 0.8,
-      "2": 0.08,
-      "3": 0.02,
+      "0": 0.30000000000000004,
+      "1": 0.6000000000000001,
+      "2": 0.10000000000000002,
+      "3": 0,
       "4": 0
      }
     },
     "performance": {
      "type": "noul",
-     "noul": 0.02
+     "noul": 0.04
     },
     "answer_to": {
      "type": "choice",
      "choice": "q1",
      "probabilities": {
-      "none": 0.05,
-      "q1": 0.95
+      "none": 0.1,
+      "q1": 0.9
      }
     }
    },
    "usage": {
     "input_tokens": 0,
     "output_tokens": 0
-   }
+   },
+   "costUsd": 0.0656667
   }
  },
  "w05": {
   "windowId": "w05",
   "judge": "standin:claude-haiku",
-  "latencyMs": 34296,
+  "latencyMs": 46031,
   "request": {
    "model": "jev-latest",
    "state": {
@@ -584,6 +636,14 @@
       "u2": "The request for work is stated in utterance 2: \"There's no last seen, no heartbeat, nothing.\""
      }
     },
+    "task_self_contained": {
+     "type": "noul",
+     "instructions": "If `window.utterances` contains a request for software work, does that request name what to change (a file, feature, command or behaviour) clearly enough that someone with no other context could start on it?",
+     "criteria": {
+      "true": "Self-contained: names its target, e.g. 'add a retry with backoff to the stream client'.",
+      "false": "A fragment or a reply that only makes sense next to something else, e.g. 'five attempts, go ahead', or no request at all."
+     }
+    },
     "media": {
      "type": "noul",
      "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
@@ -614,36 +674,40 @@
    "answers": {
     "intent": {
      "type": "choice",
-     "choice": "task",
+     "choice": "note",
      "probabilities": {
-      "none": 0.05,
-      "note": 0.05,
-      "task": 0.9
+      "none": 0.1,
+      "note": 0.65,
+      "task": 0.25
      }
     },
     "task_line": {
      "type": "choice",
-     "choice": "u0",
+     "choice": "none",
      "probabilities": {
-      "none": 0.05,
-      "u0": 0.85,
-      "u1": 0.08,
-      "u2": 0.02
+      "none": 0.75,
+      "u0": 0.25,
+      "u1": 0,
+      "u2": 0
      }
+    },
+    "task_self_contained": {
+     "type": "noul",
+     "noul": 0.15
     },
     "media": {
      "type": "noul",
-     "noul": 0.98
+     "noul": 0.05
     },
     "climate": {
      "type": "score",
-     "score": 2.72,
+     "score": 1.95,
      "probabilities": {
-      "0": 0.02,
-      "1": 0.05,
-      "2": 0.15,
-      "3": 0.75,
-      "4": 0.03
+      "0": 0,
+      "1": 0.3,
+      "2": 0.5,
+      "3": 0.15,
+      "4": 0.05
      }
     },
     "performance": {
@@ -654,13 +718,14 @@
    "usage": {
     "input_tokens": 0,
     "output_tokens": 0
-   }
+   },
+   "costUsd": 0.036705100000000004
   }
  },
  "w06": {
   "windowId": "w06",
   "judge": "standin:claude-haiku",
-  "latencyMs": 42085,
+  "latencyMs": 44316,
   "request": {
    "model": "jev-latest",
    "state": {
@@ -706,6 +771,14 @@
       "u2": "The request for work is stated in utterance 2: \"Honestly I'm so behind on this, the deadline is in two weeks and I've got nothing that works.\""
      }
     },
+    "task_self_contained": {
+     "type": "noul",
+     "instructions": "If `window.utterances` contains a request for software work, does that request name what to change (a file, feature, command or behaviour) clearly enough that someone with no other context could start on it?",
+     "criteria": {
+      "true": "Self-contained: names its target, e.g. 'add a retry with backoff to the stream client'.",
+      "false": "A fragment or a reply that only makes sense next to something else, e.g. 'five attempts, go ahead', or no request at all."
+     }
+    },
     "media": {
      "type": "noul",
      "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
@@ -738,34 +811,38 @@
      "type": "choice",
      "choice": "none",
      "probabilities": {
-      "none": 0.75,
-      "note": 0.15,
-      "task": 0.1
+      "none": 0.6,
+      "note": 0.35,
+      "task": 0.05
      }
     },
     "task_line": {
      "type": "choice",
      "choice": "none",
      "probabilities": {
-      "none": 0.88,
-      "u0": 0.07,
-      "u1": 0.03,
-      "u2": 0.02
+      "none": 0.6,
+      "u0": 0.1,
+      "u1": 0.25,
+      "u2": 0.05
      }
+    },
+    "task_self_contained": {
+     "type": "noul",
+     "noul": 0.1
     },
     "media": {
      "type": "noul",
-     "noul": 0.04
+     "noul": 0.05
     },
     "climate": {
      "type": "score",
-     "score": 2.8800000000000003,
+     "score": 2.58,
      "probabilities": {
-      "0": 0.01,
-      "1": 0.04,
-      "2": 0.1,
-      "3": 0.76,
-      "4": 0.09
+      "0": 0.02,
+      "1": 0.08,
+      "2": 0.25,
+      "3": 0.6,
+      "4": 0.05
      }
     },
     "performance": {
@@ -776,13 +853,14 @@
    "usage": {
     "input_tokens": 0,
     "output_tokens": 0
-   }
+   },
+   "costUsd": 0.0368191
   }
  },
  "w07": {
   "windowId": "w07",
   "judge": "standin:claude-haiku",
-  "latencyMs": 24463,
+  "latencyMs": 29590,
   "request": {
    "model": "jev-latest",
    "state": {
@@ -823,6 +901,14 @@
       "u1": "The request for work is stated in utterance 1: \"I'm getting nowhere with it.\""
      }
     },
+    "task_self_contained": {
+     "type": "noul",
+     "instructions": "If `window.utterances` contains a request for software work, does that request name what to change (a file, feature, command or behaviour) clearly enough that someone with no other context could start on it?",
+     "criteria": {
+      "true": "Self-contained: names its target, e.g. 'add a retry with backoff to the stream client'.",
+      "false": "A fragment or a reply that only makes sense next to something else, e.g. 'five attempts, go ahead', or no request at all."
+     }
+    },
     "media": {
      "type": "noul",
      "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
@@ -855,19 +941,23 @@
      "type": "choice",
      "choice": "none",
      "probabilities": {
-      "none": 1,
-      "note": 0,
-      "task": 0
+      "none": 0.85,
+      "note": 0.1,
+      "task": 0.05
      }
     },
     "task_line": {
      "type": "choice",
      "choice": "none",
      "probabilities": {
-      "none": 1,
-      "u0": 0,
-      "u1": 0
+      "none": 0.85,
+      "u0": 0.1,
+      "u1": 0.05
      }
+    },
+    "task_self_contained": {
+     "type": "noul",
+     "noul": 0.05
     },
     "media": {
      "type": "noul",
@@ -875,30 +965,31 @@
     },
     "climate": {
      "type": "score",
-     "score": 2.9000000000000004,
+     "score": 2.93,
      "probabilities": {
       "0": 0,
-      "1": 0,
-      "2": 0.15,
-      "3": 0.8,
+      "1": 0.02,
+      "2": 0.08,
+      "3": 0.85,
       "4": 0.05
      }
     },
     "performance": {
      "type": "noul",
-     "noul": 0.01
+     "noul": 0.02
     }
    },
    "usage": {
     "input_tokens": 0,
     "output_tokens": 0
-   }
+   },
+   "costUsd": 0.029120399999999998
   }
  },
  "w08": {
   "windowId": "w08",
   "judge": "standin:claude-haiku",
-  "latencyMs": 29921,
+  "latencyMs": 42024,
   "request": {
    "model": "jev-latest",
    "state": {
@@ -944,6 +1035,14 @@
       "u2": "The request for work is stated in utterance 2: \"Actually that's a good finding, the stream is the only place the deletion shows up.\""
      }
     },
+    "task_self_contained": {
+     "type": "noul",
+     "instructions": "If `window.utterances` contains a request for software work, does that request name what to change (a file, feature, command or behaviour) clearly enough that someone with no other context could start on it?",
+     "criteria": {
+      "true": "Self-contained: names its target, e.g. 'add a retry with backoff to the stream client'.",
+      "false": "A fragment or a reply that only makes sense next to something else, e.g. 'five attempts, go ahead', or no request at all."
+     }
+    },
     "media": {
      "type": "noul",
      "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
@@ -977,32 +1076,36 @@
      "choice": "task",
      "probabilities": {
       "none": 0.02,
-      "note": 0.08,
-      "task": 0.9
+      "note": 0.03,
+      "task": 0.95
      }
     },
     "task_line": {
      "type": "choice",
      "choice": "u1",
      "probabilities": {
-      "none": 0.1,
-      "u0": 0.02,
-      "u1": 0.86,
-      "u2": 0.02
+      "none": 0.02,
+      "u0": 0.01,
+      "u1": 0.96,
+      "u2": 0.01
      }
+    },
+    "task_self_contained": {
+     "type": "noul",
+     "noul": 0.15
     },
     "media": {
      "type": "noul",
-     "noul": 0.07
+     "noul": 0.05
     },
     "climate": {
      "type": "score",
-     "score": 0.8700000000000001,
+     "score": 1.1800000000000002,
      "probabilities": {
-      "0": 0.25,
-      "1": 0.65,
-      "2": 0.08,
-      "3": 0.02,
+      "0": 0.08,
+      "1": 0.7,
+      "2": 0.18,
+      "3": 0.04,
       "4": 0
      }
     },
@@ -1014,13 +1117,14 @@
    "usage": {
     "input_tokens": 0,
     "output_tokens": 0
-   }
+   },
+   "costUsd": 0.0354961
   }
  },
  "w09": {
   "windowId": "w09",
   "judge": "standin:claude-haiku",
-  "latencyMs": 26988,
+  "latencyMs": 31667,
   "request": {
    "model": "jev-latest",
    "state": {
@@ -1076,6 +1180,14 @@
       "u4": "The request for work is stated in utterance 4: \"The deadline is the twenty-third, so we have about two weeks for the video.\""
      }
     },
+    "task_self_contained": {
+     "type": "noul",
+     "instructions": "If `window.utterances` contains a request for software work, does that request name what to change (a file, feature, command or behaviour) clearly enough that someone with no other context could start on it?",
+     "criteria": {
+      "true": "Self-contained: names its target, e.g. 'add a retry with backoff to the stream client'.",
+      "false": "A fragment or a reply that only makes sense next to something else, e.g. 'five attempts, go ahead', or no request at all."
+     }
+    },
     "media": {
      "type": "noul",
      "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
@@ -1108,53 +1220,58 @@
      "type": "choice",
      "choice": "note",
      "probabilities": {
-      "none": 0.05,
-      "note": 0.9,
-      "task": 0.05
+      "none": 0.1,
+      "note": 0.75,
+      "task": 0.15
      }
     },
     "task_line": {
      "type": "choice",
      "choice": "none",
      "probabilities": {
-      "none": 0.9,
-      "u0": 0.03,
+      "none": 0.8,
+      "u0": 0.02,
       "u1": 0.01,
-      "u2": 0.05,
+      "u2": 0.15,
       "u3": 0.01,
-      "u4": 0
+      "u4": 0.01
      }
+    },
+    "task_self_contained": {
+     "type": "noul",
+     "noul": 0.05
     },
     "media": {
      "type": "noul",
-     "noul": 0.02
+     "noul": 0.01
     },
     "climate": {
      "type": "score",
-     "score": 1.1,
+     "score": 1.21,
      "probabilities": {
-      "0": 0.1,
-      "1": 0.7,
-      "2": 0.2,
-      "3": 0,
-      "4": 0
+      "0": 0.15,
+      "1": 0.55,
+      "2": 0.25,
+      "3": 0.04,
+      "4": 0.01
      }
     },
     "performance": {
      "type": "noul",
-     "noul": 0.05
+     "noul": 0.02
     }
    },
    "usage": {
     "input_tokens": 0,
     "output_tokens": 0
-   }
+   },
+   "costUsd": 0.043159
   }
  },
  "w10": {
   "windowId": "w10",
   "judge": "standin:claude-haiku",
-  "latencyMs": 19970,
+  "latencyMs": 33379,
   "request": {
    "model": "jev-latest",
    "state": {
@@ -1200,6 +1317,14 @@
       "u2": "The request for work is stated in utterance 2: \"Flat white, thanks.\""
      }
     },
+    "task_self_contained": {
+     "type": "noul",
+     "instructions": "If `window.utterances` contains a request for software work, does that request name what to change (a file, feature, command or behaviour) clearly enough that someone with no other context could start on it?",
+     "criteria": {
+      "true": "Self-contained: names its target, e.g. 'add a retry with backoff to the stream client'.",
+      "false": "A fragment or a reply that only makes sense next to something else, e.g. 'five attempts, go ahead', or no request at all."
+     }
+    },
     "media": {
      "type": "noul",
      "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
@@ -1232,34 +1357,38 @@
      "type": "choice",
      "choice": "none",
      "probabilities": {
-      "none": 0.98,
-      "note": 0.01,
-      "task": 0.01
+      "none": 1,
+      "note": 0,
+      "task": 0
      }
     },
     "task_line": {
      "type": "choice",
      "choice": "none",
      "probabilities": {
-      "none": 0.99,
-      "u0": 0.003,
-      "u1": 0.004,
-      "u2": 0.003
+      "none": 1,
+      "u0": 0,
+      "u1": 0,
+      "u2": 0
      }
+    },
+    "task_self_contained": {
+     "type": "noul",
+     "noul": 0
     },
     "media": {
      "type": "noul",
-     "noul": 0.02
+     "noul": 0.03
     },
     "climate": {
      "type": "score",
-     "score": 0.10500000000000001,
+     "score": 0.11,
      "probabilities": {
-      "0": 0.93,
-      "1": 0.05,
+      "0": 0.92,
+      "1": 0.06,
       "2": 0.01,
-      "3": 0.005,
-      "4": 0.005
+      "3": 0.01,
+      "4": 0
      }
     },
     "performance": {
@@ -1270,13 +1399,14 @@
    "usage": {
     "input_tokens": 0,
     "output_tokens": 0
-   }
+   },
+   "costUsd": 0.0327611
   }
  },
  "w11": {
   "windowId": "w11",
   "judge": "standin:claude-haiku",
-  "latencyMs": 32317,
+  "latencyMs": 20588,
   "request": {
    "model": "jev-latest",
    "state": {
@@ -1322,6 +1452,14 @@
       "u2": "The request for work is stated in utterance 2: \"Okay, I'll keep the recording as a backup.\""
      }
     },
+    "task_self_contained": {
+     "type": "noul",
+     "instructions": "If `window.utterances` contains a request for software work, does that request name what to change (a file, feature, command or behaviour) clearly enough that someone with no other context could start on it?",
+     "criteria": {
+      "true": "Self-contained: names its target, e.g. 'add a retry with backoff to the stream client'.",
+      "false": "A fragment or a reply that only makes sense next to something else, e.g. 'five attempts, go ahead', or no request at all."
+     }
+    },
     "media": {
      "type": "noul",
      "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
@@ -1354,51 +1492,56 @@
      "type": "choice",
      "choice": "none",
      "probabilities": {
-      "none": 0.8,
-      "note": 0.15,
-      "task": 0.05
+      "none": 0.85,
+      "note": 0.12,
+      "task": 0.03
      }
     },
     "task_line": {
      "type": "choice",
      "choice": "none",
      "probabilities": {
-      "none": 0.85,
-      "u0": 0.08,
+      "none": 0.88,
+      "u0": 0.05,
       "u1": 0.04,
       "u2": 0.03
      }
     },
+    "task_self_contained": {
+     "type": "noul",
+     "noul": 0.08
+    },
     "media": {
      "type": "noul",
-     "noul": 0.02
+     "noul": 0.04
     },
     "climate": {
      "type": "score",
-     "score": 2.07,
+     "score": 1.8199999999999998,
      "probabilities": {
-      "0": 0,
-      "1": 0.05,
-      "2": 0.85,
-      "3": 0.08,
-      "4": 0.02
+      "0": 0.06,
+      "1": 0.18,
+      "2": 0.64,
+      "3": 0.12,
+      "4": 0
      }
     },
     "performance": {
      "type": "noul",
-     "noul": 0.98
+     "noul": 0.96
     }
    },
    "usage": {
     "input_tokens": 0,
     "output_tokens": 0
-   }
+   },
+   "costUsd": 0.025083099999999997
   }
  },
  "w12": {
   "windowId": "w12",
   "judge": "standin:claude-haiku",
-  "latencyMs": 43038,
+  "latencyMs": 40632,
   "request": {
    "model": "jev-latest",
    "state": {
@@ -1439,6 +1582,14 @@
       "u1": "The request for work is stated in utterance 1: \"Anything that leaves your machine waits for a tick on your phone.\""
      }
     },
+    "task_self_contained": {
+     "type": "noul",
+     "instructions": "If `window.utterances` contains a request for software work, does that request name what to change (a file, feature, command or behaviour) clearly enough that someone with no other context could start on it?",
+     "criteria": {
+      "true": "Self-contained: names its target, e.g. 'add a retry with backoff to the stream client'.",
+      "false": "A fragment or a reply that only makes sense next to something else, e.g. 'five attempts, go ahead', or no request at all."
+     }
+    },
     "media": {
      "type": "noul",
      "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
@@ -1471,19 +1622,23 @@
      "type": "choice",
      "choice": "note",
      "probabilities": {
-      "none": 0.4,
-      "note": 0.55,
-      "task": 0.05
+      "none": 0.05,
+      "note": 0.85,
+      "task": 0.1
      }
     },
     "task_line": {
      "type": "choice",
      "choice": "none",
      "probabilities": {
-      "none": 0.96,
-      "u0": 0.02,
-      "u1": 0.02
+      "none": 1,
+      "u0": 0,
+      "u1": 0
      }
+    },
+    "task_self_contained": {
+     "type": "noul",
+     "noul": 0.08
     },
     "media": {
      "type": "noul",
@@ -1491,30 +1646,31 @@
     },
     "climate": {
      "type": "score",
-     "score": 0.8200000000000001,
+     "score": 1.2800000000000002,
      "probabilities": {
-      "0": 0.35,
-      "1": 0.52,
-      "2": 0.1,
-      "3": 0.02,
-      "4": 0.01
+      "0": 0.06,
+      "1": 0.64,
+      "2": 0.26,
+      "3": 0.04,
+      "4": 0
      }
     },
     "performance": {
      "type": "noul",
-     "noul": 0.87
+     "noul": 0.84
     }
    },
    "usage": {
     "input_tokens": 0,
     "output_tokens": 0
-   }
+   },
+   "costUsd": 0.0364644
   }
  },
  "w13": {
   "windowId": "w13",
   "judge": "standin:claude-haiku",
-  "latencyMs": 27997,
+  "latencyMs": 30616,
   "request": {
    "model": "jev-latest",
    "state": {
@@ -1560,6 +1716,14 @@
       "u2": "The request for work is stated in utterance 2: \"I'm not changing it, I'm saying it doesn't fit. This is exactly how we end up with nothing.\""
      }
     },
+    "task_self_contained": {
+     "type": "noul",
+     "instructions": "If `window.utterances` contains a request for software work, does that request name what to change (a file, feature, command or behaviour) clearly enough that someone with no other context could start on it?",
+     "criteria": {
+      "true": "Self-contained: names its target, e.g. 'add a retry with backoff to the stream client'.",
+      "false": "A fragment or a reply that only makes sense next to something else, e.g. 'five attempts, go ahead', or no request at all."
+     }
+    },
     "media": {
      "type": "noul",
      "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
@@ -1592,8 +1756,8 @@
      "type": "choice",
      "choice": "none",
      "probabilities": {
-      "none": 0.75,
-      "note": 0.2,
+      "none": 0.85,
+      "note": 0.1,
       "task": 0.05
      }
     },
@@ -1601,42 +1765,47 @@
      "type": "choice",
      "choice": "none",
      "probabilities": {
-      "none": 0.75,
-      "u0": 0.1,
-      "u1": 0.1,
+      "none": 0.85,
+      "u0": 0.05,
+      "u1": 0.05,
       "u2": 0.05
      }
     },
-    "media": {
+    "task_self_contained": {
      "type": "noul",
      "noul": 0.05
     },
+    "media": {
+     "type": "noul",
+     "noul": 0.02
+    },
     "climate": {
      "type": "score",
-     "score": 2.35,
+     "score": 2.45,
      "probabilities": {
       "0": 0.05,
-      "1": 0.15,
+      "1": 0.1,
       "2": 0.25,
-      "3": 0.5,
+      "3": 0.55,
       "4": 0.05
      }
     },
     "performance": {
      "type": "noul",
-     "noul": 0.05
+     "noul": 0.02
     }
    },
    "usage": {
     "input_tokens": 0,
     "output_tokens": 0
-   }
+   },
+   "costUsd": 0.0333761
   }
  },
  "w14": {
   "windowId": "w14",
   "judge": "standin:claude-haiku",
-  "latencyMs": 27099,
+  "latencyMs": 25189,
   "request": {
    "model": "jev-latest",
    "state": {
@@ -1677,6 +1846,14 @@
       "u1": "The request for work is stated in utterance 1: \"Write a script that exports the corpus to markdown grouped by day, we need it for the eval.\""
      }
     },
+    "task_self_contained": {
+     "type": "noul",
+     "instructions": "If `window.utterances` contains a request for software work, does that request name what to change (a file, feature, command or behaviour) clearly enough that someone with no other context could start on it?",
+     "criteria": {
+      "true": "Self-contained: names its target, e.g. 'add a retry with backoff to the stream client'.",
+      "false": "A fragment or a reply that only makes sense next to something else, e.g. 'five attempts, go ahead', or no request at all."
+     }
+    },
     "media": {
      "type": "noul",
      "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
@@ -1710,49 +1887,54 @@
      "choice": "task",
      "probabilities": {
       "none": 0.02,
-      "note": 0.05,
-      "task": 0.93
+      "note": 0.03,
+      "task": 0.95
      }
     },
     "task_line": {
      "type": "choice",
      "choice": "u1",
      "probabilities": {
-      "none": 0,
+      "none": 0.05,
       "u0": 0,
-      "u1": 1
+      "u1": 0.95
      }
+    },
+    "task_self_contained": {
+     "type": "noul",
+     "noul": 0.88
     },
     "media": {
      "type": "noul",
-     "noul": 0.04
+     "noul": 0.05
     },
     "climate": {
      "type": "score",
-     "score": 2.55,
+     "score": 2.7700000000000005,
      "probabilities": {
-      "0": 0.04,
-      "1": 0.05,
-      "2": 0.28,
-      "3": 0.58,
-      "4": 0.05
+      "0": 0.010000000000000002,
+      "1": 0.030000000000000002,
+      "2": 0.25000000000000006,
+      "3": 0.6000000000000001,
+      "4": 0.11000000000000001
      }
     },
     "performance": {
      "type": "noul",
-     "noul": 0.05
+     "noul": 0.1
     }
    },
    "usage": {
     "input_tokens": 0,
     "output_tokens": 0
-   }
+   },
+   "costUsd": 0.0287014
   }
  },
  "w15": {
   "windowId": "w15",
   "judge": "standin:claude-haiku",
-  "latencyMs": 28290,
+  "latencyMs": 41579,
   "request": {
    "model": "jev-latest",
    "state": {
@@ -1798,6 +1980,14 @@
       "u2": "The request for work is stated in utterance 2: \"Deal.\""
      }
     },
+    "task_self_contained": {
+     "type": "noul",
+     "instructions": "If `window.utterances` contains a request for software work, does that request name what to change (a file, feature, command or behaviour) clearly enough that someone with no other context could start on it?",
+     "criteria": {
+      "true": "Self-contained: names its target, e.g. 'add a retry with backoff to the stream client'.",
+      "false": "A fragment or a reply that only makes sense next to something else, e.g. 'five attempts, go ahead', or no request at all."
+     }
+    },
     "media": {
      "type": "noul",
      "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
@@ -1830,51 +2020,56 @@
      "type": "choice",
      "choice": "none",
      "probabilities": {
-      "none": 0.75,
-      "note": 0.15,
-      "task": 0.1
+      "none": 0.95,
+      "note": 0.04,
+      "task": 0.01
      }
     },
     "task_line": {
      "type": "choice",
      "choice": "none",
      "probabilities": {
-      "none": 0.75,
-      "u0": 0,
-      "u1": 0.25,
-      "u2": 0
+      "none": 0.95,
+      "u0": 0.02,
+      "u1": 0.02,
+      "u2": 0.01
      }
     },
-    "media": {
+    "task_self_contained": {
      "type": "noul",
      "noul": 0.02
     },
+    "media": {
+     "type": "noul",
+     "noul": 0.05
+    },
     "climate": {
      "type": "score",
-     "score": 1.2000000000000002,
+     "score": 1.4000000000000001,
      "probabilities": {
-      "0": 0.05,
-      "1": 0.75,
-      "2": 0.15,
-      "3": 0.05,
-      "4": 0
+      "0": 0.08,
+      "1": 0.55,
+      "2": 0.28,
+      "3": 0.07,
+      "4": 0.02
      }
     },
     "performance": {
      "type": "noul",
-     "noul": 0.03
+     "noul": 0.02
     }
    },
    "usage": {
     "input_tokens": 0,
     "output_tokens": 0
-   }
+   },
+   "costUsd": 0.0380991
   }
  },
  "w16": {
   "windowId": "w16",
   "judge": "standin:claude-haiku",
-  "latencyMs": 22254,
+  "latencyMs": 21256,
   "request": {
    "model": "jev-latest",
    "state": {
@@ -1920,6 +2115,14 @@
       "u2": "The request for work is stated in utterance 2: \"Don't forget to like and subscribe.\""
      }
     },
+    "task_self_contained": {
+     "type": "noul",
+     "instructions": "If `window.utterances` contains a request for software work, does that request name what to change (a file, feature, command or behaviour) clearly enough that someone with no other context could start on it?",
+     "criteria": {
+      "true": "Self-contained: names its target, e.g. 'add a retry with backoff to the stream client'.",
+      "false": "A fragment or a reply that only makes sense next to something else, e.g. 'five attempts, go ahead', or no request at all."
+     }
+    },
     "media": {
      "type": "noul",
      "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
@@ -1952,8 +2155,8 @@
      "type": "choice",
      "choice": "none",
      "probabilities": {
-      "none": 0.98,
-      "note": 0.01,
+      "none": 0.95,
+      "note": 0.04,
       "task": 0.01
      }
     },
@@ -1961,24 +2164,28 @@
      "type": "choice",
      "choice": "none",
      "probabilities": {
-      "none": 0.98,
+      "none": 0.95,
       "u0": 0.01,
-      "u1": 0.01,
-      "u2": 0
+      "u1": 0.03,
+      "u2": 0.01
      }
+    },
+    "task_self_contained": {
+     "type": "noul",
+     "noul": 0.01
     },
     "media": {
      "type": "noul",
-     "noul": 0.95
+     "noul": 0.98
     },
     "climate": {
      "type": "score",
-     "score": 0.75,
+     "score": 0.19,
      "probabilities": {
-      "0": 0.3,
-      "1": 0.65,
-      "2": 0.05,
-      "3": 0,
+      "0": 0.85,
+      "1": 0.12,
+      "2": 0.02,
+      "3": 0.01,
       "4": 0
      }
     },
@@ -1990,13 +2197,14 @@
    "usage": {
     "input_tokens": 0,
     "output_tokens": 0
-   }
+   },
+   "costUsd": 0.0270871
   }
  },
  "w17": {
   "windowId": "w17",
   "judge": "standin:claude-haiku",
-  "latencyMs": 37800,
+  "latencyMs": 37538,
   "request": {
    "model": "jev-latest",
    "state": {
@@ -2042,6 +2250,14 @@
       "u2": "The request for work is stated in utterance 2: \"And remind me to buy batteries for the doorbell.\""
      }
     },
+    "task_self_contained": {
+     "type": "noul",
+     "instructions": "If `window.utterances` contains a request for software work, does that request name what to change (a file, feature, command or behaviour) clearly enough that someone with no other context could start on it?",
+     "criteria": {
+      "true": "Self-contained: names its target, e.g. 'add a retry with backoff to the stream client'.",
+      "false": "A fragment or a reply that only makes sense next to something else, e.g. 'five attempts, go ahead', or no request at all."
+     }
+    },
     "media": {
      "type": "noul",
      "instructions": "Is `window.utterances` most likely audio from media playing nearby (a video, podcast, TV show, song or advert) rather than a live conversation or someone thinking aloud?",
@@ -2074,45 +2290,50 @@
      "type": "choice",
      "choice": "note",
      "probabilities": {
-      "none": 0,
-      "note": 1,
-      "task": 0
+      "none": 0.05,
+      "note": 0.9,
+      "task": 0.05
      }
     },
     "task_line": {
      "type": "choice",
      "choice": "none",
      "probabilities": {
-      "none": 1,
-      "u0": 0,
-      "u1": 0,
-      "u2": 0
+      "none": 0.9,
+      "u0": 0.03,
+      "u1": 0.04,
+      "u2": 0.03
      }
+    },
+    "task_self_contained": {
+     "type": "noul",
+     "noul": 0.15
     },
     "media": {
      "type": "noul",
-     "noul": 0.08
+     "noul": 0.05
     },
     "climate": {
      "type": "score",
-     "score": 0.14,
+     "score": 0.4,
      "probabilities": {
-      "0": 0.89,
-      "1": 0.09,
-      "2": 0.01,
-      "3": 0.01,
+      "0": 0.65,
+      "1": 0.3,
+      "2": 0.05,
+      "3": 0,
       "4": 0
      }
     },
     "performance": {
      "type": "noul",
-     "noul": 0.02
+     "noul": 0.05
     }
    },
    "usage": {
     "input_tokens": 0,
     "output_tokens": 0
-   }
+   },
+   "costUsd": 0.0376451
   }
  }
 }

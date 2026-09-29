@@ -2,6 +2,7 @@
 // a Jev-shaped response. Used only because no working TypeSafe key was available on 2026-09-24.
 // Every judgment it produces is labelled judge = "standin:claude-haiku".
 import { spawn } from 'node:child_process'
+import { tmpdir } from 'node:os'
 import type { Answer, ChoiceQ, JudgeRequest, JudgeResponse, ScoreQ } from '../engine/types.ts'
 
 function schemaFor(req: JudgeRequest) {
@@ -28,10 +29,12 @@ Judge each question independently. Be calibrated: use the full range, and do not
 
 export async function standin(req: JudgeRequest): Promise<JudgeResponse> {
   const input = `${PROMPT}\n\nSTATE:\n${JSON.stringify(req.state, null, 1)}\n\nQUESTIONS:\n${JSON.stringify(req.questions, null, 1)}`
-  const args = ['-p', '--model', 'haiku', '--setting-sources', 'project', '--strict-mcp-config', '--tools', '',
+  const args = ['-p', '--model', 'haiku', '--restricted', '--strict-mcp-config', '--tools', '',
     '--output-format', 'json', '--json-schema', JSON.stringify(schemaFor(req)), input]
   const out = await new Promise<string>((resolve, reject) => {
-    const p = spawn('claude', args, { stdio: ['ignore', 'pipe', 'pipe'] })
+    // Run from a neutral folder so no project instructions (CLAUDE.md) reach the judge.
+    const p = spawn('claude', args, { cwd: tmpdir(), stdio: ['ignore', 'pipe', 'pipe'] })
+    p.on('error', (e) => reject(new Error(`could not start claude: ${e.message}`)))
     let o = '', e = ''
     p.stdout.on('data', (d) => (o += d))
     p.stderr.on('data', (d) => (e += d))

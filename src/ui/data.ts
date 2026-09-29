@@ -30,9 +30,10 @@ export const FIXTURE: DayData = {
 export const LIVE_URL = 'http://localhost:5189/state'
 
 // Polls live mode's snapshot every 2 s. Null until the first answer.
-export function useLiveData(enabled: boolean): { data: DayData | null; error: string | null } {
+export function useLiveData(enabled: boolean): { data: DayData | null; error: string | null; lastOk: number } {
   const [data, setData] = useState<DayData | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [lastOk, setLastOk] = useState(0)
   useEffect(() => {
     if (!enabled) return
     let stopped = false
@@ -41,7 +42,7 @@ export function useLiveData(enabled: boolean): { data: DayData | null; error: st
         const r = await fetch(LIVE_URL)
         if (!r.ok) throw new Error(`${r.status}`)
         const d = (await r.json()) as DayData
-        if (!stopped) { setData({ ...d, live: true }); setError(null) }
+        if (!stopped) { setData({ ...d, live: true }); setError(null); setLastOk(Date.now()) }
       } catch (e) {
         if (!stopped) setError((e as Error).message)
       }
@@ -50,5 +51,5 @@ export function useLiveData(enabled: boolean): { data: DayData | null; error: st
     const id = setInterval(poll, 2000)
     return () => { stopped = true; clearInterval(id) }
   }, [enabled])
-  return { data, error }
+  return { data, error, lastOk }
 }

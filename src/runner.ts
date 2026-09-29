@@ -46,6 +46,14 @@ const slug = (s: string) =>
 
 export class BudgetExceeded extends Error {}
 
+// The checks run code the agent wrote, as you. They get your environment without its keys and tokens.
+// Files you can read, they can read: point Ringfence at repos you would let a contractor run tests on.
+const SECRET_NAME = /KEY|TOKEN|SECRET|PASSW|CREDENTIAL|AUTH|COOKIE|SESSION/i
+const SECRET_PREFIX = /^(GH|GITHUB|AWS|AZURE|GOOGLE|ANTHROPIC|OPENAI|TYPESAFE|AI_GATEWAY|VERCEL|NPM)_/
+export function checkEnv(env: NodeJS.ProcessEnv = process.env): NodeJS.ProcessEnv {
+  return Object.fromEntries(Object.entries(env).filter(([k]) => !SECRET_NAME.test(k) && !SECRET_PREFIX.test(k)))
+}
+
 export function createRunner(cfg: RunnerConfig) {
   mkdirSync(dirname(cfg.stateFile), { recursive: true })
   // Audit trail of every run across restarts, keyed by a unique run key. Window ids restart at L001 each process,
@@ -71,7 +79,8 @@ export function createRunner(cfg: RunnerConfig) {
   function claude(cwd: string, tools: string[], prompt: string, resume?: string): Promise<Pass> {
     const args = ['-p', '--output-format', 'json', '--model', cfg.model, '--tools', tools.join(','),
       '--permission-mode', tools.includes('Edit') ? 'acceptEdits' : 'default',
-      '--setting-sources', 'project', '--strict-mcp-config', ...(resume ? ['--resume', resume] : []), prompt]
+      // --restricted ignores settings files, so hooks the agent writes into the target repo's .claude/ never run.
+      '--restricted', '--strict-mcp-config', ...(resume ? ['--resume', resume] : []), prompt]
     const t0 = Date.now()
     return new Promise((resolve, reject) => {
       const p = spawn('claude', args, { cwd, stdio: ['ignore', 'pipe', 'pipe'] })
@@ -79,6 +88,7 @@ export function createRunner(cfg: RunnerConfig) {
       const timer = setTimeout(() => { p.kill('SIGTERM'); reject(new Error(`agent timed out after ${cfg.timeoutMs / 60000} min`)) }, cfg.timeoutMs)
       p.stdout.on('data', (d) => (out += d))
       p.stderr.on('data', (d) => (err += d))
+      p.on('error', (e) => { clearTimeout(timer); reject(new Error(`could not start claude: ${e.message}`)) })
       p.on('close', (code) => {
         clearTimeout(timer)
         if (code !== 0) return reject(new Error(`claude exited ${code}: ${err.slice(0, 300)}`))
@@ -96,7 +106,7 @@ export function createRunner(cfg: RunnerConfig) {
   function runChecks(wt: string): { ok: boolean; output: string } | null {
     if (!cfg.checkCmd) return null
     try {
-      execFileSync('sh', ['-c', cfg.checkCmd], { cwd: wt, stdio: ['ignore', 'pipe', 'pipe'], timeout: cfg.timeoutMs })
+      execFileSync('sh', ['-c', cfg.checkCmd], { cwd: wt, env: checkEnv(), stdio: ['ignore', 'pipe', 'pipe'], timeout: cfg.timeoutMs, maxBuffer: 16 * 1024 * 1024 })
       return { ok: true, output: '' }
     } catch (e) {
       const err = e as { stdout?: Buffer; stderr?: Buffer }
@@ -231,14 +241,23 @@ export function createRunner(cfg: RunnerConfig) {
         save()
         return r.pr
       }
+      const refuse = (why: string) => { r.pr = `refused, nothing pushed: ${why}`; save(); return r.pr }
+      // Ring 2 opens pull requests on your own fork only.
+      let fork = ''
+      try { fork = execFileSync('gh', ['api', `repos/${repo}`, '--jq', '.fork'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 30_000 }).trim() } catch { /* unknown counts as not a fork */ }
+      if (fork !== 'true') return refuse(`${repo} is not a fork`)
+      // A workflow or a Claude setting in the branch could run code on GitHub or in Claude. That needs a person.
+      if (git(r.worktree, 'diff', '--cached', '--name-only').split('\n').some((f) => /^(\.github|\.claude)\//.test(f)))
+        return refuse('the branch changes .github/ or .claude/; review it by hand')
       if (cfg.checkCmd) {
-        try { execFileSync('sh', ['-c', cfg.checkCmd], { cwd: r.worktree, stdio: ['ignore', 'pipe', 'pipe'] }) }
+        try { execFileSync('sh', ['-c', cfg.checkCmd], { cwd: r.worktree, env: checkEnv(), stdio: ['ignore', 'pipe', 'pipe'], timeout: cfg.timeoutMs, maxBuffer: 16 * 1024 * 1024 }) }
         catch (e) { r.pr = `checks failed, nothing committed: ${(e as Error).message.slice(0, 300)}`; save(); return r.pr }
       }
-      git(r.worktree, 'commit', '-m', title)
-      git(r.worktree, 'push', '-u', 'origin', r.branch)
+      // Commit once. A retry after a failed push finds nothing staged and goes straight to the push.
+      if (git(r.worktree, 'diff', '--cached', '--name-only')) git(r.worktree, 'commit', '-m', title)
+      execFileSync('git', ['-C', r.worktree, 'push', '-u', 'origin', r.branch], { stdio: ['ignore', 'pipe', 'pipe'], timeout: 120_000 })
       r.pr = execFileSync('gh', ['pr', 'create', '--repo', repo, '--base', base, '--head', r.branch, '--title', title, '--body', body],
-        { cwd: r.worktree, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim()
+        { cwd: r.worktree, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 60_000 }).trim()
       save()
       return r.pr
     },

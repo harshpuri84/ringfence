@@ -14,22 +14,23 @@ const ringInk = (r?: number) => (r === undefined ? 'var(--border-strong)' : RING
 // `?live` follows live mode's snapshot on localhost; anything else replays the scripted day.
 export function App() {
   const liveMode = /[?&]live\b/.test(location.search)
-  const { data, error } = useLiveData(liveMode)
+  const { data, error, lastOk } = useLiveData(liveMode)
   if (liveMode && !data) {
     return (
       <div className="app">
         <header className="top"><h1>Ringfence</h1><span className="tag">Waiting for live mode.</span></header>
         <div className="card">
           <p>No answer from <span className="mono">{LIVE_URL}</span>{error ? ` (${error})` : ''}.</p>
+          {error === '403' && <p className="sub">Live mode only answers the dashboard at http://localhost:5188 or http://127.0.0.1:5188, because its state holds real speech. Open the dashboard at one of those.</p>}
           <p className="sub">Start it with <span className="mono">node scripts/live.ts --standin</span>, add <span className="mono">--execute --repo &lt;path&gt;</span> to run agents. The page retries every 2 seconds.</p>
         </div>
       </div>
     )
   }
-  return <Dashboard data={liveMode ? data! : FIXTURE} />
+  return <Dashboard data={liveMode ? data! : FIXTURE} lastOk={lastOk} />
 }
 
-function Dashboard({ data }: { data: DayData }) {
+function Dashboard({ data, lastOk = 0 }: { data: DayData; lastOk?: number }) {
   const { windows, judgments, runs, live } = data
   const judgeName = data.judgeName
   const isStandin = judgeName.startsWith('standin')
@@ -47,7 +48,8 @@ function Dashboard({ data }: { data: DayData }) {
   const [taskT, setTaskT] = useState(DEFAULT_POLICY.thresholds.task)
   const [approvals, setApprovals] = useState<Record<string, string>>({})
   const [focusGap, setFocusGap] = useState<string | null>(null)
-  const [opened, setOpened] = useState<string | null>(null)
+  // Which window shows its Jev questions: the newest one unless you pick another. #jev-w02 opens a given window.
+  const [opened, setOpened] = useState<string | null | undefined>(() => /^#jev-(.+)$/.exec(location.hash)?.[1])
   const showGap = (id: string) => { setFocusGap(id); document.getElementById(`gap-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }) }
   // Deep link to one request, e.g. /?end#gap-todo-events
   useEffect(() => { const m = /^#gap-(.+)$/.exec(location.hash); if (m && GAP[m[1]]) { setFocusGap(m[1]); document.getElementById(`gap-${m[1]}`)?.scrollIntoView({ block: 'center' }) } }, [])
@@ -73,7 +75,6 @@ function Dashboard({ data }: { data: DayData }) {
   }), [exhale, requireAddress, agentTrust, taskT])
 
   // Judgments are stored. Changing policy re-runs code only, never the model.
-  useEffect(() => setApprovals({}), [policy])
   const nowIso = new Date(clock).toISOString()
   const r = useMemo(
     () => replay(windows, judgments, runs, policy, live ? data.approvals : approvals, nowIso, live ? { executeRuns: 'live' } : {}),
@@ -100,16 +101,18 @@ function Dashboard({ data }: { data: DayData }) {
       </header>
       {live ? (
         <div className="badges">
-          <span className="badge live">Live from your watch · updated {data.updatedAt ? hhmm(data.updatedAt) : '-'}</span>
-          <span className={`badge ${isStandin ? 'warn' : ''}`}>Judge: {isStandin ? 'stand-in, Claude Haiku. Not Jev' : judgeName}</span>
-          <span className="badge">Agent runs: {Object.keys(runs).length} real</span>
+          {Date.now() - lastOk > 6000
+            ? <span className="badge warn">Live mode not answering since {hhmm(new Date(lastOk).toISOString())}. Showing the last state it sent.</span>
+            : <span className="badge live">Live from your watch · updated {data.updatedAt ? hhmm(data.updatedAt) : '-'}</span>}
+          <span className={`badge ${isStandin ? 'warn' : ''}`}>{isStandin ? 'Classifier: Jev questions, answered by a Claude Haiku stand-in until a Jev key works' : `Classifier: Jev (${judgeName})`}</span>
+          <span className="badge">Agent runs finished: {Object.keys(runs).length}</span>
           <span className="badge">Ticks: in the Bee app</span>
         </div>
       ) : (
         <div className="badges">
           <span className="badge warn">Scripted day. Synthetic content, not real capture.</span>
-          <span className={`badge ${isStandin ? 'warn' : ''}`}>Judge: {isStandin ? 'stand-in, Claude Haiku. Not Jev (no working key on 24 Sep)' : judgeName}</span>
-          <span className="badge">Agent runs: recorded 24 Sep with Claude Code headless</span>
+          <span className={`badge ${isStandin ? 'warn' : ''}`}>{isStandin ? 'Classifier: Jev questions, answered by a Claude Haiku stand-in until a Jev key works' : `Classifier: Jev (${judgeName})`}</span>
+          <span className="badge">Agent runs: recorded 26 Sep with the current runner</span>
           <span className="badge">Bee writes: shown as commands, not executed</span>
         </div>
       )}
@@ -119,7 +122,7 @@ function Dashboard({ data }: { data: DayData }) {
         <button className="btn primary" onClick={() => { if (clock >= DAY_END) setClock(DAY_START); setPlaying((p) => !p) }}>{playing ? 'Pause' : clock >= DAY_END ? 'Replay day' : 'Play day'}</button>
         <span className="clock">{hhmm(clock)}</span>
         <div className="scrub">
-          <input type="range" min={DAY_START} max={DAY_END} step={30e3} value={clock} aria-label="Time of day"
+          <input type="range" min={DAY_START} max={DAY_END} step={30e3} value={clock} aria-label="Time of day" aria-valuetext={hhmm(new Date(clock).toISOString())}
             onChange={(e) => { setPlaying(false); setClock(Number(e.target.value)) }} />
         </div>
         <label>Speed
@@ -131,7 +134,7 @@ function Dashboard({ data }: { data: DayData }) {
       </div>
 
       <div className="controls">
-        <label><input type="checkbox" checked={exhale} onChange={(e) => setExhale(e.target.checked)} /> Exhale lens: breath nudges</label>
+        <label><input type="checkbox" checked={exhale} onChange={(e) => setExhale(e.target.checked)} /> Exhale lens: breath nudges (before you present, or when the room turns tense)</label>
         <label>Agent trust
           <select value={agentTrust} onChange={(e) => setAgentTrust(e.target.value as 'shadow' | 'auto')}>
             <option value="auto">auto (demo, pre-promoted)</option><option value="shadow">shadow (day one)</option>
@@ -146,11 +149,11 @@ function Dashboard({ data }: { data: DayData }) {
       <div className="grid">
         <section className="col-day card">
           <div className="head"><h2>What Bee heard</h2><Needs ids={['chunks-rest']} onPick={showGap} /></div>
-          <p className="sub">One window per Bee segment (the undocumented <span className="mono">new-utterance-chunks</span> event). Chips show the judge's answer; red means it disagrees with the script's label. Tap a window to see what Jev was asked.</p>
+          <p className="sub">One window per Bee segment (the undocumented <span className="mono">new-utterance-chunks</span> event). Chips show Jev's top answers{live ? '' : "; red means it disagrees with the script's label"}. Open "Asked Jev" on any window to see every question and the threshold its answer is read against.</p>
           <div className="day">
             {visible.slice().reverse().map((w) => (
               <WindowCard key={w.id} w={w} j={judgments[w.id]} now={w === current} onPick={showGap}
-                open={opened === w.id} onToggle={() => setOpened((o) => (o === w.id ? null : w.id))}
+                open={(opened === undefined ? current?.id : opened) === w.id} onToggle={() => setOpened((o) => ((o === undefined ? current?.id : o) === w.id ? null : w.id))}
                 policy={policy} events={r.events.filter((e) => e.windowId === w.id)} isStandin={isStandin} />
             ))}
             {!visible.length && <p className="empty">{live ? 'Waiting for Bee. Speak near the watch.' : `Press Play day. The first window is at ${hhmm(windows[0].startedAt)}.`}</p>}
@@ -170,8 +173,8 @@ function Dashboard({ data }: { data: DayData }) {
             <Rings events={r.events} start={DAY_START} end={DAY_END} now={clock} pendingIds={pendingIds} />
             <div className="ring-legend">
               <div><span className="sw" style={{ background: 'var(--ring0)' }} /><b>0 · acts on you</b><br />notes, breath nudges. Auto.</div>
-              <div><span className="sw" style={{ background: 'var(--ring1)' }} /><b>1 · sandbox</b><br />coding agent on a branch. Auto after trust is earned.</div>
-              <div><span className="sw" style={{ background: 'var(--ring2)' }} /><b>2 · leaves the machine</b><br />open a PR, send, pay. Never without a tick.</div>
+              <div><span className="sw" style={{ background: 'var(--ring1)' }} /><b>1 · sandbox</b><br />coding agent on a branch. Auto in this demo; a new user starts in shadow.</div>
+              <div><span className="sw" style={{ background: 'var(--ring2)' }} /><b>2 · leaves the machine</b><br />commit, push, pull request. Never without a tick.</div>
             </div>
           </div>
         </section>
@@ -191,7 +194,7 @@ function Dashboard({ data }: { data: DayData }) {
                     <div>{e.text.replace(/^Delivered after hold: /, '')}</div>
                     {waiting && !live && <button className="btn small primary" style={{ marginTop: 6 }} onClick={() => tick(e.todoId!)}>Tick to approve</button>}
                     {waiting && live && <div className="hint">Tick it in the Bee app.</div>}
-                    {done && <div className="hint">Approved. PR opened.</div>}
+                    {done && <div className="hint">Approved. Ring 2 reruns the checks, then commits, pushes and opens the PR on your fork.</div>}
                     <Needs ids={gapsFor(e).filter((g) => g !== 'watch-alerts')} onPick={showGap} />
                   </div>
                 </div>
@@ -212,7 +215,7 @@ function Dashboard({ data }: { data: DayData }) {
             <div className="stats">
               <div className="stat"><div className="v">{started}</div><div className="k">agent runs</div></div>
               <div className="stat"><div className="v">{binned}</div><div className="k">binned, never sent</div></div>
-              <div className="stat"><div className="v">${r.costUsd.toFixed(2)}</div><div className="k">agent cost</div></div>
+              <div className="stat"><div className="v">${r.costUsd.toFixed(2)}</div><div className="k">agent cost, recorded runs</div></div>
               <div className="stat"><div className="v">{delivered.length}</div><div className="k">reached wrist</div></div>
             </div>
           </div>
@@ -231,15 +234,15 @@ function Dashboard({ data }: { data: DayData }) {
 
       {!live && (
         <div className="card" style={{ marginTop: 16 }}>
-          <h2>Judge against the script's labels</h2>
-          <p className="sub">17 windows labelled by the script author, not yet reviewed by a person. Too small to certify anything; big enough to see failure modes.</p>
+          <h2>Judge against the script's labels, one run</h2>
+          <p className="sub">17 windows labelled by the script author, not yet reviewed by a person. Too small to certify anything; big enough to see failure modes. One run of the stand-in; <span className="mono">scripts/judge-bench.ts</span> runs each request three times and measures how often decisions change.</p>
           <EvalTable windows={windows} judgments={judgments} judgeName={judgeName} />
         </div>
       )}
 
       <footer className="note">
-        Prototype written overnight 24 to 25 September 2026. Thresholds were set by hand on this one scripted day and mean nothing yet.
-        Tested on a real watch on 25 September: a tick reaches Bee's server and shows up in the changefeed, but never as a stream event. An alarm todo buzzed the phone, not the watch, about 30 s late.
+        Prototype built 24 to 26 September 2026. Thresholds were set by hand on one scripted day. Replayed over one real day at home (25 September, 76 windows, every action off), they would have started one agent: the task read aloud for the demo.
+        Tested on a real watch on 25 September: a tick reaches Bee's server and shows up in the changefeed, never as a stream event. An alarm todo buzzed the phone, not the watch.
       </footer>
     </div>
   )
@@ -255,9 +258,9 @@ function WindowCard({ w, j, now, onPick, open, onToggle, policy, events, isStand
   const l = w.label
   return (
     <div className={`win ${now ? 'now' : ''} ${media >= 0.6 ? 'media' : ''} ${open ? 'open' : ''}`}>
-      <button className="win-hit" onClick={onToggle} aria-expanded={open} aria-label={`What Jev was asked about ${w.id}`} disabled={!a} />
-      <div className="meta"><span>{hhmm(w.startedAt)} · {w.place}</span><span className="mono">{w.id}</span></div>
+      <div className="meta"><span>{hhmm(w.startedAt)}{w.place ? ` · ${w.place}` : ''}</span><span className="mono">{w.id}</span></div>
       {w.utterances.map((u) => <p key={u.id} className="utt">{u.text}</p>)}
+      {!a && <div className="chips"><span className="chip">waiting for Jev</span></div>}
       {a && (
         <div className="chips">
           <span className={`chip ${intent === 'task' || intent === 'answer' ? 'hot' : ''} ${l && l.intent !== intent ? 'miss' : ''}`}>intent {intent} {p.toFixed(2)}</span>
@@ -265,6 +268,7 @@ function WindowCard({ w, j, now, onPick, open, onToggle, policy, events, isStand
           <span className="chip">climate {climate.toFixed(1)}</span>
           {perf >= 0.5 && <span className="chip hot">about to present {perf.toFixed(2)}</span>}
           {l && (l.intent !== intent || l.media !== media >= 0.5) && <span className="chip miss">script: {l.intent}{l.media ? ', media' : ''}</span>}
+          <button type="button" className="jev-toggle" onClick={onToggle} aria-expanded={open} aria-label={`What Jev was asked about the ${hhmm(w.startedAt)} window`}>{open ? 'Hide Jev' : 'Asked Jev ›'}</button>
         </div>
       )}
       {media >= 0.6 && <Needs ids={['media-tags']} onPick={onPick} />}
@@ -287,7 +291,7 @@ function JevView({ w, j, policy, events, isStandin }: { w: Window; j: Judgment; 
   const rows: { id: string; value?: number; shown: string; at?: number; rule: string }[] = [
     { id: 'intent', value: pIntent, shown: `${intent} ${pIntent.toFixed(2)}`, at: intent === 'note' ? t.note : intent === 'task' ? t.task : undefined,
       rule: intent === 'task' ? `task at ${t.task} or more starts ring 1` : intent === 'note' ? `note at ${t.note} or more writes ring 0` : intent === 'answer' ? 'a reply: answer_to decides which agent it resumes' : 'nothing to act on' },
-    { id: 'task_line', value: line?.[1], shown: line ? `${line[0]} ${line[1].toFixed(2)}` : 'n/a', rule: lineIdx >= 0 ? `the task: "${w.utterances[lineIdx]?.text ?? ''}"` : 'no line states a task' },
+    { id: 'task_line', value: line?.[1], shown: line ? `${lineIdx >= 0 ? `line ${lineIdx + 1}` : 'none'} ${line[1].toFixed(2)}` : 'n/a', rule: lineIdx >= 0 ? `the task: "${w.utterances[lineIdx]?.text ?? ''}"` : 'no line states a task' },
     { id: 'task_self_contained', value: noul('task_self_contained'), shown: noul('task_self_contained')?.toFixed(2) ?? 'not asked', at: t.selfContained,
       rule: noul('task_self_contained') === undefined ? 'judged before this question existed; the engine treats the task as self-contained' : `under ${t.selfContained} is a fragment and never starts work` },
     { id: 'media', value: noul('media'), shown: noul('media')!.toFixed(2), at: t.media, rule: `${t.media} or more is skipped as media` },
@@ -298,6 +302,7 @@ function JevView({ w, j, policy, events, isStandin }: { w: Window; j: Judgment; 
   return (
     <div className="jev">
       <div className="jev-head"><b>Asked Jev</b><span className="mono">{Object.keys(q).length} typed questions · {isStandin ? 'answered by the stand-in' : j.judge}</span></div>
+      <div className="jev-key">Bar: Jev's answer. Mark: the threshold the rule reads it against.</div>
       {rows.map((r) => (
         <div key={r.id} className="jq">
           <div className="jq-top"><span className="mono">{r.id}</span><span className="jq-type">{q[r.id]?.type ?? 'not asked'}</span><span className="mono jq-val">{r.shown}</span></div>
@@ -314,7 +319,7 @@ function LogRow({ e, onPick }: { e: EngineEvent; onPick: (id: string) => void })
   return (
     <div className={`row ${e.held ? 'held' : ''}`}>
       <span className="mono">{hhmm(e.at)}</span>
-      <span className="mono" style={{ color: ringInk(e.ring) }}>{e.ring ?? '·'}</span>
+      <span className="mono">{e.ring ?? '·'}</span>
       <div>
         <div>{e.held ? '[held] ' : ''}{e.text}</div>
         {e.bee && <div className="cmd">{e.bee}</div>}
@@ -369,7 +374,7 @@ function ShapePanel({ events, windowsSeen, focus }: { events: EngineEvent[]; win
   return (
     <div className="card shape" style={{ marginTop: 16 }}>
       <h2>What Amazon could ship</h2>
-      <p className="sub">Each request is a measured gap between this vision and Bee today. The count is how many moments in the replay so far lean on it.</p>
+      <p className="sub">Each request is a measured gap between this vision and Bee today. The count is how many moments in the replay so far lean on it. F-numbers refer to the friction log submitted with the entry.</p>
       <div className="shape-scroll">
         <table>
           <thead><tr><th>Request</th><th>Bee today</th><th>What it unlocks here</th><th className="num">Moments</th></tr></thead>

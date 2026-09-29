@@ -1,7 +1,7 @@
 import type { EngineEvent } from '../engine/types.ts'
 
 // What Amazon could ship. Each request is a measured gap between this vision and Bee as it is today.
-// Evidence cites FRICTION-LOG.md; the two 25 Sep tests are not in the log yet.
+// Evidence cites the friction log submitted with the entry (not in this repo); the two 25 Sep tests are not in the log yet.
 
 export interface Gap {
   id: string

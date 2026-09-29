@@ -1,18 +1,18 @@
 // Judge every scripted window, in order, so each request sees the open questions of that moment.
-//   node scripts/judge-fixture.ts              # Jev if TYPESAFE_API_KEY is set, else stops
+//   node scripts/judge-fixture.ts              # Jev if TYPESAFE_API_KEY or AI_GATEWAY_API_KEY is set, else stops
 //   node scripts/judge-fixture.ts --standin    # Claude Haiku stand-in, labelled as such
 import { readFileSync, writeFileSync } from 'node:fs'
 import type { AgentRun, Judgment, Window } from '../src/engine/types.ts'
 import { buildRequest } from '../src/engine/questions.ts'
 import { openQuestionsAt } from '../src/engine/engine.ts'
 import { DEFAULT_POLICY } from '../src/engine/policy.ts'
-import { jev } from '../src/judge/jev.ts'
+import { jev, jevRoute, NO_JEV_KEY } from '../src/judge/jev.ts'
 import { standin } from '../src/judge/standin.ts'
 
 const dir = new URL('../fixtures/', import.meta.url)
 const useStandin = process.argv.includes('--standin')
-if (!useStandin && !process.env.TYPESAFE_API_KEY) {
-  console.error('No TYPESAFE_API_KEY. Set it in .env, or run with --standin (Claude Haiku, labelled).')
+if (!useStandin && !jevRoute()) {
+  console.error(NO_JEV_KEY)
   process.exit(1)
 }
 const judgeName = useStandin ? 'standin:claude-haiku' : 'jev'

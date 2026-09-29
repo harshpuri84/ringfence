@@ -2,11 +2,11 @@
 // Every judge gets the same requests, built with today's questions. Open questions come from the stored stand-in
 // judgments and the recorded runs, so the requests do not depend on the judge under test.
 //   node --env-file-if-exists=.env scripts/judge-bench.ts standin --repeat 3
-//   node --env-file-if-exists=.env scripts/judge-bench.ts jev --repeat 3      # needs TYPESAFE_API_KEY in .env
+//   node --env-file-if-exists=.env scripts/judge-bench.ts jev --repeat 3      # needs TYPESAFE_API_KEY or AI_GATEWAY_API_KEY in .env
 //   node scripts/judge-bench.ts --compare                                      # side by side, from the saved files
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import type { ChoiceA, Judgment, JudgeResponse, NoulA, ScoreA, Window } from '../src/engine/types.ts'
-import { jev } from '../src/judge/jev.ts'
+import { jev, jevRoute, NO_JEV_KEY } from '../src/judge/jev.ts'
 import { standin } from '../src/judge/standin.ts'
 import { DEFAULT_POLICY } from '../src/engine/policy.ts'
 import { buildRequest } from '../src/engine/questions.ts'
@@ -68,6 +68,7 @@ if (process.argv.includes('--compare')) {
 
 const judge = process.argv[2]
 if (judge !== 'standin' && judge !== 'jev') { console.error('usage: judge-bench.ts standin|jev [--repeat 3] [--concurrency 4], or --compare'); process.exit(1) }
+if (judge === 'jev' && !jevRoute()) { console.error(NO_JEV_KEY); process.exit(1) }
 const call: (r: Judgment['request']) => Promise<JudgeResponse> = judge === 'jev' ? jev : standin
 const REPEAT = Number(arg('--repeat') ?? 3)
 const CONCURRENCY = Number(arg('--concurrency') ?? 4)

@@ -1,4 +1,4 @@
-// Ring 1 and ring 2 with a fake `claude` on PATH: real git, real worktrees, real checks, no model.
+// Ring 1 and ring 2 with a fake `claude` and a fake `gh` on PATH: real git, real worktrees, real checks, no model, no network.
 //   npm test
 import { test, beforeEach } from 'node:test'
 import assert from 'node:assert/strict'
@@ -6,7 +6,7 @@ import { execFileSync } from 'node:child_process'
 import { mkdtempSync, mkdirSync, copyFileSync, chmodSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { createRunner, BudgetExceeded } from '../src/runner.ts'
+import { createRunner, BudgetExceeded, checkEnv } from '../src/runner.ts'
 
 const git = (cwd: string, ...a: string[]) => execFileSync('git', ['-C', cwd, ...a], { encoding: 'utf8' }).trim()
 
@@ -28,7 +28,7 @@ beforeEach(() => {
   git(repo, '-c', 'user.email=t@t', '-c', 'user.name=t', 'add', '-A')
   git(repo, '-c', 'user.email=t@t', '-c', 'user.name=t', 'commit', '-qm', 'init')
   log = join(base, 'calls.jsonl')
-  Object.assign(process.env, { FAKE_PLAN: 'ready', FAKE_EDIT: 'good', FAKE_REPAIR: 'fix', FAKE_LOG: log })
+  Object.assign(process.env, { FAKE_PLAN: 'ready', FAKE_EDIT: 'good', FAKE_REPAIR: 'fix', FAKE_LOG: log, FAKE_FORK: 'true' })
 })
 
 const runner = (over: Partial<Parameters<typeof createRunner>[0]> = {}) =>
@@ -125,6 +125,96 @@ test('ring 2 without a GitHub origin stays a dry run even when dry run is off', 
   const rf = runner({ prDryRun: false })
   await rf.start('L001', 'Add a retry.', [])
   assert.match(rf.openPr('L001'), /no GitHub origin remote/)
+})
+
+// Ring 2 for real, with no network: origin looks like GitHub for fetch, pushes go to a local bare repo, and `gh` is a fake.
+function fakeFork() {
+  const bare = join(base, 'fork.git')
+  execFileSync('git', ['init', '-q', '--bare', bare])
+  const ghLog = join(base, 'gh.log')
+  // `gh api repos/<repo> --jq .fork` answers FAKE_FORK; everything else is logged and answers with a PR URL.
+  writeFileSync(join(bin, 'gh'), `#!/bin/sh\nif [ "$1" = api ]; then echo "$FAKE_FORK"; exit 0; fi\necho "$@" >> "${ghLog}"\necho https://github.com/someone/bee-cli/pull/1\n`)
+  chmodSync(join(bin, 'gh'), 0o755)
+  return { bare, ghLog }
+}
+function pointAtFork(wt: string, bare: string) {
+  git(wt, 'remote', 'add', 'origin', 'https://github.com/someone/bee-cli.git')
+  git(wt, 'remote', 'set-url', '--push', 'origin', bare)
+  git(wt, 'config', 'user.email', 't@t')
+  git(wt, 'config', 'user.name', 't')
+}
+
+test('ring 2 for real: reruns the checks, commits, pushes the branch and opens the PR on the fork', async () => {
+  const { bare, ghLog } = fakeFork()
+  const rf = runner({ prDryRun: false })
+  await rf.start('L001', 'Add a retry.', [])
+  const wt = calls()[0].cwd
+  pointAtFork(wt, bare)
+  const head = git(repo, 'rev-parse', 'main')
+  assert.equal(rf.openPr('L001'), 'https://github.com/someone/bee-cli/pull/1')
+  const branch = git(wt, 'branch', '--show-current')
+  assert.match(git(bare, 'log', '--oneline', branch), /Add a retry\./)
+  assert.match(readFileSync(ghLog, 'utf8'), new RegExp(`^pr create --repo someone/bee-cli --base main --head ${branch} --title Add a retry\\.`))
+  assert.equal(git(repo, 'rev-parse', 'main'), head, 'main is untouched')
+})
+
+test('ring 2 for real: checks that fail at tick time commit and push nothing', async () => {
+  const { bare, ghLog } = fakeFork()
+  const rf = runner({ prDryRun: false })
+  await rf.start('L001', 'Add a retry.', [])
+  const wt = calls()[0].cwd
+  pointAtFork(wt, bare)
+  writeFileSync(join(wt, 'stream.js'), 'async function connect( {\n')
+  assert.match(rf.openPr('L001'), /^checks failed, nothing committed/)
+  assert.equal(git(bare, 'branch', '--list'), '')
+  assert.ok(!existsSync(ghLog), 'gh was never called')
+})
+
+test('ring 2 refuses to push to a repo that is not a fork', async () => {
+  const { bare, ghLog } = fakeFork()
+  process.env.FAKE_FORK = 'false'
+  const rf = runner({ prDryRun: false })
+  await rf.start('L001', 'Add a retry.', [])
+  pointAtFork(calls()[0].cwd, bare)
+  assert.match(rf.openPr('L001'), /^refused, nothing pushed: someone\/bee-cli is not a fork/)
+  assert.equal(git(bare, 'branch', '--list'), '')
+  assert.ok(!existsSync(ghLog))
+})
+
+test('ring 2 refuses a branch that changes .github/ and leaves it for a person', async () => {
+  const { bare } = fakeFork()
+  const rf = runner({ prDryRun: false })
+  await rf.start('L001', 'Add a retry.', [])
+  const wt = calls()[0].cwd
+  pointAtFork(wt, bare)
+  mkdirSync(join(wt, '.github', 'workflows'), { recursive: true })
+  writeFileSync(join(wt, '.github', 'workflows', 'ci.yml'), 'on: push\n')
+  git(wt, 'add', '-A')
+  assert.match(rf.openPr('L001'), /^refused, nothing pushed: the branch changes \.github\//)
+  assert.equal(git(bare, 'branch', '--list'), '')
+})
+
+test('a push that fails can be retried without a second commit', async () => {
+  const { bare } = fakeFork()
+  const rf = runner({ prDryRun: false })
+  await rf.start('L001', 'Add a retry.', [])
+  const wt = calls()[0].cwd
+  pointAtFork(wt, join(base, 'missing.git'))
+  assert.throws(() => rf.openPr('L001'))
+  git(wt, 'remote', 'set-url', '--push', 'origin', bare)
+  assert.equal(rf.openPr('L001'), 'https://github.com/someone/bee-cli/pull/1')
+  assert.equal(git(wt, 'rev-list', '--count', 'main..HEAD'), '1')
+})
+
+test('the checks run without your keys and tokens, and the agent runs restricted', async () => {
+  assert.deepEqual(Object.keys(checkEnv({ PATH: 'p', HOME: 'h', GH_TOKEN: 'x', ANTHROPIC_API_KEY: 'x', AI_GATEWAY_API_KEY: 'x', SSH_AUTH_SOCK: 'x' })), ['PATH', 'HOME'])
+  process.env.RF_TEST_TOKEN = 'secret'
+  try {
+    const r = await runner({ checkCmd: 'test -z "$RF_TEST_TOKEN" && node --check stream.js' }).start('L001', 'Add a retry.', [])
+    assert.match(r.diffStat!, /^checks pass/)
+  } finally { delete process.env.RF_TEST_TOKEN }
+  const args = calls()[0].args
+  assert.ok(args.includes('--restricted') && !args.includes('--setting-sources'))
 })
 
 test('two tasks run one at a time', async () => {

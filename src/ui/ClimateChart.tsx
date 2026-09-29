@@ -3,7 +3,7 @@ import type { ClimatePoint } from '../engine/engine.ts'
 import type { EngineEvent, Window } from '../engine/types.ts'
 import { hhmm, ms } from './time.ts'
 
-const W = 640, H = 230, L = 84, R = 12, T = 22, B = 26
+const W = 640, H = 230, L = 84, R = 22, T = 22, B = 26
 const LEVELS = ['relaxed', 'working', 'pressured', 'tense', 'acute']
 
 export function ClimateChart(props: {
@@ -63,15 +63,15 @@ export function ClimateChart(props: {
         {[0, 1, 2, 3, 4].map((v) => (
           <g key={v}>
             <line x1={L} x2={W - R} y1={y(v)} y2={y(v)} stroke="var(--border)" strokeWidth={1} />
-            <text x={L - 6} y={y(v) + 4} textAnchor="end" fontSize={10} fill="var(--muted)" fontFamily="var(--mono)">{v} {LEVELS[v]}</text>
+            <text x={L - 6} y={y(v) + 4} textAnchor="end" fontSize={12} fill="var(--muted)" fontFamily="var(--mono)">{v} {LEVELS[v]}</text>
           </g>
         ))}
         <line x1={L} x2={W - R} y1={y(holdAt)} y2={y(holdAt)} stroke="var(--hold-ink)" strokeDasharray="4 4" strokeWidth={1} />
-        <text x={W - R} y={y(holdAt) - 4} textAnchor="end" fontSize={10} fill="var(--hold-ink)">hold at {holdAt}</text>
+        <text x={W - R} y={y(holdAt) - 4} textAnchor="end" fontSize={12} fill="var(--hold-ink)">hold at {holdAt}</text>
         <line x1={L} x2={W - R} y1={y(releaseBelow)} y2={y(releaseBelow)} stroke="var(--border-strong)" strokeDasharray="2 4" strokeWidth={1} />
-        <text x={W - R} y={y(releaseBelow) + 12} textAnchor="end" fontSize={10} fill="var(--muted)">release below {releaseBelow}</text>
+        <text x={W - R} y={y(releaseBelow) + 12} textAnchor="end" fontSize={12} fill="var(--muted)">release below {releaseBelow}</text>
         {hours.map((t) => (
-          <text key={t} x={x(t)} y={H - 8} textAnchor="middle" fontSize={10} fill="var(--muted)" fontFamily="var(--mono)">{hhmm(t)}</text>
+          <text key={t} x={x(t)} y={H - 8} textAnchor="middle" fontSize={12} fill="var(--muted)" fontFamily="var(--mono)">{hhmm(t)}</text>
         ))}
         <path d={path} fill="none" stroke="var(--accent)" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
         {points.map((p) => p.media ? (

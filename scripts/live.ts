@@ -5,7 +5,7 @@
 // $BEE_CAPTURE_DIR/ringfence/, outside every git repo, because it holds your real speech.
 //   node --env-file-if-exists=.env scripts/live.ts             # dry run: prints what it would do, writes nothing
 //   node --env-file-if-exists=.env scripts/live.ts --effects   # also writes Bee todos (these can buzz your phone)
-//   add --standin to judge with Claude Haiku when no TYPESAFE_API_KEY is set
+//   add --standin to judge with Claude Haiku; without a Jev key (TYPESAFE_API_KEY or AI_GATEWAY_API_KEY) it is the default
 //   add --execute --repo <path> to run ring-1 agents for real on that repo, in worktrees under ~/.ringfence/worktrees (or set RINGFENCE_REPO)
 //   add --from fixtures/day.events.jsonl to replay a recorded stream instead (for testing); PRs are then always a dry run
 //   add --auto-tick with --from to approve every PR request at once (testing only)
@@ -21,17 +21,18 @@ import { createServer } from 'node:http'
 import { homedir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { createInterface } from 'node:readline'
+import { StringDecoder } from 'node:string_decoder'
 import type { AgentRun, EngineEvent, Judgment, Utterance, Window } from '../src/engine/types.ts'
 import { buildRequest } from '../src/engine/questions.ts'
-import { openQuestionsAt, replay } from '../src/engine/engine.ts'
+import { eventKey, openQuestionsAt, replay } from '../src/engine/engine.ts'
 import { DEFAULT_POLICY } from '../src/engine/policy.ts'
-import { jev } from '../src/judge/jev.ts'
+import { jev, jevRoute } from '../src/judge/jev.ts'
 import { standin } from '../src/judge/standin.ts'
 import { createTodo, changedSince } from '../src/bee.ts'
 import { createRunner } from '../src/runner.ts'
 
 const EFFECTS = process.argv.includes('--effects')
-const STANDIN = process.argv.includes('--standin') || !process.env.TYPESAFE_API_KEY
+const STANDIN = process.argv.includes('--standin') || !jevRoute()
 const arg = (name: string) => (process.argv.includes(name) ? process.argv[process.argv.indexOf(name) + 1] : null)
 const FROM = arg('--from')
 const EXECUTE = process.argv.includes('--execute')
@@ -65,11 +66,15 @@ const windows: Window[] = []
 const judgments: Record<string, Judgment> = {}
 const approvals: Record<string, string> = {}
 const beeTodoOf: Record<string, string> = {} // engine todoId -> Bee todo id
-let emitted = 0
+const shown = new Set<string>() // event keys already acted on: a replay can insert events, so never count by position
 let windowSeq = 0
 let buffer: Utterance[] = []
 let lastChunk = Date.now()
-let busy = Promise.resolve()
+let busy: Promise<unknown> = Promise.resolve()
+// Every step runs in turn. A failed step is logged and the next one still runs.
+const enqueue = (fn: () => Promise<unknown>) => {
+  busy = busy.then(fn).catch((e: Error) => { console.error(`step failed: ${e.message}`); log({ kind: 'error', error: e.message }) })
+}
 
 console.log(`ringfence live. judge=${STANDIN ? 'standin:claude-haiku (NOT Jev)' : 'jev'} effects=${EFFECTS ? 'ON: writes Bee todos' : 'off (dry run)'} agents=${EXECUTE ? `RUN on ${resolve(REPO!)}, worktrees in ~/.ringfence/worktrees` : 'printed only'}`)
 console.log(`log: ${logFile}\nnotes: ${notesFile}`)
@@ -108,22 +113,30 @@ async function emitNew() {
 
 async function emitEvents() {
   const r = replay(windows, judgments, runs, DEFAULT_POLICY, approvals, new Date().toISOString(), { executeRuns: MODE })
-  const fresh = r.events.slice(emitted)
-  emitted = r.events.length
-  for (const e of fresh) {
+  for (const e of r.events) {
+    const key = eventKey(e)
+    if (shown.has(key)) continue
     console.log(`  ring ${e.ring ?? '-'} ${e.kind}${e.held ? ' [held]' : ''}: ${e.text}`)
     const writes = EFFECTS && e.bee?.startsWith('bee todos') && !e.held && e.todoId
     if (e.bee && !runner) console.log(`    ${writes ? 'RUN' : 'would run'}: ${e.bee}`)
     if (writes) {
-      const text = /--text "([^"]*)"/.exec(e.bee!)?.[1] ?? e.text
-      const todo = await createTodo(`[ringfence] ${text}`, e.kind === 'exhale.nudge' ? new Date(Date.now() + 5000).toISOString() : undefined)
-      beeTodoOf[e.todoId!] = String(todo.id)
-      log({ kind: 'bee.todo', engineTodoId: e.todoId, bee: todo })
+      const text = /--text "(.*)"(?: --alarm-at \S+)?$/.exec(e.bee!)?.[1] ?? e.text
+      try {
+        const todo = await createTodo(`[ringfence] ${text}`, e.kind === 'exhale.nudge' ? new Date(Date.now() + 5000).toISOString() : undefined)
+        beeTodoOf[e.todoId!] = String(todo.id)
+        log({ kind: 'bee.todo', engineTodoId: e.todoId, bee: todo })
+      } catch (err) {
+        // Not marked as shown, so the next replay tries this todo again.
+        console.error(`    Bee todo failed, will retry: ${(err as Error).message}`)
+        log({ kind: 'bee.error', engineTodoId: e.todoId, error: (err as Error).message })
+        continue
+      }
     }
+    shown.add(key)
     if (AUTO_TICK && e.kind === 'pr.proposed' && e.todoId) {
       approvals[e.todoId] = new Date().toISOString()
       console.log(`    auto-tick (testing): approved ${e.todoId}`)
-      busy = busy.then(emitNew)
+      enqueue(emitNew)
     }
     if (TEST_ANSWER && e.kind === 'agent.question') spokenReplies.push(TEST_ANSWER)
     // Ring 0: a note to self. Private, so it lives next to the capture, never in a repo.
@@ -152,10 +165,10 @@ function act(e: EngineEvent) {
     if (facts.length) console.log(`    agent: grounded with ${facts.length} observed event shape(s)`)
     runner.start(taskWindow, e.task, context, facts)
       .then((run) => {
-        runs[taskWindow] = run
+        runs[taskWindow] = { ...run, finishedAt: new Date().toISOString() }
         console.log(`    agent: ${run.question ? `asks "${run.question}"` : run.diffStat} (${(run.durationMs / 1000).toFixed(0)} s, US$${run.costUsd.toFixed(2)})`)
         log({ kind: 'agent.run', run })
-        busy = busy.then(emitNew)
+        enqueue(emitNew)
       })
       .catch((err: Error) => { console.error(`    agent failed: ${err.message}`); log({ kind: 'agent.error', window: taskWindow, error: err.message }) })
   }
@@ -165,10 +178,10 @@ function act(e: EngineEvent) {
     console.log(`    agent: resuming with "${answer}" (file tools, no shell)`)
     runner.resume(taskWindow, answer)
       .then((res) => {
-        runs[taskWindow] = { ...runs[taskWindow], resume: res }
+        runs[taskWindow] = { ...runs[taskWindow], resume: { ...res, finishedAt: new Date().toISOString() } }
         console.log(`    agent: ${res.diffStat} (${(res.durationMs / 1000).toFixed(0)} s, US$${res.costUsd.toFixed(2)})`)
         log({ kind: 'agent.resume', window: taskWindow, res })
-        busy = busy.then(emitNew)
+        enqueue(emitNew)
       })
       .catch((err: Error) => { console.error(`    agent resume failed: ${err.message}`); log({ kind: 'agent.error', window: taskWindow, error: err.message }) })
   }
@@ -251,18 +264,19 @@ async function pollApprovals() {
       log({ kind: 'approval', engineId, bee: t })
     }
   }
-  if (ticked) busy = busy.then(emitNew)
+  if (ticked) enqueue(emitNew)
 }
 
 // Tail the newest capture file. On first sight start at its end, so old capture is not re-judged; a newer file is read whole.
 function tailCapture() {
   let file: string | null = null, offset = 0, rest = '', warned = false
+  let decoder = new StringDecoder('utf8') // keeps a character split across two reads whole
   setInterval(() => {
     if (!existsSync(CAPTURE_DIR)) return
     const newest = readdirSync(CAPTURE_DIR).filter((f) => f.endsWith('.jsonl')).map((f) => join(CAPTURE_DIR, f))
       .sort((a, b) => statSync(b).mtimeMs - statSync(a).mtimeMs)[0]
     if (!newest) { if (!warned) console.log(`waiting for a capture file in ${CAPTURE_DIR}`); warned = true; return }
-    if (newest !== file) { offset = file === null ? statSync(newest).size : 0; file = newest; rest = ''; console.log(`tailing ${file}`) }
+    if (newest !== file) { offset = file === null ? statSync(newest).size : 0; file = newest; rest = ''; decoder = new StringDecoder('utf8'); console.log(`tailing ${file}`) }
     const size = statSync(file).size
     if (size < offset) offset = 0
     if (size === offset) return
@@ -271,7 +285,7 @@ function tailCapture() {
     readSync(fd, buf, 0, buf.length, offset)
     closeSync(fd)
     offset = size
-    const lines = (rest + buf.toString('utf8')).split('\n')
+    const lines = (rest + decoder.write(buf)).split('\n')
     rest = lines.pop() ?? ''
     for (const line of lines) {
       if (!line.startsWith('{')) continue
@@ -312,7 +326,7 @@ async function fromFile(file: string) {
 if (FROM) fromFile(FROM)
 else {
   console.log(`capture: ${CAPTURE_DIR}`)
-  setInterval(() => { if (buffer.length >= 3 && Date.now() - lastChunk > FLUSH_MS) closeWindow() }, 15_000)
-  setInterval(() => { busy = busy.then(pollApprovals) }, 10_000)
+  setInterval(() => { if (buffer.length >= 3 && Date.now() - lastChunk > FLUSH_MS) { closeWindow(); lastChunk = Date.now() } }, 15_000)
+  setInterval(() => enqueue(pollApprovals), 10_000)
   tailCapture()
 }
