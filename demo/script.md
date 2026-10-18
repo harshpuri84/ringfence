@@ -1,31 +1,32 @@
-# Demo: 3 minutes
+# Demo script: target 2:40
 
-Screen: the live dashboard (`http://localhost:5188/?live`) on the left, a terminal on the right, the phone with the Bee app on camera. Live mode runs with `--execute --repo <bee-cli fork> --effects` and `RINGFENCE_CHECK` set to the repo's checks. Everything spoken is public: it is about building this project.
+Working recording plan, not a finished video. Confirm the actual event's duration, host, language, device and branding requirements before uploading. A previous review recorded a three-minute limit; it was not verified live on 18 October.
 
-Two takes. Take A is the live run: say only the lines from `demo/lines.json`, near the watch. Take B is the voice-over, recorded with the watch off, because Bee hears the narration too, and narration phrased as an instruction can start an agent. A single live take runs 8 to 12 minutes: Bee closes a segment one to three minutes after you speak, the judge takes 16 to 92 s a window, and a tick takes about 35 s to reach the changefeed. The video cuts those waits and keeps a clock on screen, so the cuts are visible.
+## Record the evidence first
 
-Rehearse without the watch: `node scripts/build-rehearsal.ts`, then `npm run live -- --standin --execute --repo <fork> --from demo/rehearsal.jsonl --answer "<rehearsal_answer from demo/lines.json>" --stay`.
+Take A: record Bee on the intended device, the phone and the live terminal/dashboard using only the public test lines in `demo/lines.json`. Use a disposable environment and a fork you control. Set `RINGFENCE_CHECK` to the trusted repository checks before running `--execute --effects`. This incurs model calls and writes real Bee todos. Inspect the worktree diff before ticking. Capture the actual PR URL and checked branch. Do not imply that a replay tick is a real GitHub publication.
 
-| Time | On screen | Said (take B unless marked) |
+Take B: record narration with Bee capture off. The raw take may take 8–12 minutes because segments, inference and the changefeed add latency. Cut the waits with a visible “wait shortened” label or timestamps. Preserve the sequence and show failures honestly. No private conversations, account pages, tokens, copyrighted clips or music are needed.
+
+## Edit and narration
+
+| Time | Evidence on screen | Voice-over |
 |---|---|---|
-| 0:00 | Watch on wrist. Dashboard at `/?live`, empty | "Bee hears my whole day. Most apps turn that into notes. Ringfence turns it into work, inside three rings." |
-| 0:08 | Explainer hero: the rings and the thesis line | "Speech is ambiguous, so I don't try to guess right every time. I make being wrong cheap. Ring 0 only touches me. Ring 1 is a sandbox branch I can delete. Ring 2 leaves my machine, and never without my tick." |
-| 0:25 | Take A, walking: the reflection segment from `lines.json`. CUT to the window with its Jev answers (they land 16 to 92 s after the window) | (the two reflection lines) |
-| 0:36 | The new window opens its "Asked Jev" view: the intent row, note above the 0.5 mark | "Every window goes to Jev, TypeSafe's classifier: typed questions in, probabilities out. Code owns the thresholds. Jev says note, so ring 0 writes one line to a private file. Until my Jev key works, a labelled Claude stand-in answers the same questions. The badge says so." |
-| 0:55 | Take A: the task line | (the task line) |
-| 1:05 | "Asked Jev": intent task over 0.6, the task line, self-contained over 0.5. Terminal: `agent.started`, then "grounded with N observed event shape(s)" | "A task that names what to change, so ring 1 starts an agent on its own branch. Bee never documented this event. Ringfence has seen it on the stream, so the agent gets the real shape, with my words redacted." |
-| 1:22 | CUT. Phone: "Agent asks: …" todo. Take A: the `rehearsal_answer` line. Terminal: `agent.resumed` | "It planned with read-only tools and asked me a question. I answer out loud. Jev matches my answer to the open question, and the same session carries on." If it asks nothing: "It planned with read-only tools, asked nothing, and builds." |
-| 1:49 | CUT. Terminal: checks pass. Phone: "Branch ready … checks pass", then "Open PR … Tick to approve" | "It built with file tools only. No shell. Ringfence ran the repo's own checks before anything reached my phone." |
-| 2:00 | Phone: tick. CUT about 35 s, clock visible. Terminal: "tick seen in changefeed", then the PR URL. Browser: the PR on the fork | "I tick. Bee's stream never sends todo events, so Ringfence reads my tick from the changefeed. Now, and only now, a pull request opens on my fork." |
-| 2:15 | Explainer: the media meter at 0.70 over the 0.6 mark, then the real-day table | "On 25 September a YouTube Short nearby told my wearable to read my Instagram history. The media question scored 0.70, over the cut-off, and nothing ran. That whole day, 596 lines, one agent would have started: the task I read out for this demo." |
-| 2:36 | Dashboard: "What Amazon could ship", five rows | "Where the vision hits Bee's limits, it says so. Five requests, each measured: todo events on the stream, alerts on the watch, media tags, speaker identity, and chunks over REST." |
-| 2:50 | GitHub: bee-cli #16 and #17, then the ringfence repo | "Two fixes to Bee's CLI are open upstream. Ringfence is MIT, and my friction log goes in with the entry." |
-| 2:58 | End card | |
+| 0:00–0:15 | Cold open: actual spoken task, then the branch appearing. Label elapsed time across the cut. | “I'm away from the keyboard, talking through a bug. Ringfence hears a specific task through Bee and starts preparing the work. Here is the branch it made.” |
+| 0:15–0:32 | Three rings and the task in the dashboard. | “Ideas become notes. Tasks get their own branch. Publishing needs my review and a tick in Bee. The classifier estimates what I said; code decides what can happen.” |
+| 0:32–0:55 | Planning terminal; real clarification todo on the phone; spoken reply. | “The agent first reads and plans. When it needs a decision, it asks through Bee. I answer out loud. The reply has to match its open question before that same session continues.” If no question occurs, show the real direct-build path and use the recorded clarification path separately, with a label. |
+| 0:55–1:16 | Changed files and configured checks passing. | “The agent edits with file tools. Ringfence runs the checks and gives it one chance to repair a failure. An empty result is discarded. Missing or failed checks cannot ask to publish.” |
+| 1:16–1:43 | Review the actual diff; phone approval showing target/files; tick; cut the wait; actual PR URL on the fork. | “I review the diff, then tick. The publisher checks the fork, destination and exact completed result. If the work changed, it refuses. Otherwise it pushes that commit and opens the pull request. This is the point where the work becomes public.” |
+| 1:43–2:03 | Synthetic media and fragment windows, clearly labelled replay. | “Not everything heard is a request. This replay shows a nearby video and a reply fragment being ignored. The current demo uses a labelled Claude stand-in for the classifier. It is imperfect, which is why publication is a separate decision.” |
+| 2:03–2:20 | Rings and README safety boundary. | “Separate branches protect the main checkout. Checks still run on the host, so this is a prototype for trusted, disposable environments. Speech goes to model providers before approval; the tick gates publication.” |
+| 2:20–2:34 | Public friction summary, then the two upstream PRs. | “Building this exposed useful Bee improvements: durable segments, media provenance, speaker identity and better approval delivery. Two CLI fixes are open upstream, with a public friction summary.” |
+| 2:34–2:40 | End card: Ringfence, repository. | “Say the task. Review the work. Approve the pull request.” |
 
-Notes for the take:
-- The agent does not always ask a question. Both paths are in the script, and both were tested on 26 September on the fork.
-- If the agent's first pass is wrong, keep it: the review and the ring-2 tick are the point.
-- Ring 1 is set to auto for the demo. If the "Agent trust" control is in frame, say so.
-- Alerts arrive on the phone, not the watch. Show the phone for questions and ticks; the watch appears only as the microphone.
-- Before recording, tick one real "Open PR" on the fork once. The commit, push and `gh pr create` path is tested against a local repo, not yet against GitHub.
-- If a Jev key arrives before recording, drop the stand-in sentence at 0:36 and run `npm run judge` so the scripted day matches.
+## Before export
+
+- Keep the central proof: a real device task, an inspectable change, passing checks and an actual approval-to-PR outcome. Do not replace this with only an animation or the scripted dashboard.
+- Keep the synthetic and stand-in labels visible whenever using the replay. Recorded agent runs are from 26 September; they do not prove the current publisher ran on GitHub.
+- Show the watch/device as the microphone and the phone for notifications. Watch alert delivery was not demonstrated.
+- Do not call the private branch a security sandbox or imply all data stays local before approval.
+- Target 2:40 including titles and end card, leaving buffer if the event limit is confirmed as 3:00. Verify the exported duration with `ffprobe` and check the uploaded URL while signed out.
+- Add the final URL to `devpost-submission.md`.

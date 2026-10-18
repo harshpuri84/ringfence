@@ -1,6 +1,6 @@
 # Testing Ringfence
 
-Two layers. The automated tests need no Bee, no model and no network. The live test needs a Bee, a phone and about 20 minutes.
+Two test layers, plus a shadow-day replay and classifier benchmark. The automated tests need no Bee, no model and no network. The live test needs a Bee, a phone and about 20 minutes.
 
 ## 1. Automated tests
 
@@ -10,8 +10,10 @@ npm test
 
 | File | What it proves |
 |---|---|
-| `test/engine.test.ts` (20 tests) | The rules, with hand-made judgments: notes, media skipped, fragments gated, answer-first, the 90-minute answer window, binning, no pull request for failing checks, the tick, the ring-1 cap, shadow trust, the address word, the manners hold and release, the ring-2 ceiling, and ids that stay stable when a run reports late |
-| `test/runner.test.ts` (18 tests) | Ring 1 and ring 2 with a fake `claude` and a fake `gh` on `PATH`, real git and real checks, no network: read-only planning, a build pass with no shell, question and resume in the same session, the denial guard, one repair pass, `CHECKS FAIL`, the daily budget, pull requests only to the fork, the real commit-push-PR path against a local bare repo, nothing committed when checks fail at tick time, refusing a non-fork origin or a branch that changes `.github/`, retrying a failed push, checks without your keys, the agent in restricted mode, one agent at a time |
+| `test/engine.test.ts` | The rules, with hand-made judgments: notes, media skipped, fragments gated, answer-first, the 90-minute answer window, binning, no pull request for failing checks, the tick, the ring-1 cap, shadow trust, the address word, the manners hold and release, the ring-2 ceiling, and ids that stay stable when a run reports late |
+| `test/runner.test.ts` | Ring 1 and ring 2 with a fake `claude` and a fake `gh` on `PATH`, real git and real checks, no network: read-only planning, a build pass with no shell, question and resume in the same session, the denial guard, one repair pass, `CHECKS FAIL`, the daily budget, pull requests only to the fork, the real commit-push-PR path against a local bare repo, nothing committed when checks fail at tick time, refusing a non-fork origin or a branch that changes `.github/`, retrying a failed push, checks without your keys, the agent in restricted mode, one agent at a time |
+
+| `test/judge.test.ts` | Complete classifier contracts, missing/non-finite answers, invented options, invalid distributions and compatibility with the stored stand-in responses. |
 
 The tests were checked by breaking the code on purpose (28 September 2026): removing the `CHECKS FAIL` rule fails 1 engine test, removing the fragment gate fails 2, reverting live mode's late-run fix fails 1, and removing the check environment's key stripping or the fork check fails 1 runner test each.
 
@@ -48,7 +50,7 @@ Things that are expected and are not bugs:
 - A result that says `CHECKS FAIL` never gets an "Open PR" todo. That is the rule working.
 - The fourth task inside an hour is `agent.capped`.
 
-Cost, measured 25 to 26 September 2026: an agent run cost US$0.07 to US$0.30, from plan to checked branch. The Claude Haiku stand-in judge cost about US$0.036 a window through `claude -p`. Live mode stops agents at US$5 a day (`RINGFENCE_MAX_USD_PER_DAY`).
+Cost, measured 25 to 26 September 2026: an agent run cost US$0.07 to US$0.30, from plan to checked branch. The Claude Haiku stand-in judge cost about US$0.036 a window through `claude -p`. Live mode checks the US$5 daily admission threshold before each agent pass (`RINGFENCE_MAX_USD_PER_DAY`). A pass can cross it; classifier calls and failed-pass costs are not covered.
 
 ### After the test
 
@@ -81,3 +83,12 @@ node scripts/judge-bench.ts standin --repeat 3
 node --env-file-if-exists=.env scripts/judge-bench.ts jev --repeat 3   # needs TYPESAFE_API_KEY or AI_GATEWAY_API_KEY
 node scripts/judge-bench.ts --compare
 ```
+
+
+## Publication audit regressions (18 October)
+
+The suite now validates full model response contracts and exercises publication against a local bare Git repository. It rejects changed targets, differing or multiple push URLs, protected paths already committed on the starting branch, check-created changes, missing checks, changed results and unrelated commits after a failed push. Successful publication is idempotent within the process. A test transport redirects only the explicit verified GitHub push URL to a local bare repository; no GitHub API write occurs.
+
+Approval requires a passing configured check and a result whose branch, HEAD, tree and target still match. The todo includes target, changed-file list and tree fingerprint; inspect the actual worktree diff before ticking. Worktrees and scrubbed environments are not an OS sandbox. Checks still execute repository code on your host; use a disposable environment for untrusted tasks.
+
+The old September runs remain historical evidence. Re-run the live test with the current publisher before recording a device demo. The replay, screenshots and offline Git tests alone do not demonstrate a fresh tick-to-GitHub path.

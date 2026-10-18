@@ -41,7 +41,7 @@ function judge(id: string, j: J): Judgment {
 }
 
 function run(windowId: string, extra: Partial<AgentRun> = {}): AgentRun {
-  return { taskWindowId: windowId, task: 't', mode: 'plan', branch: `agent/${windowId}`, durationMs: 30_000, costUsd: 0.05, model: 'test', summary: '', recorded: true, diffStat: '1 file changed, 5 insertions(+), not committed', ...extra }
+  return { taskWindowId: windowId, task: 't', mode: 'plan', branch: `agent/${windowId}`, durationMs: 30_000, costUsd: 0.05, model: 'test', summary: '', recorded: true, diffStat: 'checks pass, 1 file changed, 5 insertions(+), not committed', ...extra }
 }
 
 const kinds = (events: { kind: string }[]) => events.map((e) => e.kind)
@@ -78,7 +78,7 @@ test('an answer to an open question resumes that agent, even when labelled a tas
   const task = win('w1', 0, 'Make the stream show chunk events.')
   const reply = win('w2', 120, 'Each event has a chunks array. Go ahead.')
   const js = { w1: judge('w1', { intent: { task: 1 } }), w2: judge('w2', { intent: { task: 0.75, answer: 0.15, none: 0.1 }, answerTo: { q1: 0.85, none: 0.15 } }) }
-  const r = replay([task, reply], js, { w1: run('w1', { question: 'What is the payload?', resume: { durationMs: 20_000, costUsd: 0.03, model: 'test', diffStat: '1 file changed' } }) }, policy())
+  const r = replay([task, reply], js, { w1: run('w1', { question: 'What is the payload?', resume: { durationMs: 20_000, costUsd: 0.03, model: 'test', diffStat: 'checks pass, 1 file changed' } }) }, policy())
   assert.deepEqual(kinds(r.events), ['agent.started', 'agent.question', 'agent.resumed', 'agent.result', 'pr.proposed'])
 })
 
@@ -213,4 +213,33 @@ test('every event of the scripted day has its own key', () => {
   const r = replay(windows, judgments, runs, policy({ exhale: { ...DEFAULT_POLICY.exhale, enabled: true } }))
   const keys = r.events.map(eventKey)
   assert.equal(new Set(keys).size, keys.length)
+})
+
+test('an unchecked result never requests approval', () => {
+  const w = win('w1', 0, 'Add retries to the stream client.')
+  const r = replay([w], { w1: judge('w1', { intent: { task: 1 } }) }, { w1: run('w1', { diffStat: 'CHECKS NOT RUN, 1 file changed' }) }, policy())
+  assert.deepEqual(kinds(r.events), ['agent.started', 'agent.result'])
+})
+
+test('a task without a matching utterance never falls back to the whole conversation', () => {
+  const w = win('w1', 0, 'Context only.')
+  const j = judge('w1', { intent: { task: 1 } })
+  j.response.answers.task_line = { type: 'choice', choice: 'none', probabilities: { none: 1 } }
+  const r = replay([w], { w1: j }, {}, policy())
+  assert.deepEqual(kinds(r.events), ['agent.shadow'])
+})
+
+test('the address word must occur as a word in the matched request', () => {
+  const w = win('w1', 0, 'Unringfenced, add retries.', 'Ringfence is the app name.')
+  const r = replay([w], { w1: judge('w1', { intent: { task: 1 } }) }, {}, policy({ requireAddress: true }))
+  assert.deepEqual(kinds(r.events), ['agent.shadow'])
+})
+
+
+test('live execution refuses a legacy judgment missing the fragment gate', () => {
+  const w = win('w1', 0, 'Add retries to the stream client.')
+  const j = judge('w1', { intent: { task: 1 } })
+  delete (j.response.answers as Record<string, unknown>).task_self_contained
+  const r = replay([w], { w1: j }, {}, policy(), {}, undefined, { executeRuns: 'live' })
+  assert.deepEqual(kinds(r.events), ['agent.shadow'])
 })
