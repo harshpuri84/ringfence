@@ -64,6 +64,10 @@ Open http://localhost:5188. The page starts at the end of a synthetic day. Inspe
 
 The test suite uses real Git/worktrees with fake Claude and GitHub commands; no model calls or external publication occur. `npm run check` reports stored classifier accuracy, including misses; it is a diagnostic, not a quality certification. [TESTING.md](TESTING.md) documents the separate live device test.
 
+## Existing Devpost Entry
+
+The participant supplied a private Devpost entry-management link after this packet was drafted. It is retained locally outside the public repository. It is not a public project or demo URL. The connected browser redirects to sign-in and the connector still returns an internal error, so the entry's saved write-up, assets, registration and publication status have not been verified. This audit has not changed or finalized that entry. Reuse the existing entry once authenticated rather than creating a duplicate.
+
 ## Public Demo Link
 
 PENDING: no hosted replay URL is configured. The reproducible local dashboard above is available without Bee or credentials. Do not treat localhost as a public demo link.
