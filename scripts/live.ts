@@ -30,6 +30,7 @@ import { jev, jevRoute } from '../src/judge/jev.ts'
 import { standin } from '../src/judge/standin.ts'
 import { createTodo, changedSince } from '../src/bee.ts'
 import { createRunner } from '../src/runner.ts'
+import { validateResponse } from '../src/judge/validate.ts'
 
 const EFFECTS = process.argv.includes('--effects')
 const STANDIN = process.argv.includes('--standin') || !jevRoute()
@@ -97,7 +98,7 @@ async function judgeAndAct(w: Window) {
   const openQuestions = openQuestionsAt(windows, judgments, runs, DEFAULT_POLICY, w.endedAt, { executeRuns: MODE })
   const request = buildRequest(w, { previousSummary: windows.at(-1)?.chunkText, openQuestions, now: w.endedAt })
   const t0 = Date.now()
-  const response = STANDIN ? await standin(request) : await jev(request)
+  const response = validateResponse(request, STANDIN ? await standin(request) : await jev(request))
   windows.push(w)
   judgments[w.id] = { windowId: w.id, judge: STANDIN ? 'standin:claude-haiku' : response.model, latencyMs: Date.now() - t0, request, response }
   log({ kind: 'window', window: w, judgment: judgments[w.id] })

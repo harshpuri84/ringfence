@@ -63,6 +63,8 @@ export interface OpenQuestion {
   askedAt: string
 }
 
+export interface AgentReview { repo: string; files: string[]; tree: string }
+
 // A recorded or live ring-1 agent run.
 export interface AgentRun {
   taskWindowId: string
@@ -73,11 +75,12 @@ export interface AgentRun {
   costUsd: number
   model: string
   question?: string
-  resume?: { durationMs: number; costUsd: number; model: string; diffStat: string; finishedAt?: string }
+  resume?: { durationMs: number; costUsd: number; model: string; diffStat: string; finishedAt?: string; review?: AgentReview }
   diffStat?: string
   summary: string
   recorded: boolean
   finishedAt?: string // live mode: when the runner reported, so its events land after what was already shown
+  review?: AgentReview
 }
 
 export type Ring = 0 | 1 | 2

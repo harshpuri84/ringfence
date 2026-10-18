@@ -36,15 +36,20 @@ interface RunRecord {
   error?: string
   pr?: string
   said?: string[] // the agent's final message from each pass, for the audit trail
+  baseHead: string
+  targetRepo?: string
+  reviewedTree?: string
+  publishCommit?: string // retained when a push fails, so retrying cannot publish unrelated commits
 }
 
 const READ_ONLY = ['Read', 'Grep', 'Glob']
 const FILE_TOOLS = ['Read', 'Grep', 'Glob', 'Edit', 'Write']
 
-const slug = (s: string) =>
-  s.toLowerCase().replace(/[^a-z0-9 ]/g, '').split(' ').filter((x) => x.length > 2).slice(0, 3).join('-') || 'task'
-
 export class BudgetExceeded extends Error {}
+
+// Match the whole URL: a hostname ending in "github.com" is not necessarily GitHub.
+export const githubRepo = (url: string): string | undefined =>
+  /^(?:https:\/\/github\.com\/|git@github\.com:|ssh:\/\/git@github\.com\/)([\w.-]+\/[\w.-]+?)(?:\.git)?$/.exec(url)?.[1]
 
 // The checks run code the agent wrote, as you. They get your environment without its keys and tokens.
 // Files you can read, they can read: point Ringfence at repos you would let a contractor run tests on.
@@ -55,6 +60,7 @@ export function checkEnv(env: NodeJS.ProcessEnv = process.env): NodeJS.ProcessEn
 }
 
 export function createRunner(cfg: RunnerConfig) {
+  if (!Number.isFinite(cfg.maxUsdPerDay) || cfg.maxUsdPerDay < 0) throw new Error('maxUsdPerDay must be finite and non-negative')
   mkdirSync(dirname(cfg.stateFile), { recursive: true })
   // Audit trail of every run across restarts, keyed by a unique run key. Window ids restart at L001 each process,
   // so this process keeps its own window -> run key index. A restarted process does not pick old runs back up.
@@ -77,6 +83,7 @@ export function createRunner(cfg: RunnerConfig) {
   }
 
   function claude(cwd: string, tools: string[], prompt: string, resume?: string): Promise<Pass> {
+    if (spentToday() >= cfg.maxUsdPerDay) throw new BudgetExceeded(`daily agent budget of US$${cfg.maxUsdPerDay} reached`)
     const args = ['-p', '--output-format', 'json', '--model', cfg.model, '--tools', tools.join(','),
       '--permission-mode', tools.includes('Edit') ? 'acceptEdits' : 'default',
       // --restricted ignores settings files, so hooks the agent writes into the target repo's .claude/ never run.
@@ -101,6 +108,9 @@ export function createRunner(cfg: RunnerConfig) {
   }
 
   const git = (cwd: string, ...args: string[]) => execFileSync('git', ['-C', cwd, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim()
+  const targetRepo = (cwd: string) => {
+    try { return githubRepo(git(cwd, 'remote', 'get-url', 'origin')) } catch { return undefined }
+  }
 
   // Ringfence runs the repo's checks itself: the agent has no shell.
   function runChecks(wt: string): { ok: boolean; output: string } | null {
@@ -127,16 +137,23 @@ export function createRunner(cfg: RunnerConfig) {
       check = runChecks(r.worktree)
     }
     git(r.worktree, 'add', '-A') // checks may write build output; stage only what git does not ignore
-    const verdict = check ? (check.ok ? 'checks pass, ' : 'CHECKS FAIL, ') : ''
+    if (!git(r.worktree, 'diff', '--cached', '--shortstat')) return 'no edits'
+    r.reviewedTree = git(r.worktree, 'write-tree')
+    const verdict = check ? (check.ok ? 'checks pass, ' : 'CHECKS FAIL, ') : 'CHECKS NOT RUN, '
     return `${verdict}${git(r.worktree, 'diff', '--cached', '--shortstat')}, not committed`
   }
 
   const questionOf = (text: string) => /^\s*QUESTION:\s*(.+)$/m.exec(text)?.[1]?.trim()
 
-  const toAgentRun = (r: RunRecord, plan: Pass, edit?: Pass): AgentRun => ({
+  const reviewOf = (r: RunRecord): AgentRun['review'] => {
+    if (!r.reviewedTree) return undefined
+    return { repo: r.targetRepo ?? 'local repository', files: git(r.worktree, 'diff', '--cached', '--name-only', '-z').split('\0').filter(Boolean), tree: r.reviewedTree }
+  }
+
+  const toAgentRun = (r: RunRecord, plan: Pass): AgentRun => ({
     taskWindowId: r.windowId, task: r.task, mode: 'plan', branch: r.branch,
-    durationMs: plan.durationMs + (edit?.durationMs ?? 0), costUsd: plan.costUsd + (edit?.costUsd ?? 0),
-    model: plan.model, question: r.question, diffStat: r.diffStat, summary: plan.text.slice(0, 300), recorded: true,
+    durationMs: Date.now() - Date.parse(r.startedAt), costUsd: r.costUsd,
+    model: plan.model, question: r.question, diffStat: r.diffStat, summary: plan.text.slice(0, 300), recorded: true, review: reviewOf(r),
   })
 
   return {
@@ -148,12 +165,12 @@ export function createRunner(cfg: RunnerConfig) {
     start(windowId: string, task: string, context: string[], facts: string[] = []): Promise<AgentRun> {
       return serial(async () => {
         if (spentToday() >= cfg.maxUsdPerDay) throw new BudgetExceeded(`daily agent budget of US$${cfg.maxUsdPerDay} reached`)
-        const name = `${slug(task)}-${Date.now().toString(36)}`
+        const name = `task-${Date.now().toString(36)}`
         const branch = `agent/${name}`
         const worktree = join(cfg.worktreeRoot ?? join(homedir(), '.ringfence', 'worktrees'), `${basename(cfg.repo)}-${name}`)
         mkdirSync(dirname(worktree), { recursive: true })
         git(cfg.repo, 'worktree', 'add', '-b', branch, worktree)
-        const r: RunRecord = { windowId, task, branch, worktree, status: 'planning', startedAt: new Date().toISOString(), costUsd: 0 }
+        const r: RunRecord = { windowId, task, branch, worktree, baseHead: git(worktree, 'rev-parse', 'HEAD'), targetRepo: targetRepo(worktree), status: 'planning', startedAt: new Date().toISOString(), costUsd: 0 }
         const key = `${r.startedAt}-${windowId}`
         state[key] = r
         byWindow[windowId] = key
@@ -190,7 +207,7 @@ export function createRunner(cfg: RunnerConfig) {
           r.diffStat = await finish(r)
           r.status = 'done'
           save()
-          return toAgentRun(r, plan, edit)
+          return toAgentRun(r, plan)
         } catch (e) {
           r.status = 'failed'
           r.error = (e as Error).message
@@ -204,17 +221,26 @@ export function createRunner(cfg: RunnerConfig) {
     resume(windowId: string, answer: string): Promise<NonNullable<AgentRun['resume']>> {
       return serial(async () => {
         const r = state[byWindow[windowId]]
-        if (!r?.sessionId) throw new Error(`no agent session for ${windowId}`)
+        if (!r?.sessionId || r.status !== 'asked') throw new Error(`no waiting agent session for ${windowId}`)
         r.status = 'editing'
         save()
-        const edit = await claude(r.worktree, FILE_TOOLS,
-          `The person answered out loud: "${answer}". Implement the plan with that answer. Keep the change small. Do not commit.`, r.sessionId)
-        r.costUsd += edit.costUsd
-        r.said = [...(r.said ?? []), edit.text.slice(-1500)]
-        r.diffStat = await finish(r)
-        r.status = 'done'
-        save()
-        return { durationMs: edit.durationMs, costUsd: edit.costUsd, model: edit.model, diffStat: r.diffStat }
+        try {
+          const started = Date.now()
+          const beforeCost = r.costUsd
+          const edit = await claude(r.worktree, FILE_TOOLS,
+            `The person answered out loud: "${answer}". Implement the plan with that answer. Keep the change small. Do not commit.`, r.sessionId)
+          r.costUsd += edit.costUsd
+          r.said = [...(r.said ?? []), edit.text.slice(-1500)]
+          r.diffStat = await finish(r)
+          r.status = 'done'
+          save()
+          return { durationMs: Date.now() - started, costUsd: r.costUsd - beforeCost, model: edit.model, diffStat: r.diffStat, review: reviewOf(r) }
+        } catch (e) {
+          r.status = 'failed'
+          r.error = (e as Error).message
+          save()
+          throw e
+        }
       })
     },
 
@@ -224,38 +250,63 @@ export function createRunner(cfg: RunnerConfig) {
     openPr(windowId: string): string {
       const r = state[byWindow[windowId]]
       if (!r) throw new Error(`no run for ${windowId}`)
+      if (r.pr?.startsWith('https://github.com/')) return r.pr
+      const refuse = (why: string) => { r.pr = `refused, nothing pushed: ${why}`; save(); return r.pr }
+      if (inFlight || r.status !== 'done') return refuse('the agent has not finished')
       let remote = ''
       try { remote = git(r.worktree, 'remote', 'get-url', 'origin') } catch { /* no remote */ }
-      const repo = /github\.com[:/](.+?)(?:\.git)?$/.exec(remote)?.[1]
+      const repo = githubRepo(remote)
       const base = cfg.prBase ?? 'main'
-      const title = r.task
+      // Speech and Bee summaries stay out of public PR titles and commit messages.
+      const title = `Ringfence: ${r.branch}`
       const body = 'Started from a spoken task via Ringfence. Planned with read-only tools, built with file tools only, opened after a tick.'
+      // Display argv, never a copy-pastable shell string containing speech or paths.
       const cmds = [
-        ...(cfg.checkCmd ? [`(cd ${r.worktree} && ${cfg.checkCmd})`] : []),
-        `git -C ${r.worktree} commit -m ${JSON.stringify(title)}`,
-        `git -C ${r.worktree} push -u origin ${r.branch}`,
-        `gh pr create --repo ${repo ?? '<origin>'} --base ${base} --head ${r.branch} --title ${JSON.stringify(title)}`,
+        ...(cfg.checkCmd ? [['sh', '-c', cfg.checkCmd]] : []),
+        ['git', '-C', r.worktree, 'commit', '-m', title],
+        ['git', '-C', r.worktree, 'push', remote, `HEAD:refs/heads/${r.branch}`],
+        ['gh', 'pr', 'create', '--repo', repo ?? '<origin>', '--base', base, '--head', r.branch, '--title', title],
       ]
       if (cfg.prDryRun || !repo) {
-        r.pr = `dry run${repo ? '' : ' (no GitHub origin remote)'}: ${cmds.join(' && ')}`
+        r.pr = `dry run${repo ? '' : ' (no GitHub origin remote)'}: ${JSON.stringify(cmds)}`
         save()
         return r.pr
       }
-      const refuse = (why: string) => { r.pr = `refused, nothing pushed: ${why}`; save(); return r.pr }
+      if (!cfg.checkCmd || !r.diffStat?.startsWith('checks pass, ') || !r.reviewedTree)
+        return refuse('successful configured checks are required')
+      if (repo !== r.targetRepo) return refuse('the target repository changed after the task started')
+      const pushUrls = git(r.worktree, 'remote', 'get-url', '--push', '--all', 'origin').split('\n')
+      if (pushUrls.length !== 1 || githubRepo(pushUrls[0]) !== repo)
+        return refuse('origin fetch and push must name the same GitHub fork')
       // Ring 2 opens pull requests on your own fork only.
       let fork = ''
       try { fork = execFileSync('gh', ['api', `repos/${repo}`, '--jq', '.fork'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 30_000 }).trim() } catch { /* unknown counts as not a fork */ }
       if (fork !== 'true') return refuse(`${repo} is not a fork`)
       // A workflow or a Claude setting in the branch could run code on GitHub or in Claude. That needs a person.
-      if (git(r.worktree, 'diff', '--cached', '--name-only').split('\n').some((f) => /^(\.github|\.claude)\//.test(f)))
-        return refuse('the branch changes .github/ or .claude/; review it by hand')
-      if (cfg.checkCmd) {
-        try { execFileSync('sh', ['-c', cfg.checkCmd], { cwd: r.worktree, env: checkEnv(), stdio: ['ignore', 'pipe', 'pipe'], timeout: cfg.timeoutMs, maxBuffer: 16 * 1024 * 1024 }) }
-        catch (e) { r.pr = `checks failed, nothing committed: ${(e as Error).message.slice(0, 300)}`; save(); return r.pr }
-      }
+      const unchanged = () =>
+        git(r.worktree, 'branch', '--show-current') === r.branch &&
+        git(r.worktree, 'rev-parse', 'HEAD') === (r.publishCommit ?? r.baseHead) &&
+        git(r.worktree, 'write-tree') === r.reviewedTree &&
+        !git(r.worktree, 'diff', '--name-only', '-z') &&
+        !git(r.worktree, 'ls-files', '--others', '--exclude-standard', '-z')
+      // Check the entire PR diff, including commits already present when the task started.
+      const mergeBase = git(r.worktree, 'merge-base', base, 'HEAD')
+      if (git(r.worktree, 'diff', '--cached', '--no-renames', '--name-only', '-z', mergeBase).split('\0')
+        .some((f) => /^(\.(github|claude|husky)(\/|$)|\.gitmodules$|\.env(?:$|\.))/.test(f)))
+        return refuse('the branch changes .github/, .claude/, hooks, submodules or environment files; review it by hand')
+      if (!unchanged()) return refuse('the branch changed after the result; run a new review')
+      const check = runChecks(r.worktree)!
+      if (!check.ok) { r.pr = `checks failed, nothing committed: ${check.output}`; save(); return r.pr }
+      // Checks may themselves edit or stage files. The tick covers exactly the completed result.
+      if (!unchanged()) return refuse('checks changed the branch; run a new review')
       // Commit once. A retry after a failed push finds nothing staged and goes straight to the push.
-      if (git(r.worktree, 'diff', '--cached', '--name-only')) git(r.worktree, 'commit', '-m', title)
-      execFileSync('git', ['-C', r.worktree, 'push', '-u', 'origin', r.branch], { stdio: ['ignore', 'pipe', 'pipe'], timeout: 120_000 })
+      if (!r.publishCommit) {
+        git(r.worktree, '-c', 'core.hooksPath=/dev/null', 'commit', '-m', title)
+        r.publishCommit = git(r.worktree, 'rev-parse', 'HEAD')
+        save()
+      }
+      // Use the verified URL and an explicit destination ref; Git's pushurl/push configuration cannot redirect it.
+      execFileSync('git', ['-C', r.worktree, '-c', 'core.hooksPath=/dev/null', 'push', remote, `${r.publishCommit}:refs/heads/${r.branch}`], { stdio: ['ignore', 'pipe', 'pipe'], timeout: 120_000 })
       r.pr = execFileSync('gh', ['pr', 'create', '--repo', repo, '--base', base, '--head', r.branch, '--title', title, '--body', body],
         { cwd: r.worktree, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 60_000 }).trim()
       save()

@@ -6,8 +6,8 @@ import { hhmm, ms } from './time.ts'
 const S = 400, C = S / 2
 const BANDS = [
   { ring: 0, r0: 26, r1: 72, fill: '#fbf1eb', ink: 'var(--ring0)', name: 'Ring 0 · acts on you' },
-  { ring: 1, r0: 72, r1: 122, fill: '#f8e4da', ink: 'var(--ring1)', name: 'Ring 1 · sandbox' },
-  { ring: 2, r0: 122, r1: 172, fill: '#f1d6c9', ink: 'var(--ring2)', name: 'Ring 2 · leaves the machine' },
+  { ring: 1, r0: 72, r1: 122, fill: '#f8e4da', ink: 'var(--ring1)', name: 'Ring 1 · private branch' },
+  { ring: 2, r0: 122, r1: 172, fill: '#f1d6c9', ink: 'var(--ring2)', name: 'Ring 2 · publish' },
 ]
 const SHOW = new Set(['note.saved', 'exhale.nudge', 'agent.started', 'agent.question', 'agent.result', 'agent.binned', 'agent.shadow', 'agent.capped', 'pr.proposed', 'pr.approved'])
 

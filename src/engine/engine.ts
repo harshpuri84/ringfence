@@ -107,11 +107,13 @@ export function replay(
       bee: `bee todos create --text "Branch ready: ${rs.branch}. ${diffStat}"`,
     })
     // A branch whose checks fail reaches the wrist as a result, never as a request to open a PR.
-    if (trust('open_pr') !== 'shadow' && !/CHECKS FAIL/.test(diffStat)) {
+    if (trust('open_pr') !== 'shadow' && diffStat.startsWith('checks pass, ')) {
+      const review = rs.run.resume?.review ?? rs.run.review
+      const detail = review ? ` On ${review.repo}; checks pass; files: ${review.files.slice(0, 6).join(', ')}${review.files.length > 6 ? ', …' : ''}; tree ${review.tree.slice(0, 12)}. Review the worktree diff before ticking.` : ''
       emit({
         at, ring: 2, kind: 'pr.proposed', runId: rs.id, todoId: `pr-${rs.id}`,
-        text: `Open a pull request for ${rs.branch}? Waits for your tick.`,
-        bee: `bee todos create --text "Open PR for ${rs.branch}? Tick to approve."`,
+        text: `Open a pull request for ${rs.branch}?${detail} Waits for your tick.`,
+        bee: `bee todos create --text "Open PR for ${rs.branch}?${detail} Tick to approve."`,
       })
     }
   }
@@ -214,12 +216,16 @@ export function replay(
     if (intent === 'task' && p >= policy.thresholds.task) {
       const [line] = top(a.task_line as ChoiceA)
       const idx = line.startsWith('u') ? Number(line.slice(1)) : -1
-      const task = idx >= 0 && w.utterances[idx] ? w.utterances[idx].text : text
+      if (!Number.isInteger(idx) || idx < 0 || !w.utterances[idx]) {
+        events.push({ at, windowId: w.id, ring: 1, kind: 'agent.shadow', text: 'No request utterance matched. Logged only; no agent started.' })
+        continue
+      }
+      const task = w.utterances[idx].text
       // A reply to an agent ("five attempts, go ahead") is not a new task. Judgments stored before this question existed pass.
-      const selfContained = a.task_self_contained ? (a.task_self_contained as NoulA).noul : 1
+      const selfContained = a.task_self_contained ? (a.task_self_contained as NoulA).noul : executeRuns === 'live' ? 0 : 1
       if (selfContained < policy.thresholds.selfContained) {
         events.push({ at, windowId: w.id, ring: 1, kind: 'agent.shadow', text: `Sounds like a reply or a fragment, not a new task (self-contained p ${selfContained.toFixed(2)}). Logged only: "${task}"` })
-      } else if (policy.requireAddress && !text.toLowerCase().includes(policy.addressWord)) {
+      } else if (policy.requireAddress && !task.toLowerCase().split(/[^a-z0-9]+/).includes(policy.addressWord.toLowerCase())) {
         events.push({ at, windowId: w.id, ring: 1, kind: 'agent.shadow', text: `Heard a task but it was not addressed to "${policy.addressWord}". Logged only: "${task}"` })
       } else if (ring1Starts.filter((t) => minutesBetween(t, at) < 60).length >= policy.ring1MaxPerHour) {
         events.push({ at, windowId: w.id, ring: 1, kind: 'agent.capped', text: `Ring 1 cap reached (${policy.ring1MaxPerHour} runs per hour). Logged only: "${task}"` })

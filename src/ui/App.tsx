@@ -97,7 +97,7 @@ function Dashboard({ data, lastOk = 0 }: { data: DayData; lastOk?: number }) {
     <div className="app">
       <header className="top">
         <h1>Ringfence</h1>
-        <span className="tag">An agent that acts on what Bee hears, inside rings you draw.</span>
+        <span className="tag">Say the task. Review the work. Approve the pull request.</span>
       </header>
       {live ? (
         <div className="badges">
@@ -112,7 +112,7 @@ function Dashboard({ data, lastOk = 0 }: { data: DayData; lastOk?: number }) {
         <div className="badges">
           <span className="badge warn">Scripted day. Synthetic content, not real capture.</span>
           <span className={`badge ${isStandin ? 'warn' : ''}`}>{isStandin ? 'Classifier: Jev questions, answered by a Claude Haiku stand-in until a Jev key works' : `Classifier: Jev (${judgeName})`}</span>
-          <span className="badge">Agent runs: recorded 26 Sep with the current runner</span>
+          <span className="badge">Agent runs: recorded 26 Sep; publisher hardened 18 Oct</span>
           <span className="badge">Bee writes: shown as commands, not executed</span>
         </div>
       )}
@@ -173,16 +173,16 @@ function Dashboard({ data, lastOk = 0 }: { data: DayData; lastOk?: number }) {
             <Rings events={r.events} start={DAY_START} end={DAY_END} now={clock} pendingIds={pendingIds} />
             <div className="ring-legend">
               <div><span className="sw" style={{ background: 'var(--ring0)' }} /><b>0 · acts on you</b><br />notes, breath nudges. Auto.</div>
-              <div><span className="sw" style={{ background: 'var(--ring1)' }} /><b>1 · sandbox</b><br />coding agent on a branch. Auto in this demo; a new user starts in shadow.</div>
-              <div><span className="sw" style={{ background: 'var(--ring2)' }} /><b>2 · leaves the machine</b><br />commit, push, pull request. Never without a tick.</div>
+              <div><span className="sw" style={{ background: 'var(--ring1)' }} /><b>1 · private branch</b><br />coding agent on a branch. Auto in this demo; shadow mode is available. Checks run on the host.</div>
+              <div><span className="sw" style={{ background: 'var(--ring2)' }} /><b>2 · publish</b><br />commit, push, pull request. Never without a tick.</div>
             </div>
           </div>
         </section>
 
         <section>
           <div className="card wrist">
-            <div className="head"><h2>On your wrist</h2><Needs ids={['watch-alerts']} onPick={showGap} /></div>
-            <p className="sub">What would arrive as Bee todos. Tick a PR request to approve it. The engine reads the tick from Bee's changefeed, because the stream never sends todo events.</p>
+            <div className="head"><h2>Back to you</h2><Needs ids={['watch-alerts']} onPick={showGap} /></div>
+            <p className="sub">Questions and results as Bee todos. Alerts currently reach the phone. Review the worktree diff before ticking a PR request. The engine reads the tick from Bee's changefeed, because the stream never sends todo events.</p>
             {delivered.slice().reverse().map((e, i) => {
               const waiting = e.kind === 'pr.proposed' && pendingIds.has(e.todoId!)
               const done = e.kind === 'pr.proposed' && approvedIds.has(e.todoId!)
@@ -194,7 +194,7 @@ function Dashboard({ data, lastOk = 0 }: { data: DayData; lastOk?: number }) {
                     <div>{e.text.replace(/^Delivered after hold: /, '')}</div>
                     {waiting && !live && <button className="btn small primary" style={{ marginTop: 6 }} onClick={() => tick(e.todoId!)}>Tick to approve</button>}
                     {waiting && live && <div className="hint">Tick it in the Bee app.</div>}
-                    {done && <div className="hint">Approved. Ring 2 reruns the checks, then commits, pushes and opens the PR on your fork.</div>}
+                    {done && <div className="hint">Approval recorded. The publisher verifies the branch and checks before attempting a PR. See the live terminal for its outcome.</div>}
                     <Needs ids={gapsFor(e).filter((g) => g !== 'watch-alerts')} onPick={showGap} />
                   </div>
                 </div>
@@ -374,7 +374,7 @@ function ShapePanel({ events, windowsSeen, focus }: { events: EngineEvent[]; win
   return (
     <div className="card shape" style={{ marginTop: 16 }}>
       <h2>What Amazon could ship</h2>
-      <p className="sub">Each request is a measured gap between this vision and Bee today. The count is how many moments in the replay so far lean on it. F-numbers refer to the friction log submitted with the entry.</p>
+      <p className="sub">Each request is a measured gap between this vision and Bee today. The count is how many moments in the replay so far lean on it. F-numbers refer to the public friction summary in docs/friction-log.md.</p>
       <div className="shape-scroll">
         <table>
           <thead><tr><th>Request</th><th>Bee today</th><th>What it unlocks here</th><th className="num">Moments</th></tr></thead>

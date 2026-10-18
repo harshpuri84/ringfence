@@ -1,7 +1,7 @@
 import type { EngineEvent } from '../engine/types.ts'
 
 // What Amazon could ship. Each request is a measured gap between this vision and Bee as it is today.
-// Evidence cites the friction log submitted with the entry (not in this repo); the two 25 Sep tests are not in the log yet.
+// Evidence is summarized in docs/friction-log.md; observations are from September 2026.
 
 export interface Gap {
   id: string
@@ -19,7 +19,7 @@ export const GAPS: Gap[] = [
     request: 'Send todo events on the stream',
     today: 'Listed as event types, never delivered. A tick shows up only by polling the changefeed, about 35 s later.',
     unlocks: 'Your tick opens the pull request at once.',
-    evidence: 'Tested 25 Sep 2026: app tick, CLI update and CLI create, with --types all and by name. Not yet in the friction log.',
+    evidence: 'Tested 25 Sep 2026: app tick, CLI update and CLI create, with --types all and by name. Summarized in docs/friction-log.md.',
     status: 'measured',
   },
   {
@@ -34,7 +34,7 @@ export const GAPS: Gap[] = [
     id: 'media-tags', short: 'media tags',
     request: 'Tag chunks that come from media',
     today: "Bee's summary knows: 31 minutes of songs came back as 'background entertainment audio… no clear personal conversation'. Its 15 chunks were still tagged CONVERSATION.",
-    unlocks: 'Put what the summary already knows into the tags, and a video playing nearby can never give your agent orders. Today Ringfence guesses from the words: a YouTube Short that spoke an agent prompt scored media 0.70, just over the 0.6 cut-off.',
+    unlocks: 'Put what the summary already knows into the tags, and a video playing nearby can be skipped by policy. Today Ringfence guesses from the words: a YouTube Short that spoke an agent prompt scored media 0.70, just over the 0.6 cut-off.',
     evidence: 'F17, F35; Bee app summary and a live raw-stream watch, 25 Sep 2026 (event names and tags only recorded).',
     status: 'measured',
   },
