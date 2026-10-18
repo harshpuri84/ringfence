@@ -1,0 +1,7 @@
+# Gallery cover provenance
+
+Generated on 18 October 2026 with the built-in image-generation tool. Saved as `gallery-cover.png` (1536 × 1024, PNG, 3:2). The image says CONCEPT COVER and does not represent a product screenshot or a device test. Uploaded as the draft Devpost thumbnail.
+
+## Prompt
+
+Use case: ads-marketing. Asset: 3:2 horizontal Devpost project gallery cover, 1536 by 1024. Create a restrained, premium editorial cover for a software prototype named Ringfence. Warm ivory paper background (#faf8f3), near-black typography, muted terracotta and russet accents (#a85c3e). A beautifully lit architectural paper sculpture of three concentric circular rings occupies the right half, with a small warm dot at the center and a single thin path that stops at the outer boundary. The rings represent escalating authority from private notes to prepared code to human-approved publication. Precise, calm, tactile, ample negative space. On the left, very large clean sans serif exact text: "Ringfence". Beneath it, smaller exact text on three short lines: "Say the task." "Review the work." "Approve the pull request." Bottom-left small exact label: "CONCEPT COVER". No other text, no code, no screenshots, no fabricated product UI, no trademarks, no device brands, no neon, no gradients, no decorative chatbot icons. This is concept artwork for a real project, not proof of a working device. Text must be spelled exactly, strong readable hierarchy, crisp light background.

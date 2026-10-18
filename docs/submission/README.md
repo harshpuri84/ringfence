@@ -11,4 +11,6 @@ Captured from the local Ringfence dashboard on 18 October 2026. Every scene uses
 | `05-shadow-mode.jpg` | Selecting shadow prevents execution of the same task. |
 | `preview.jpg` | A viewport-sized preview of the task/question scene. |
 
-These images are evidence assets, not a gallery cover or a substitute for the device video. Check the live form's accepted dimensions and formats before uploading.
+`gallery-cover.png` is a separate 3:2 concept cover generated with the built-in image tool; its prompt and provenance are in `gallery-cover-prompt.md`. It is artwork, not product evidence.
+
+The draft Devpost gallery uses `preview.jpg`, `01-overview.jpg`, `03-media-skipped.jpg`, `04-approval-replay.jpg` and `05-shadow-mode.jpg`. These are replay evidence, not a substitute for the device video. The live form accepts JPG, PNG or GIF, up to 5 MB per image, recommends 3:2 and permits up to 15 gallery images.

@@ -1,6 +1,6 @@
 # Demo script: target 2:40
 
-Working recording plan, not a finished video. Confirm the actual event's duration, host, language, device and branding requirements before uploading. A previous review recorded a three-minute limit; it was not verified live on 18 October.
+Working recording plan, not a finished video. The official rules page was checked in the browser on 18 October: under three minutes, public YouTube/Vimeo URL, functioning device/platform, real Bee data interaction, English or English translation, and permission for third-party material. See `demo/video-requirements.md` for the sourced checklist. No upload or final entry has been authorized.
 
 ## Record the evidence first
 

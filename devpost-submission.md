@@ -1,6 +1,6 @@
 # Ringfence
 
-Local draft prepared 18 October 2026. Nothing was sent to Devpost by this audit. Registration, eligibility, deadline and exact form fields could not be verified because the Devpost connector returned internal errors. This document is working copy, not a completed official form.
+Working copy prepared 18 October 2026. The existing Devpost entry has now been opened while signed in, and draft content has been saved through the web form. It remains DRAFT, not a finalized entry. The connector still returns internal errors; participant eligibility and legal agreements remain unconfirmed. The video requirements and deadline were subsequently read directly on the official rules page. Actual form fields were read directly from the authenticated form.
 
 ## One-line Summary
 
@@ -66,7 +66,9 @@ The test suite uses real Git/worktrees with fake Claude and GitHub commands; no 
 
 ## Existing Devpost Entry
 
-The participant supplied a private Devpost entry-management link after this packet was drafted. It is retained locally outside the public repository. It is not a public project or demo URL. The connected browser redirects to sign-in and the connector still returns an internal error, so the entry's saved write-up, assets, registration and publication status have not been verified. This audit has not changed or finalized that entry. Reuse the existing entry once authenticated rather than creating a duplicate.
+The existing entry was verified while signed in: it began as Untitled, DRAFT, with 1/5 steps complete. Its title and pitch are now Ringfence; the story, technology tags, repository link and organizer answers have been saved as draft content. The management URL and identifiers stay in local private working notes.
+
+The project preview address is https://devpost.com/software/ringfence-vht8ni. This was observed in the editor and is **not a claim that the draft is publicly accessible or finalized**. Public project copy is mirrored in [devpost-story.md](devpost-story.md). The participant-confirmed entrant and learning answers have also been saved. The missing video and unchecked legal declarations mean the form is not complete.
 
 ## Public Demo Link
 
@@ -83,7 +85,7 @@ Related Bee CLI contributions, both still open when checked 18 October:
 
 ## Demo Video
 
-PENDING: record and add a public, playable URL. [demo/script.md](demo/script.md) targets 2:40 with a working-task cold open, spoken clarification, passing checks and approval. This is a script, not a video. The maximum duration and accepted host must be checked against the live event requirements.
+PENDING: record and add a public, playable URL. [demo/script.md](demo/script.md) targets 2:40 with a working-task cold open, spoken clarification, passing checks and approval. This is a script, not a video. The official rules page requires a video under three minutes on publicly visible YouTube or Vimeo, functioning on the intended platform and showing actual Bee data use. See [demo/video-requirements.md](demo/video-requirements.md).
 
 ## Screenshot Shot List
 
@@ -104,8 +106,10 @@ The audit report is [docs/audit-2026-10-18.md](docs/audit-2026-10-18.md). A publ
 - [x] Harden publication and add offline regressions.
 - [x] Prepare a shorter demo script and public-safe platform feedback.
 - [ ] Record a fresh device demo, including a real tick-to-PR result on a disposable fork; review its diff before approval.
-- [ ] Upload the video and add its public URL; prepare a gallery cover if required.
-- [ ] Verify current event rules, eligibility, registration, deadline, track and every required form answer.
+- [x] Prepare and upload the concept cover and five replay screenshots.
+- [ ] Upload the required demo video and add its public URL.
+- [x] Inspect the authenticated form and verify video requirements/deadline on the organizer website.
+- [ ] Complete participant eligibility declarations and terms review when the participant chooses to proceed; draft-only authorization remains in force.
 - [ ] Merge or otherwise make the audited source version easy for judges to reach.
 - [ ] Perform the final Devpost submission only after the participant reviews the packet and explicitly authorizes it.
 
@@ -117,9 +121,11 @@ Speakers are not reliably identified in the recorded Bee observations. The stand
 
 ## TODO Official Form Fields
 
-Exact questions and IDs are unverified; no official fields have been invented. Intended positioning is the Bee track and an open-source contribution, subject to the actual form. No AWS Builder claim is made: this implementation does not integrate an AWS runtime service.
+The authenticated form was inspected on 18 October. Draft choices: Bee primary track; new project; AWS Builder No (with N/A explanation); Open Source Yes. The GitHub contribution/repository/username, feature requests, friction-log URL, five developer-feedback answers and AI-tools answer were prepared from repository evidence.
 
-Before final entry, read the live event's rules and submission requirements, confirm registration and participant eligibility, select the applicable track/prize options, attach the requested feedback format and add the device video, gallery assets and project URL. No rules agreement or registration has been recorded locally.
+The participant supplied the entrant setup, country and learning/career answers; these were saved and read back from the form. Personal answer values stay in private working notes rather than this public packet. Age of majority, eligible jurisdiction and non-affiliation declarations remain unchecked. The final Official Rules/Devpost Terms agreement is also unchecked. No finalization was attempted.
+
+The project-details form marks the video URL required. It accepts JPG/PNG/GIF gallery images up to 5 MB each, recommends 3:2, and allows 15 images. The optional attachment limit is 35 MB. No Codex session ID was requested by the inspected form. Participant eligibility still needs confirmation. The organizer rules page lists 23 October 2026, 12:00 Pacific Time (21:00 Europe/Amsterdam) as the deadline. The participant explicitly requested draft-only preparation; no final entry is authorized.
 
 ## Draft Product Feedback
 
